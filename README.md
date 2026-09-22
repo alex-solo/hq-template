@@ -310,6 +310,9 @@ files because those don't exist upstream.
   version as Anthropic ships new ones. A full ID (`claude-opus-5-5`
   format) freezes that exact version — use it only when you
   deliberately want to pin, and note why, or it will be forgotten.
+  Builder sessions run on `opus`; their charter escalates the hard
+  problems (lasting decisions, stalled debugging, unresolvable spec
+  ambiguity) to a Fable sub-agent and keeps routine work on Opus.
 - **Skills** — drop a folder into `skills/`, run `hq setup` to symlink
   it. Read any third-party skill before installing it; a skill is
   instructions your agents will follow.
