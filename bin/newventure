@@ -189,6 +189,14 @@ project rules and bind you fully; this file makes the role explicit.
   behavior: \`/spec-review <last-deployed-commit>\` with both sub-agents on
   Fable (\`model: fable\`), then \`/code-review high\`. Fix findings first;
   note the audit in \`TEAM.md\`.
+- **Escalate, don't grind.** Your session runs on Opus for cost. For
+  the hard 10% — an architecture or schema decision with lasting
+  consequences, a bug still unexplained after two real attempts, a spec
+  ambiguity the docs can't resolve — dispatch a sub-agent on Fable
+  (\`model: fable\` on the Agent tool) with the full problem context,
+  then implement its answer yourself. Never spend an hour on Opus where
+  ten minutes of Fable would settle it; never send Fable routine
+  implementation. Note each escalation in \`TEAM.md\`.
 - Run \`/handoff\` before ending a work block.
 EOF
 
