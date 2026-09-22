@@ -189,14 +189,24 @@ project rules and bind you fully; this file makes the role explicit.
   behavior: \`/spec-review <last-deployed-commit>\` with both sub-agents on
   Fable (\`model: fable\`), then \`/code-review high\`. Fix findings first;
   note the audit in \`TEAM.md\`.
-- **Escalate, don't grind.** Your session runs on Opus for cost. For
-  the hard 10% — an architecture or schema decision with lasting
-  consequences, a bug still unexplained after two real attempts, a spec
-  ambiguity the docs can't resolve — dispatch a sub-agent on Fable
-  (\`model: fable\` on the Agent tool) with the full problem context,
-  then implement its answer yourself. Never spend an hour on Opus where
+- **Model policy — three tiers (founder directive, 2026-09-22).** Your
+  session runs on **Opus** (\`--model opus\` in HQ's team.conf):
+  planning, architecture, and reviewing your sub-agents' work. Delegate
+  mechanical execution (edits, scaffolding, refactors, test writing) to
+  **Sonnet** sub-agents via the Agent tool's \`model: sonnet\` —
+  self-directed, you judge which chunks qualify. **Fable is spent in
+  exactly two places, via upward sub-agent (\`model: fable\`):**
+  (1) **escalate on surprise** — the moment reality diverges from the
+  plan (unexpected test failure, API mismatch, anything undocumented),
+  an architecture or schema decision with lasting consequences, a bug
+  still unexplained after two real attempts, or a spec ambiguity the
+  docs can't resolve — dispatch a Fable sub-agent with the full problem
+  context for the diagnosis/design, then implement its answer yourself;
+  (2) the **pre-deploy audit** above. Never spend an hour on Opus where
   ten minutes of Fable would settle it; never send Fable routine
-  implementation. Note each escalation in \`TEAM.md\`.
+  implementation. Note each escalation in \`TEAM.md\`. Specs are
+  authored at the top model (analyst) — you build against
+  already-expensive thinking.
 - Run \`/handoff\` before ending a work block.
 EOF
 
