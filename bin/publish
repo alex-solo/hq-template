@@ -4,7 +4,7 @@
 # Copies an explicit ALLOWLIST (below) into $TEMPLATE, refuses if any
 # token from the private denylist (.publish-deny, one per line) appears
 # in the result, then commits there with hq's latest commit message and
-# pushes. Runs from hq's post-commit hook (see README → Publishing), or
+# pushes. Runs from hq's post-commit hook (see decisions.md), or
 # by hand as `hq publish`. Nothing outside the allowlist ever leaves.
 #
 #   publish            mirror + commit + push (push failure is non-fatal)

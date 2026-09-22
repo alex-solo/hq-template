@@ -14,8 +14,6 @@ Contents: [The problem](#the-problem) · [The shape](#the-shape) ·
 [Why it's built this way](#why-its-built-this-way) ·
 [Working with it](#working-with-it) · [Getting started](#getting-started)
 · [Commands](#commands) · [Files](#files) · [Making it yours](#making-it-yours)
-· [Publishing](#publishing-how-this-repo-is-maintained) ·
-[Decisions](#decisions-why-the-scaffolding-is-shaped-this-way)
 
 ## The problem
 
@@ -236,8 +234,9 @@ files because those don't exist upstream.
   first mentor session (see Getting started).
 - **`hq setup`** — the mechanical half alone; idempotent, re-run after
   pulling template updates that add skills.
-- **`hq publish`** — mirror the shareable files into the public template
-  repo (see Publishing). `hq publish --check` runs the leak test only.
+- **`hq publish`** — mirror the shareable files of this hq into a
+  public template checkout for others to clone (`bin/publish` documents
+  the allowlist and the leak check; `--check` runs the leak test only).
 
 `team` is a shell alias for `hq team` — so `team <venture>` works too.
 
@@ -311,78 +310,6 @@ files because those don't exist upstream.
   Claude session in `hq/`; the charter binds it to the five-step
   protocol (script in `bin/`, register in `hq`, document here, commit,
   `/xref` after renames). A command exists only when all five are done.
-
-## Publishing (how this repo is maintained)
-
-This public repo is a one-way **mirror** of the maintainer's private hq.
-`bin/publish` copies an explicit allowlist (scripts, skills, the
-designer bundle, `templates/`, `example/`, generic `CLAUDE.md`, this
-README) into a checkout at `~/code/business/hq-template` (override with
-`HQ_TEMPLATE`), commits there with hq's latest commit message, and
-pushes. Before committing it greps the whole mirror for every token in
-`.publish-deny` (names, employers, venture names — private, not mirrored)
-and refuses on any hit, so the boundary is a file you can read rather
-than a habit. Private files are simply not on the list.
-
-It runs from a `post-commit` hook in the private repo, so every
-structural improvement lands here within seconds of being committed.
-(Hooks aren't versioned; reinstall with
-`ln -s ../../bin/post-commit .git/hooks/post-commit`.) Improvements from
-users arrive as pull requests here and get ported into the private repo
-by hand — one-directional on purpose.
-
-If you fork this for your own friends, the same machinery works for you:
-your hq is private, `hq publish` mirrors it.
-
-## Decisions (why the scaffolding is shaped this way)
-
-Dated one-liners so a deliberate choice isn't undone later because it
-looked redundant. Append when changing structure.
-
-- 2026-08-18 — mentor is the `hq/` project CLAUDE.md launched as a named
-  resumable session, not a subagent: it needs memory across sessions and
-  its own context window.
-- 2026-08-18 — venture CLAUDE.md files do NOT import the portfolio goal.
-  Analysts reason about the product; portfolio allocation is the
-  mentor's job only. Separation on purpose.
-- 2026-08-18 — `hq/.claude/settings.json` denies Edit under
-  `ventures/` so the mentor (and any ad-hoc hq session) is read-only
-  there; venture changes flow through the analyst/builder sessions.
-  (2026-09-22: paths use `~/` so the file is machine-independent.)
-- 2026-08-18 — `ideas.md` is the idea pipeline AND the graveyard (rejected
-  entries stay with reasons). Split into one-file-per-idea only if it
-  outgrows a single file (~6+ live entries).
-- 2026-08-21 — no prospector/steward agents: idea research is an ad-hoc
-  hq session following the `ideas.md` entry rules; tooling/structure
-  work is an ad-hoc hq session following the Tooling-changes protocol.
-  Promote either to a skill only when it recurs weekly.
-- 2026-08-21 — marketing/design are trigger-based seats per venture
-  (spawn at launch-prep / UI work), not standing agents.
-- 2026-09-18 — SUPERSEDES the design half of the line above: design is a
-  standing HQ-level `designer` session (founder decision 2026-09-15 —
-  one taste-memory across ventures beats a seat per venture). Marketing
-  remains a trigger-based seat.
-- 2026-09-18 — designer runs from `ventures/` with its bundle passed by
-  `--plugin-dir`, NOT from `hq/`: launched in hq it would inherit the
-  mentor's CLAUDE.md and the deny rule on venture writes, and loosening
-  that deny would un-guard the mentor. Skills are vendored into the
-  bundle (read before copying) rather than installed via `npx skills` —
-  no third-party installer runs on this machine, and design skills stay
-  confined to this system's sessions.
-- 2026-09-18 — Playwright MCP over Claude-in-Chrome for the designer: an
-  isolated throwaway profile and explicit viewport control, versus an
-  agent driving the founder's logged-in personal browser.
-- 2026-09-22 — shareable template is a one-way allowlist mirror
-  (`bin/publish`) of the private repo, not the private repo made public
-  with a nested private dir: the allowlist plus `.publish-deny` make a
-  leak a refused command instead of a missed line, and git history stays
-  private. Cost: friends' improvements are ported by hand.
-- 2026-09-22 — `CLAUDE.md` imports `founder.md` rather than carrying the
-  founder inline, so the charter is generic and the person is one
-  private file. `example/` is fiction, never scrubbed real data.
-- 2026-09-22 — no onboarding interview. The mentor is defined by having
-  context on every project, not by knowing the founder's goals; goals
-  are optional and recorded when stated. Private files start empty.
 
 ## How continuity works (the short version)
 
