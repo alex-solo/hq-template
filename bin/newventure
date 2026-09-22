@@ -185,6 +185,10 @@ project rules and bind you fully; this file makes the role explicit.
 - Push back through the analyst, not around it: if a spec decision proves
   wrong during implementation, message \`$NAME-analyst\` (or record it in
   TEAM.md) rather than silently deviating.
+- **Pre-deploy audit** before deploying anything that changes user-facing
+  behavior: \`/spec-review <last-deployed-commit>\` with both sub-agents on
+  Fable (\`model: fable\`), then \`/code-review high\`. Fix findings first;
+  note the audit in \`TEAM.md\`.
 - Run \`/handoff\` before ending a work block.
 EOF
 
