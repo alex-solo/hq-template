@@ -18,8 +18,8 @@ hq — founder command center
   hq new --bare <name> ["thesis"]
                               skip the interview; scaffold the default
                               analyst+builder shape mechanically
-  hq onboard                  first run on a fresh clone: setup, then a
-                              short interview that stands the system up
+  hq onboard                  first run on a fresh clone: setup, then
+                              your first mentor session
   hq setup                    the mechanical half of onboard alone
                               (idempotent; safe to re-run any time)
   hq publish                  mirror the shareable files into the public
@@ -43,7 +43,7 @@ EOF
   setup) exec "$BIN/setup" ;;
   onboard)
     "$BIN/setup" || exit 1
-    cd "$HOME/code/business/hq" && exec claude "/onboard"
+    exec "$BIN/team" mentor
     ;;
   publish) shift; exec "$BIN/publish" "$@" ;;
   *) echo "hq: unknown command '$1' — run 'hq help'" >&2; exit 1 ;;

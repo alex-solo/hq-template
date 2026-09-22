@@ -1,7 +1,6 @@
 # Ventures
 
-<!-- EXAMPLE — fictional venture, so the mentor has a working registry on
-     first launch. Delete this entry once a real venture exists. -->
+<!-- EXAMPLE — fictional venture, for reference only — never copied into place. -->
 
 Portfolio registry. One section per venture: thesis, stage, revenue
 state, kill criteria, and the mentor's current read.

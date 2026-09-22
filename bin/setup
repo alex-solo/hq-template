@@ -5,8 +5,8 @@
 # What it does:
 #   1. checks prerequisites (claude, node/npx, tmux or iTerm)
 #   2. creates ~/code/business/ventures
-#   3. seeds the private files (founder.md, ventures.md, ideas.md,
-#      journal.md) from example/ if they don't exist yet
+#   3. creates the private files (founder.md, ventures.md, ideas.md,
+#      journal.md) from templates/ if they don't exist yet
 #   4. writes team.conf (mentor + designer) if it doesn't exist yet
 #   5. symlinks skills/* into ~/.claude/skills/
 #   6. adds the `hq` and `team` aliases to your shell rc
@@ -41,10 +41,10 @@ else warn "neither tmux nor iTerm found — 'hq team' can't open sessions; brew 
 echo "directories"
 if [ -d "$VENTURES" ]; then ok "$VENTURES"; else mkdir -p "$VENTURES"; made "$VENTURES"; fi
 
-echo "private files (seeded from example/ when missing)"
+echo "private files (created from templates/ when missing)"
 for f in founder.md ventures.md ideas.md journal.md; do
   if [ -e "$HQ/$f" ]; then ok "$f"
-  else cp "$HQ/example/$f" "$HQ/$f"; made "$f  ← example/$f (fictional — replace it)"; fi
+  else cp "$HQ/templates/$f" "$HQ/$f"; made "$f (empty — the mentor fills it in)"; fi
 done
 
 if [ -e "$HQ/team.conf" ]; then ok "team.conf"
@@ -88,7 +88,6 @@ fi
 cat <<EOF
 
 done. next:
-  1. edit founder.md — it is fictional until you replace it
-  2. open a new shell, run 'hq mentor' — it knows every project; tell it your goals if you have them
-  3. 'hq new <name>' for your first venture
+  open a new shell, then 'hq mentor' (your advisor — knows every project)
+  or 'hq new <name>' for your first venture
 EOF

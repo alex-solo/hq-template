@@ -24,6 +24,7 @@ ALLOWLIST=(
   skills/
   designer/
   example/
+  templates/
   .claude/skills/
   .claude/settings.json
   CLAUDE.md

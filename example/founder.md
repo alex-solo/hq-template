@@ -1,9 +1,7 @@
 # Founder
 
-<!-- EXAMPLE — fictional. `setup` copied this to hq/founder.md; the
-     /onboard interview replaces it with the real founder. CLAUDE.md
-     imports founder.md, so whatever is here is what the mentor knows
-     about the person. -->
+<!-- EXAMPLE — fictional, for reference only (never copied into place).
+     The real founder.md starts empty and the mentor fills it in. -->
 
 Sam — Lisbon-based solo founder, senior backend engineer at a logistics
 company by day, building software side businesses in the evenings.

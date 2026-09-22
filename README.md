@@ -14,18 +14,15 @@ rules), so there is no ChatGPT or provider-neutral path.
 git clone <template-url> ~/code/business/hq && ~/code/business/hq/hq onboard
 ```
 
-Two things happen. `bin/setup` (mechanical, idempotent, re-run any time)
-checks prerequisites (Node for the designer's browser tooling, tmux or
-iTerm), creates `~/code/business/ventures`, seeds the private files from
-`example/` (a *fictional* founder, venture, idea, and journal), writes
-`team.conf`, symlinks `skills/` into
-`~/.claude/skills/`, and adds the `hq`/`team` aliases. Then a Claude
-session opens with the `/onboard` interview (`.claude/skills/onboard/`):
-two questions — who you are, a first venture if you have one — and it
-rewrites the
-fictional files with your answers, commits them, and hands into
-`/new-venture` if you named a venture. After that: open a new shell,
-`hq mentor`.
+`bin/setup` (mechanical, idempotent, re-run any time) checks
+prerequisites (Node for the designer's browser tooling, tmux or iTerm),
+creates `~/code/business/ventures`, creates the private files from
+`templates/` (empty — the mentor fills them in as it learns), writes
+`team.conf`, symlinks `skills/` into `~/.claude/skills/`, and adds the
+`hq`/`team` aliases. Then your first mentor session opens. There is no
+interview: the mentor knows nothing about you yet and learns as you
+talk; `hq new <name>` when you have a venture. `example/` shows what the
+private files look like once filled in.
 
 Your clone is your private hq: point `origin` at a private remote of your
 own and commit your journal there. Template updates come in with
@@ -81,8 +78,8 @@ the per-venture doc that binds the designer there.
   lives in `.claude/skills/new-venture/`.
 - **`hq new --bare <name> ["thesis"]`** — skip the interview; scaffold
   the default analyst + builder shape mechanically (`bin/newventure`).
-- **`hq onboard`** — first run on a fresh clone: `setup`, then the
-  `/onboard` interview (see Install).
+- **`hq onboard`** — first run on a fresh clone: `setup`, then your
+  first mentor session (see Install).
 - **`hq setup`** — the mechanical half alone; idempotent, re-run after
   pulling template updates that add skills.
 - **`hq publish`** — mirror the shareable files into the public template
@@ -94,15 +91,16 @@ the per-venture doc that binds the designer there.
 
 - `CLAUDE.md` — the mentor's charter. Generic; it imports `founder.md`.
 - `founder.md` — who the founder is, plus any goals they've put on
-  record (optional; the mentor records them when told). Private (seeded
-  from `example/founder.md` by `setup`).
+  record (optional; the mentor records them when told). Private; starts
+  empty.
 - `ventures.md` — portfolio registry, one section per venture.
 - `ideas.md` — parking lot; ideas enter with a recorded challenge.
 - `journal.md` — mentor's dated decision log.
-- `example/` — fictional `founder.md`, `ventures.md`, `ideas.md`,
-  `journal.md`: what the private files look like when filled in. `setup`
-  copies them into place when the real ones don't exist. Fiction on
-  purpose — never a scrubbed copy of real files.
+- `templates/` — the empty private files `setup` creates on a fresh
+  clone (headers and format only).
+- `example/` — fictional, filled-in `founder.md`, `ventures.md`,
+  `ideas.md`, `journal.md`: reference for the shape, never copied into
+  place. Fiction on purpose — never a scrubbed copy of real files.
 - `team.conf` — session roster (name|dir|first-launch flags|every-launch
   flags), hand-editable. The optional 4th field is repeated on resume —
   the designer's `--plugin-dir` lives there, since a bare
@@ -126,7 +124,6 @@ the per-venture doc that binds the designer there.
   Several adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT).
 - `.claude/skills/new-venture/` — the `hq new` intake interview
   (hq-only, so it stays project-level).
-- `.claude/skills/onboard/` — the `hq onboard` first-run interview.
 - `.team-state/` — first-launch markers (gitignored). Delete a marker to
   force `hq team` to create that session fresh instead of resuming.
 
