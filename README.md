@@ -276,8 +276,9 @@ files because those don't exist upstream.
   for founder-gated setup steps); `/diagnosing-bugs` (tight-loop
   discipline); `/retro` (agent-environment retrospective, user-invoked);
   `/wait-what` (re-pitch in plain language, user-invoked);
-  `/code-review` (two-axis diff review — standards + spec — on parallel
-  sub-agents; in builder sessions it is the pre-deploy audit, run on
+  `/spec-review` (two-axis diff review — standards + spec — on parallel
+  sub-agents; complements the bundled `/code-review` bug hunt; in
+  builder sessions the two together are the pre-deploy audit, run on
   Fable);
   `writing-for-agents` (style guide for steering files and skills).
   Several adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT).

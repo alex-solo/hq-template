@@ -1,19 +1,25 @@
 ---
-name: code-review
-description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\". In builder sessions this is the charter's pre-deploy phase audit — invoke it before deploying any phase that changes user-facing behavior."
+name: spec-review
+description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Complements the bundled /code-review (bug hunt); this one checks fidelity. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\". In builder sessions this is half of the charter's pre-deploy phase audit — invoke it before deploying any phase that changes user-facing behavior."
 ---
 
-> Adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT),
-> `c55ee46` 2026-09-18. Changed from upstream: spec discovery uses this
-> system's spec docs instead of an issue tracker (step 2).
+> Adapted from [mattpocock/skills](https://github.com/mattpocock/skills)
+> `code-review` (MIT), `c55ee46` 2026-09-18. Renamed `spec-review` so it
+> doesn't shadow Claude Code's bundled `/code-review`, which is a
+> different tool (bug hunt with verification, `--fix`, ultra); this one
+> checks fidelity to standards and spec. Changed from upstream: spec
+> discovery uses this system's spec docs instead of an issue tracker
+> (step 2).
 >
-> House note — **builder sessions**: this skill implements the charter's
-> **pre-deploy phase audit**. Before deploying a phase or milestone that
-> changes user-facing behavior, run it with the fixed point = the last
-> deployed commit, and run **both sub-agents on Fable** (`model: fable`
-> on the Agent tool) — the audit is one of the two places the charter
-> spends the top model; running it at your own tier defeats the point.
-> Findings are fixed before deploy, and the audit is noted in `TEAM.md`.
+> House note — **builder sessions**: the charter's **pre-deploy phase
+> audit** is this skill plus the bundled `/code-review`. Before deploying
+> a phase or milestone that changes user-facing behavior: run
+> `/spec-review` with the fixed point = the last deployed commit and
+> **both sub-agents on Fable** (`model: fable` on the Agent tool), then
+> `/code-review high` for correctness. The audit is one of the two
+> places the charter spends the top model; running it at your own tier
+> defeats the point. Findings are fixed before deploy, and the audit is
+> noted in `TEAM.md`.
 
 Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
