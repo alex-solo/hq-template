@@ -6,18 +6,26 @@ commands, or start the mentor session and just ask — it reads this repo.
 
 ## Install (new machine, or a friend's)
 
+Prerequisite: [Claude Code](https://code.claude.com) — the whole system
+is built on it (named sessions, agent charters, skills, permission
+rules), so there is no ChatGPT or provider-neutral path.
+
 ```
-git clone <template-url> ~/code/business/hq && ~/code/business/hq/bin/setup
+git clone <template-url> ~/code/business/hq && ~/code/business/hq/hq onboard
 ```
 
-`setup` is idempotent: it checks prerequisites (Claude Code, Node for the
-designer's browser tooling, tmux or iTerm), creates `~/code/business/ventures`,
-seeds the private files from `example/` (a *fictional* founder, venture,
-idea, and journal — the system works on first launch, and the mentor's
-first job is replacing the fiction with you), writes `team.conf` and
-`.claude/settings.local.json`, symlinks `skills/` into `~/.claude/skills/`,
-and adds the `hq`/`team` aliases. Then: edit `founder.md`, deny your
-day-job trees in `settings.local.json`, open a new shell, `hq mentor`.
+Two things happen. `bin/setup` (mechanical, idempotent, re-run any time)
+checks prerequisites (Node for the designer's browser tooling, tmux or
+iTerm), creates `~/code/business/ventures`, seeds the private files from
+`example/` (a *fictional* founder, venture, idea, and journal), writes
+`team.conf` and `.claude/settings.local.json`, symlinks `skills/` into
+`~/.claude/skills/`, and adds the `hq`/`team` aliases. Then a Claude
+session opens with the `/onboard` interview (`.claude/skills/onboard/`):
+four questions — who you are, the goal, which directories the mentor must
+never read, a first venture if you have one — and it rewrites the
+fictional files with your answers, commits them, and hands into
+`/new-venture` if you named a venture. After that: open a new shell,
+`hq mentor`.
 
 Your clone is your private hq: point `origin` at a private remote of your
 own and commit your journal there. Template updates come in with
@@ -73,7 +81,10 @@ the per-venture doc that binds the designer there.
   lives in `.claude/skills/new-venture/`.
 - **`hq new --bare <name> ["thesis"]`** — skip the interview; scaffold
   the default analyst + builder shape mechanically (`bin/newventure`).
-- **`hq setup`** — make this clone work on this machine (see Install).
+- **`hq onboard`** — first run on a fresh clone: `setup`, then the
+  `/onboard` interview (see Install).
+- **`hq setup`** — the mechanical half alone; idempotent, re-run after
+  pulling template updates that add skills.
 - **`hq publish`** — mirror the shareable files into the public template
   repo (see Publishing). `hq publish --check` runs the leak test only.
 
@@ -116,6 +127,7 @@ the per-venture doc that binds the designer there.
   Several adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT).
 - `.claude/skills/new-venture/` — the `hq new` intake interview
   (hq-only, so it stays project-level).
+- `.claude/skills/onboard/` — the `hq onboard` first-run interview.
 - `.team-state/` — first-launch markers (gitignored). Delete a marker to
   force `hq team` to create that session fresh instead of resuming.
 
