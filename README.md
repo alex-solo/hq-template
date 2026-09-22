@@ -11,7 +11,7 @@ is built on it (named sessions, agent charters, skills, permission
 rules), so there is no ChatGPT or provider-neutral path.
 
 ```
-git clone <template-url> ~/code/business/hq && ~/code/business/hq/hq onboard
+git clone https://github.com/alex-solo/hq-template ~/code/business/hq && ~/code/business/hq/hq onboard
 ```
 
 `bin/setup` (mechanical, idempotent, re-run any time) checks
