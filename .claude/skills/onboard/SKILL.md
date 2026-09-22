@@ -14,19 +14,14 @@ this is not a fresh clone — say so and get explicit confirmation before
 the interview, since step 2 overwrites the private files. Speak plainly; this is the founder's first contact with
 the system and its tone is set here: direct, no hype.
 
-## 1. Interview — one question at a time, three questions total
+## 1. Interview — one question at a time, two questions total
 
 Ask these in order, one per message. Wait for each answer. Propose a
 default where one exists so a short answer ("yes", "fine") is enough.
 
 1. **Who are you?** First name, where you're based, what you do by day,
    how much time per week goes to side businesses. One or two sentences.
-2. **What are you building toward?** In their own words, whatever the
-   mentor should hold every decision against — a financial target, a
-   launch, independence, learning a domain, a lifestyle. Don't steer it
-   toward money; take what they say. Push once only if it's empty
-   ("build stuff" → "and what would tell you it's working?").
-3. **Do you have a first venture in mind?** Yes → get its one-line
+2. **Do you have a first venture in mind?** Yes → get its one-line
    thesis and a short directory name; you'll start `/new-venture` at
    the end. No → fine; the mentor session and `ideas.md` are where
    ideas go first, and that's the recommended order anyway.
@@ -36,14 +31,16 @@ default where one exists so a short answer ("yes", "fine") is enough.
 Write, in this order, then show the founder what changed:
 
 - **`founder.md`** — overwrite the example with the real founder,
-  keeping the example's two sections (who; what they're building toward,
-  as a dated statement in their own words). Date it today.
+  keeping the example's shape: who they are, then "Goals on record:
+  none yet" with the sentence explaining the mentor records goals when
+  the founder states them. Don't ask for goals here — that conversation
+  belongs to the mentor, if and when the founder wants it.
 - **`ventures.md`, `ideas.md`, `journal.md`** — strip the fictional
   entries, keep each file's header and format block. Then append the
   first real journal entry:
   ```
   ## <today> — setup
-  - Decided: HQ created. Goal recorded in founder.md (<one-line restatement>).
+  - Decided: HQ created.
   - In flight: <first venture via hq new | nothing — mentor first>.
   - Watch for: first mentor session sets kill criteria before any code.
   ```
@@ -58,8 +55,8 @@ Write, in this order, then show the founder what changed:
 ## 3. Close
 
 Tell the founder, in a few lines: what was written, that `hq mentor`
-opens their advisor (which reads founder.md on every launch), and that
-the mentor's first move will be to challenge the goal — that is its
-job, not a malfunction. If question 3 produced a venture, say you're
+opens their advisor — the session that knows every project — and that
+its default stance is to challenge, not agree; that is its job, not a
+malfunction. If question 2 produced a venture, say you're
 starting the venture intake now and invoke `/new-venture <dir-name>`
 in this same session. Otherwise end here.

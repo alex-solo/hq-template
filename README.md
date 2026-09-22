@@ -21,8 +21,8 @@ iTerm), creates `~/code/business/ventures`, seeds the private files from
 `team.conf`, symlinks `skills/` into
 `~/.claude/skills/`, and adds the `hq`/`team` aliases. Then a Claude
 session opens with the `/onboard` interview (`.claude/skills/onboard/`):
-three questions — who you are, what you're building toward, a first
-venture if you have one — and it rewrites the
+two questions — who you are, a first venture if you have one — and it
+rewrites the
 fictional files with your answers, commits them, and hands into
 `/new-venture` if you named a venture. After that: open a new shell,
 `hq mentor`.
@@ -36,7 +36,7 @@ because those don't exist upstream.
 
 | Session   | Where                  | Role |
 |-----------|------------------------|------|
-| `mentor`  | `~/code/business/hq`                 | Portfolio advisor. Knows the founder and the goal (founder.md), challenges ideas, reads venture repos read-only. |
+| `mentor`  | `~/code/business/hq`                 | Business advisor with context on every project. Knows the founder (founder.md), challenges ideas, reads venture repos read-only. |
 | `designer` | `~/code/business/ventures` (charter in `hq/designer/`) | Portfolio designer. Serves every venture: design systems, screen specs, prototypes, design QA in a real browser. Production code stays with builders. |
 | `<venture>-analyst` | `~/code/business/ventures/<venture>` | Product analyst for that venture. Specs and decisions only, never code. |
 | `<venture>-builder` | `~/code/business/ventures/<venture>` | Coding session for that venture. Implements specs, tests, commits. |
@@ -93,9 +93,9 @@ the per-venture doc that binds the designer there.
 ## Files here
 
 - `CLAUDE.md` — the mentor's charter. Generic; it imports `founder.md`.
-- `founder.md` — who the founder is and what they're building toward;
-  the mentor holds every decision against it. Private (seeded from
-  `example/founder.md` by `setup`).
+- `founder.md` — who the founder is, plus any goals they've put on
+  record (optional; the mentor records them when told). Private (seeded
+  from `example/founder.md` by `setup`).
 - `ventures.md` — portfolio registry, one section per venture.
 - `ideas.md` — parking lot; ideas enter with a recorded challenge.
 - `journal.md` — mentor's dated decision log.

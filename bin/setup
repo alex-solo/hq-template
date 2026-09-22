@@ -89,6 +89,6 @@ cat <<EOF
 
 done. next:
   1. edit founder.md — it is fictional until you replace it
-  2. open a new shell, run 'hq mentor', tell it what you're building toward
+  2. open a new shell, run 'hq mentor' — it knows every project; tell it your goals if you have them
   3. 'hq new <name>' for your first venture
 EOF

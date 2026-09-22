@@ -7,8 +7,7 @@
 Dated log of significant discussions and decisions. Newest at the bottom.
 
 ## 2026-01-10 — setup
-- Decided: HQ created; goal recorded in founder.md (€6k/month after tax,
-  day job stays). First venture ferry-watch registered.
+- Decided: HQ created. First venture ferry-watch registered.
 - In flight: nothing.
 - Watch for: first mentor session should set ferry-watch's kill criteria
   before any more code is written.
