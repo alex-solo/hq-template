@@ -7,8 +7,7 @@
 #   2. creates ~/code/business/ventures
 #   3. seeds the private files (founder.md, ventures.md, ideas.md,
 #      journal.md) from example/ if they don't exist yet
-#   4. writes team.conf (mentor + designer) and .claude/settings.local.json
-#      if they don't exist yet
+#   4. writes team.conf (mentor + designer) if it doesn't exist yet
 #   5. symlinks skills/* into ~/.claude/skills/
 #   6. adds the `hq` and `team` aliases to your shell rc
 #
@@ -64,20 +63,6 @@ EOF
   made "team.conf (mentor + designer; hq new adds ventures)"
 fi
 
-if [ -e "$HQ/.claude/settings.local.json" ]; then ok ".claude/settings.local.json"
-else
-  cat > "$HQ/.claude/settings.local.json" <<'EOF'
-{
-  "permissions": {
-    "deny": [
-      "Read(~/code/some-day-job-dir/**)"
-    ]
-  }
-}
-EOF
-  made ".claude/settings.local.json (edit the deny list: trees the mentor must never read)"
-fi
-
 echo "skills → ~/.claude/skills"
 mkdir -p "$HOME/.claude/skills"
 for d in "$HQ"/skills/*/; do
@@ -104,7 +89,6 @@ cat <<EOF
 
 done. next:
   1. edit founder.md — it is fictional until you replace it
-  2. edit .claude/settings.local.json — deny the trees the mentor must never read
-  3. open a new shell, run 'hq mentor', tell it your goal
-  4. 'hq new <name>' for your first venture
+  2. open a new shell, run 'hq mentor', tell it what you're building toward
+  3. 'hq new <name>' for your first venture
 EOF

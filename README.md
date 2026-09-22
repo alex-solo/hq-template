@@ -18,11 +18,11 @@ Two things happen. `bin/setup` (mechanical, idempotent, re-run any time)
 checks prerequisites (Node for the designer's browser tooling, tmux or
 iTerm), creates `~/code/business/ventures`, seeds the private files from
 `example/` (a *fictional* founder, venture, idea, and journal), writes
-`team.conf` and `.claude/settings.local.json`, symlinks `skills/` into
+`team.conf`, symlinks `skills/` into
 `~/.claude/skills/`, and adds the `hq`/`team` aliases. Then a Claude
 session opens with the `/onboard` interview (`.claude/skills/onboard/`):
-four questions — who you are, the goal, which directories the mentor must
-never read, a first venture if you have one — and it rewrites the
+three questions — who you are, what you're building toward, a first
+venture if you have one — and it rewrites the
 fictional files with your answers, commits them, and hands into
 `/new-venture` if you named a venture. After that: open a new shell,
 `hq mentor`.
@@ -93,8 +93,9 @@ the per-venture doc that binds the designer there.
 ## Files here
 
 - `CLAUDE.md` — the mentor's charter. Generic; it imports `founder.md`.
-- `founder.md` — who the founder is and the goal the mentor serves.
-  Private (seeded from `example/founder.md` by `setup`).
+- `founder.md` — who the founder is and what they're building toward;
+  the mentor holds every decision against it. Private (seeded from
+  `example/founder.md` by `setup`).
 - `ventures.md` — portfolio registry, one section per venture.
 - `ideas.md` — parking lot; ideas enter with a recorded challenge.
 - `journal.md` — mentor's dated decision log.
@@ -102,8 +103,6 @@ the per-venture doc that binds the designer there.
   `journal.md`: what the private files look like when filled in. `setup`
   copies them into place when the real ones don't exist. Fiction on
   purpose — never a scrubbed copy of real files.
-- `.claude/settings.local.json` — per-machine permission rules, mainly
-  hard denies for trees the mentor must never read. Gitignored.
 - `team.conf` — session roster (name|dir|first-launch flags|every-launch
   flags), hand-editable. The optional 4th field is repeated on resume —
   the designer's `--plugin-dir` lives there, since a bare
@@ -165,8 +164,7 @@ looked redundant. Append when changing structure.
 - 2026-08-18 — `hq/.claude/settings.json` denies Edit/Write under
   `ventures/` so the mentor (and any ad-hoc hq session) is read-only
   there; venture changes flow through the analyst/builder sessions.
-  (2026-09-22: paths use `~/` so the file is machine-independent; the
-  day-job deny moved to the gitignored `settings.local.json`.)
+  (2026-09-22: paths use `~/` so the file is machine-independent.)
 - 2026-08-18 — `ideas.md` is the idea pipeline AND the graveyard (rejected
   entries stay with reasons). Split into one-file-per-idea only if it
   outgrows a single file (~6+ live entries).
