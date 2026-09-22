@@ -1,0 +1,176 @@
+#!/bin/bash
+# team <venture> — launch (or resume) one venture's agent team.
+#
+#   team <venture>   that venture's sessions (directory name under
+#                    ventures/). The mentor is NOT included — it sits
+#                    above the teams and is launched via `hq mentor`.
+#   team mentor      the mentor alone (what `hq mentor` calls)
+#   team designer    the portfolio designer alone (what `hq designer`
+#                    calls) — HQ-level like the mentor, never bundled
+#                    into a venture launch
+#   team all         the entire roster — every venture's agents at once.
+#                    Explicit keyword on purpose: with many ventures this
+#                    is a lot of sessions, so it must never fire by accident.
+#   team             no launch — prints usage and the known ventures
+#
+# Roster: ~/code/business/hq/team.conf (name|directory|first-launch
+# flags|every-launch flags); `hq new` appends entries. Every-launch flags
+# (optional 4th field) are repeated on resume — for things a resumed
+# session would otherwise lose, like the designer's --plugin-dir. First run creates each named session
+# under a fixed uuid (stored in .team-state/<name>); later runs resume
+# that uuid exactly where it left off. Uses tmux when
+# installed (one window per agent, survives closing the terminal);
+# otherwise opens one iTerm window with a tab per agent. Re-running is
+# safe in both modes: agents already running are detected (by session
+# name in the process table) and skipped, never duplicated.
+
+set -u
+
+CONF="$HOME/code/business/hq/team.conf"
+STATE_DIR="$HOME/code/business/hq/.team-state"
+mkdir -p "$STATE_DIR"
+
+FILTER="${1:-}"
+
+# HQ-level sessions: launched by their own name, never as part of a venture.
+HQ_LEVEL="mentor designer"
+is_hq_level() { case " $HQ_LEVEL " in *" $1 "*) return 0 ;; esac; return 1; }
+
+list_ventures() {
+  grep -v '^\s*#' "$CONF" | grep -v '^\s*$' | while IFS='|' read -r name dir _; do
+    is_hq_level "$name" || basename "$dir"
+  done | sort -u
+}
+
+if [ -z "$FILTER" ]; then
+  echo "usage: team <venture> | team mentor | team designer | team all" >&2
+  echo "known ventures:" >&2
+  list_ventures | sed 's/^/  /' >&2
+  exit 1
+fi
+
+# Each agent gets a fixed session UUID, minted here on first launch and
+# stored in its state file. Resuming by UUID is deterministic; resuming
+# by display name is not (`claude --resume <name>` opens an interactive
+# picker when the name matches nothing — e.g. a first-launch tab that
+# was closed before the session persisted — stranding the tab).
+uuid_for() { # name -> that agent's session uuid, minting one if needed
+  local sf="$STATE_DIR/$1"
+  if [ -s "$sf" ]; then
+    cat "$sf"
+  else
+    uuidgen | tr 'A-Z' 'a-z' | tee "$sf"
+  fi
+}
+
+session_exists() { # dir uuid -> 0 if the session persisted on disk
+  # claude stores sessions per project dir; /, . and _ munge to -.
+  [ -f "$HOME/.claude/projects/$(echo "$1" | sed 's|[/._]|-|g')/$2.jsonl" ]
+}
+
+cmd_for() { # name dir flags always -> the claude command to run
+  local name="$1" dir="$2" flags="$3" always="${4:+$4 }" uuid
+  uuid=$(uuid_for "$name")
+  if session_exists "$dir" "$uuid"; then
+    echo "claude ${always}--resume $uuid"
+  else
+    # A closed-before-first-message session leaves no file, so the same
+    # uuid is simply created again. The resume fallback only matters if
+    # claude's on-disk layout changes and session_exists misses a live
+    # session — then --session-id would refuse the duplicate.
+    echo "claude ${always}$flags --session-id $uuid -n $name || claude ${always}--resume $uuid"
+  fi
+}
+
+roster() {
+  grep -v '^\s*#' "$CONF" | grep -v '^\s*$' | while IFS='|' read -r name dir flags always; do
+    if [ "$FILTER" = all ]; then
+      :
+    elif is_hq_level "$FILTER"; then
+      [ "$name" = "$FILTER" ] || continue
+    else
+      is_hq_level "$name" && continue
+      [ "$(basename "$dir")" = "$FILTER" ] || continue
+    fi
+    printf '%s|%s|%s|%s\n' "$name" "$dir" "$flags" "$always"
+  done
+}
+
+MATCHES=$(roster)
+if [ "$(printf '%s\n' "$MATCHES" | grep -c '|')" -lt 1 ]; then
+  echo "team: no roster entries match venture '$FILTER'" >&2
+  echo "known ventures:" >&2
+  list_ventures | sed 's/^/  /' >&2
+  exit 1
+fi
+
+if command -v tmux >/dev/null 2>&1; then
+  if tmux has-session -t team 2>/dev/null; then
+    exec tmux attach -t team
+  fi
+  first=1
+  while IFS='|' read -r name dir flags always; do
+    cmd=$(cmd_for "$name" "$dir" "$flags" "$always")
+    if [ "$first" = 1 ]; then
+      tmux new-session -d -s team -n "$name" -c "$dir"
+      first=0
+    else
+      tmux new-window -t team -n "$name" -c "$dir"
+    fi
+    tmux send-keys -t "team:$name" "$cmd" C-m
+  done <<<"$MATCHES"
+  exec tmux attach -t team
+else
+  # One iTerm window, one tab per agent. The whole launch is a single
+  # AppleScript so every tab lands in the same window we created.
+  # Agents whose claude process is already running are skipped, so
+  # re-running can't duplicate the team — it only relaunches whoever is
+  # missing. A running agent shows up in the process table either as a
+  # first launch (-n <name>) or a resume of that agent's uuid.
+  already_running() { # name
+    pgrep -f "claude( .*)? -n $1\$" >/dev/null 2>&1 && return 0
+    [ -s "$STATE_DIR/$1" ] && pgrep -f "claude( .*)? --resume $(cat "$STATE_DIR/$1")\$" >/dev/null 2>&1
+  }
+  script='tell application "iTerm"
+    activate
+    set newWindow to (create window with default profile)'
+  first=1
+  count=0
+  skipped=0
+  while IFS='|' read -r name dir flags always; do
+    if already_running "$name"; then
+      echo "team: '$name' is already running — skipping."
+      skipped=$((skipped + 1))
+      continue
+    fi
+    cmd=$(cmd_for "$name" "$dir" "$flags" "$always")
+    if [ "$first" = 1 ]; then
+      script="$script
+      tell current session of newWindow
+        set name to \"${name}\"
+        write text \"cd ${dir} && ${cmd}\"
+      end tell"
+      first=0
+    else
+      script="$script
+      tell newWindow
+        set newTab to (create tab with default profile)
+        tell current session of newTab
+          set name to \"${name}\"
+          write text \"cd ${dir} && ${cmd}\"
+        end tell
+      end tell"
+    fi
+    count=$((count + 1))
+  done <<<"$MATCHES"
+  if [ "$count" -eq 0 ]; then
+    echo "team: all $skipped agents already running — nothing to open."
+    exit 0
+  fi
+  script="$script
+  end tell"
+  osascript -e "$script" >/dev/null
+  echo "team: opened $count iTerm tabs in one window."
+  echo "tip: 'brew install tmux' upgrades this to tabs that survive"
+  echo "     closing the terminal."
+fi

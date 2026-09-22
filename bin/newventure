@@ -1,0 +1,238 @@
+#!/bin/bash
+# newventure <dir-name> ["one-line thesis"] — scaffold a new venture with
+# its own analyst + builder team, wired into `team` and the mentor's books.
+#
+# Creates ~/code/business/ventures/<name> with: CLAUDE.md skeleton (incl. team protocol),
+# TEAM.md journal, design-constitution.md stub (binds the portfolio
+# designer), analyst + builder agent definitions, .gitignore,
+# SessionStart hook; git-inits and commits it; registers <name>-analyst
+# and <name>-builder in ~/code/business/hq/team.conf; stubs the venture in ventures.md.
+#
+# Session names are prefixed (<name>-analyst) so they never collide with
+# other projects' sessions in cross-session messaging.
+
+set -euo pipefail
+
+NAME="${1:?usage: newventure <dir-name> [\"one-line thesis\"]}"
+DESC="${2:-<one-line thesis — fill in>}"
+DIR="$HOME/code/business/ventures/$NAME"
+HQ="$HOME/code/business/hq"
+
+[ -e "$DIR" ] && { echo "error: $DIR already exists" >&2; exit 1; }
+
+mkdir -p "$DIR/.claude/agents"
+
+cat > "$DIR/CLAUDE.md" <<EOF
+# CLAUDE.md
+
+## Project
+
+$NAME: $DESC
+
+## Source of truth
+
+<!-- Specs win over anything else, including this file. List them here as
+     they come to exist. Living-document rules: every change set = version
+     bump + changelog entry; decisions integrate into the document body. -->
+
+## Team protocol (parallel named sessions)
+
+This repo is worked by named parallel sessions (launch/resume the pair
+with \`hq team $NAME\`; see \`~/code/business/hq/README.md\`):
+
+- **$NAME-builder** — \`.claude/agents/builder.md\`. Writes code, runs
+  tests, commits and pushes the implementation.
+- **$NAME-analyst** — \`.claude/agents/analyst.md\`. Product discussions
+  and spec edits only; never modifies code. Shell is doc-scoped: commits
+  its own doc edits, read-only otherwise.
+- **mentor** — portfolio-level advisor living in \`~/code/business/hq\`; not part
+  of this team — launched separately via \`hq mentor\`. Reads this repo's
+  specs, TEAM.md, and git log for ground truth.
+- **designer** — portfolio-level designer serving every venture; not part
+  of this team — launched separately via \`hq designer\`. Bound here by
+  \`design-constitution.md\`; briefs come from the analyst, production
+  code stays with the builder.
+
+Rules for every session here:
+
+- \`TEAM.md\` is the shared journal; its tail is auto-injected at session
+  start. Before ending a work block, run \`/handoff\` to append a
+  role-tagged entry.
+- Cross-session handoffs go by message to the session's name when it's
+  running; the TEAM.md entry is the durable fallback either way.
+- Specs are the source of truth; TEAM.md carries work-in-flight and
+  cross-role state only, and gets pruned once absorbed.
+- Identity changes (renames/moves/reversed semantics): run /xref before
+  committing. The skill defines its own scope.
+
+## Conventions
+
+<!-- Stack, code style, test policy, git workflow — decide and record. -->
+
+- **Research before adopting** (portfolio directive): never write a
+  load-bearing dependency or claim into the spec from memory/priors —
+  verify against current primary sources and follow every claim back to
+  the source that owns it. Record the verdict in a research memo.
+EOF
+
+cat > "$DIR/TEAM.md" <<EOF
+# TEAM.md — session journal
+
+Shared journal for the named sessions working this repo
+(**$NAME-analyst**, **$NAME-builder**; portfolio **mentor** lives in
+\`~/code/business/hq\`). Every session reads this on start (tail auto-injected via hook)
+and appends an entry before ending a work block (\`/handoff\`).
+
+Entry format — newest at the bottom:
+
+\`\`\`
+## YYYY-MM-DD — role
+- Did/decided: …
+- In flight: …
+- Other roles should know: …
+\`\`\`
+
+The journal is working state, not an archive. The builder may prune entries
+older than ~2 weeks once their content lives in specs, commits, or memory.
+
+---
+
+## $(date +%F) — builder
+- Did/decided: venture scaffolded via newventure.
+- In flight: nothing.
+- Other roles should know: nothing.
+EOF
+
+cat > "$DIR/design-constitution.md" <<EOF
+# Design constitution — $NAME
+
+**Status:** STUB v0.0 — nothing here is decided yet. The portfolio
+\`designer\` session (\`hq designer\`) reads this file first when working
+in this repo and treats it as binding; while it is a stub, the designer's
+first job is to fill it in with the founder, not to draw screens.
+Living-document rules apply: every change set = version bump + changelog
+entry.
+
+## 1. Principles (owner: analyst + founder)
+
+<!-- What this venture's design must always / never do. Voice, honesty
+     rules, what the audience distrusts. Link the governing docs if they
+     live elsewhere (e.g. a marketing-principles doc, spec sections). -->
+
+## 2. Design system (owner: designer; founder signs off tokens)
+
+<!-- Tokens before pixels: color (4–6 named hex values), type (families,
+     roles, scale), spacing, radius, motion, copy voice. Screens inherit
+     from here; the builder treats this section as source of truth. -->
+
+## 3. Screen specs & review notes
+
+<!-- Index of the designer's deliverables in this repo (screen specs,
+     prototypes, post-implementation design-QA notes). -->
+
+## Changelog
+
+- v0.0 ($(date +%F)) — stub created by newventure.
+EOF
+
+cat > "$DIR/.claude/agents/analyst.md" <<EOF
+---
+name: analyst
+description: Product analyst for $NAME — feature discussions, spec decisions, research passes. Thinks and writes specs; never touches code.
+tools: Read, Grep, Glob, WebSearch, WebFetch, Edit, Write, Bash, SendMessage, ListAgents
+memory: project
+---
+
+You are the product analyst for $NAME. Your conversation partner is the
+founder; your job is to help him think, then turn his decisions into spec
+edits and hand implementation to the builder.
+
+- **Discuss, challenge, decide, record.** Discussion → founder decides →
+  batch into the spec docs with a version bump and changelog entry. You
+  write markdown documents only.
+- **You never modify code.** You may read any code to ground a feasibility
+  judgment, but changes flow through the builder. Your shell is for the
+  document workflow only: committing and pushing your own doc edits, and
+  read-only investigation. Never build, run, test, or modify the app —
+  that is the builder's shell.
+- **Hand off explicitly.** On founder approval: (1) batch the decision
+  into the spec, (2) append a role-tagged \`TEAM.md\` entry, (3) message
+  the \`$NAME-builder\` session with a concise brief citing the spec
+  section. If that session isn't running, the TEAM.md entry is the handoff.
+- **Be the challenge.** Push back with reasoning before recording a
+  decision. Never re-propose ideas the specs record as rejected.
+- One concrete question at a time — never question lists.
+- Product scope only: portfolio strategy belongs to the mentor (~/code/business/hq);
+  deep code questions belong to the builder.
+EOF
+
+cat > "$DIR/.claude/agents/builder.md" <<EOF
+---
+name: builder
+description: Builder for $NAME — implements the specs, tests everything, commits. The default coding role.
+memory: project
+---
+
+You are the builder for $NAME. CLAUDE.md and the spec docs carry the
+project rules and bind you fully; this file makes the role explicit.
+
+- Pick up handoffs: briefs arrive as messages from \`$NAME-analyst\` or as
+  \`TEAM.md\` entries. The cited spec section is the authoritative
+  requirement — read it, don't work from the summary.
+- The analyst commits its own doc edits (doc-scoped shell); only sweep up
+  doc changes it left uncommitted when they would otherwise tangle with
+  your commit.
+- Push back through the analyst, not around it: if a spec decision proves
+  wrong during implementation, message \`$NAME-analyst\` (or record it in
+  TEAM.md) rather than silently deviating.
+- Run \`/handoff\` before ending a work block.
+EOF
+
+printf '# .claude/ is ignored globally but here it IS team infrastructure
+!.claude/
+' > "$DIR/.gitignore"
+
+cat > "$DIR/.claude/settings.json" <<'EOF'
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "tail -n 40 TEAM.md 2>/dev/null || true",
+            "statusMessage": "Loading team journal"
+          }
+        ]
+      }
+    ]
+  }
+}
+EOF
+
+git -C "$DIR" init -qb main
+git -C "$DIR" add -A
+git -C "$DIR" commit -qm "chore: venture scaffold — team protocol, agents, journal, handoff"
+
+cat >> "$HQ/team.conf" <<EOF
+$NAME-analyst|$DIR|--agent analyst
+$NAME-builder|$DIR|--agent builder
+EOF
+
+cat >> "$HQ/ventures.md" <<EOF
+
+## $NAME (\`~/code/business/ventures/$NAME\`)
+
+- **Thesis:** $DESC
+- **Stage ($(date +%F)):** scaffolded, pre-spec.
+- **Kill criteria:** not yet set — mentor sets them with the founder
+  before any code is written.
+- **Mentor's current read:** not yet assessed — challenge the thesis
+  before any code is written (assumptions, validation cost, fit with the
+  portfolio goal).
+EOF
+
+echo "Scaffolded $DIR"
+echo "Registered sessions: $NAME-analyst, $NAME-builder (in team.conf)"
+echo "Next: run 'team' — the new panes launch alongside the rest."
+echo "First move: talk the idea through with the mentor, then spec it with $NAME-analyst."

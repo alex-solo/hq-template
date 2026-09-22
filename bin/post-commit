@@ -1,0 +1,5 @@
+#!/bin/bash
+# post-commit hook for hq: mirror the shareable files into the template.
+# Installed by hand (hooks aren't versioned): ln -s ../../bin/post-commit .git/hooks/post-commit
+# Never fails the commit — publish's own refusal/offline messages are enough.
+"$HOME/code/business/hq/bin/publish" || true

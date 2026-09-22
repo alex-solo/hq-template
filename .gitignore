@@ -1,0 +1,6 @@
+.team-state/
+.claude/settings.local.json
+CLAUDE.local.md
+
+# .claude/ is ignored globally but here it IS the product
+!.claude/

@@ -1,0 +1,5 @@
+{
+  "name": "designer",
+  "description": "Portfolio designer agent: charter, design skills, browser tooling. Loaded only by `hq designer`.",
+  "version": "0.1.0"
+}

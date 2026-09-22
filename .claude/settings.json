@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "~/code/business/ventures"
+    ],
+    "allow": [
+      "Read(~/code/business/ventures/**)",
+      "Grep",
+      "Glob",
+      "Bash(git -C ~/code/business/ventures/* log*)",
+      "Bash(git -C ~/code/business/ventures/* status*)",
+      "Bash(git -C ~/code/business/ventures/* diff*)"
+    ],
+    "deny": [
+      "Edit(~/code/business/ventures/**)",
+      "Write(~/code/business/ventures/**)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "tail -n 30 journal.md 2>/dev/null || true",
+            "statusMessage": "Loading journal"
+          }
+        ]
+      }
+    ]
+  }
+}

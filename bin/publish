@@ -1,0 +1,89 @@
+#!/bin/bash
+# publish — mirror the shareable part of hq into the public template repo.
+#
+# Copies an explicit ALLOWLIST (below) into $TEMPLATE, refuses if any
+# token from the private denylist (.publish-deny, one per line) appears
+# in the result, then commits there with hq's latest commit message and
+# pushes. Runs from hq's post-commit hook (see README → Publishing), or
+# by hand as `hq publish`. Nothing outside the allowlist ever leaves.
+#
+#   publish            mirror + commit + push (push failure is non-fatal)
+#   publish --check    mirror into a temp dir and run the leak check only
+
+set -euo pipefail
+
+HQ="$HOME/code/business/hq"
+TEMPLATE="${HQ_TEMPLATE:-$HOME/code/business/hq-template}"
+DENY="$HQ/.publish-deny"
+
+# Everything a stranger needs to run their own hq. Directories are
+# mirrored with --delete so removals propagate; files are copied as-is.
+ALLOWLIST=(
+  hq
+  bin/
+  skills/
+  designer/
+  example/
+  .claude/skills/
+  .claude/settings.json
+  CLAUDE.md
+  README.md
+  .gitignore
+)
+
+CHECK_ONLY=0
+[ "${1:-}" = "--check" ] && CHECK_ONLY=1
+
+if [ "$CHECK_ONLY" = 1 ]; then
+  DEST=$(mktemp -d)
+  trap 'rm -rf "$DEST"' EXIT
+else
+  DEST="$TEMPLATE"
+  if [ ! -d "$DEST/.git" ]; then
+    echo "publish: $DEST is not a git checkout — clone the template there first" >&2
+    exit 1
+  fi
+fi
+
+for item in "${ALLOWLIST[@]}"; do
+  case "$item" in
+    */) mkdir -p "$DEST/$item"
+        rsync -a --delete --exclude '.DS_Store' "$HQ/$item" "$DEST/$item" ;;
+    *)  mkdir -p "$DEST/$(dirname "$item")"
+        rsync -a "$HQ/$item" "$DEST/$item" ;;
+  esac
+done
+
+# Leak check: every token in .publish-deny must be absent from the mirror.
+if [ -s "$DENY" ]; then
+  hits=$(grep -rIn --exclude-dir=.git -F -f "$DENY" "$DEST" || true)
+  if [ -n "$hits" ]; then
+    echo "publish: REFUSED — private tokens found in the mirror:" >&2
+    echo "$hits" | sed "s|^$DEST/|  |" >&2
+    [ "$CHECK_ONLY" = 1 ] || git -C "$DEST" checkout -q -- . 2>/dev/null || true
+    exit 2
+  fi
+else
+  echo "publish: no $DENY — refusing to publish without a denylist" >&2
+  exit 1
+fi
+
+if [ "$CHECK_ONLY" = 1 ]; then
+  echo "publish: check passed — mirror is clean"
+  exit 0
+fi
+
+msg=$(git -C "$HQ" log -1 --format=%s)
+git -C "$DEST" add -A
+if git -C "$DEST" diff --cached --quiet; then
+  echo "publish: template already up to date"
+  exit 0
+fi
+git -C "$DEST" commit -q -m "$msg"
+echo "publish: committed to template — $msg"
+if git -C "$DEST" remote get-url origin >/dev/null 2>&1; then
+  git -C "$DEST" push -q origin HEAD 2>/dev/null && echo "publish: pushed" \
+    || echo "publish: push failed (offline?) — will catch up next time"
+else
+  echo "publish: template has no origin remote yet — commit kept locally"
+fi
