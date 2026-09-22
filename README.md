@@ -305,8 +305,11 @@ files because those don't exist upstream.
   surfaces a genuinely distinct recurring context — a separate agent
   earns its existence when its conversation would pollute or be polluted
   by another one, *and* it recurs. Cosmetic roles are bloat.
-- **Models** — pin per session in `team.conf`'s every-launch field
-  (`--model claude-opus-5`); aliases like `opus` float.
+- **Models** — set per session in `team.conf`'s every-launch field.
+  Use the floating alias (`--model opus`): it tracks the recommended
+  version as Anthropic ships new ones. A full ID (`claude-opus-5-5`
+  format) freezes that exact version — use it only when you
+  deliberately want to pin, and note why, or it will be forgotten.
 - **Skills** — drop a folder into `skills/`, run `hq setup` to symlink
   it. Read any third-party skill before installing it; a skill is
   instructions your agents will follow.

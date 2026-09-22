@@ -220,7 +220,7 @@ git -C "$DIR" commit -qm "chore: venture scaffold — team protocol, agents, jou
 
 cat >> "$HQ/team.conf" <<EOF
 $NAME-analyst|$DIR|--agent analyst
-$NAME-builder|$DIR|--agent builder
+$NAME-builder|$DIR|--agent builder|--model opus
 EOF
 
 cat >> "$HQ/ventures.md" <<EOF
