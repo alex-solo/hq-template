@@ -34,6 +34,8 @@ EOF
 cat > "$DIR/CLAUDE.md" <<EOF
 # CLAUDE.md
 
+@~/code/business/hq/rules.md
+
 ## Project
 
 $NAME: $DESC
@@ -79,12 +81,10 @@ Rules for every session here:
 
 ## Conventions
 
-<!-- Stack, code style, test policy, git workflow — decide and record. -->
-
-- **Research before adopting** (portfolio directive): never write a
-  load-bearing dependency or claim into the spec from memory/priors —
-  verify against current primary sources and follow every claim back to
-  the source that owns it. Record the verdict in a research memo.
+<!-- Stack and code style specific to this venture — decide and record.
+     Portfolio-wide rules (git workflow, testing, adapters, research
+     before adopting, living documents) come from the imported
+     rules.md; don't restate them here. -->
 EOF
 
 cat > "$DIR/TEAM.md" <<EOF
@@ -191,17 +191,6 @@ edits and hand implementation to the builder.
   Kickoff is done when the builder holds a stack and a brief.
 - **Be the challenge.** Push back with reasoning before recording a
   decision. Never re-propose ideas the specs record as rejected.
-- **Drafts, not interrogation.** Propose whole drafts — a memo, a spec
-  section, a decision with rationale — for the founder to react to. Ask
-  a question only for a fact he alone holds or an item gated on him;
-  then one concrete question with a proposed default, never a list.
-- **Accounts before asking.** \`~/code/business/hq/accounts.md\` lists
-  the founder's existing external accounts, where their credentials
-  live, and standing spend approvals. Read it before asking him for any
-  account, key, or spend. Accounts are shared, credentials are not:
-  this venture provisions its own project, workspace and API key,
-  buckets, domain, and \`.env\` inside the founder's existing accounts.
-  Spec the gated items accordingly.
 - Product scope only: portfolio strategy belongs to the mentor (~/code/business/hq);
   deep code questions belong to the builder.
 EOF
@@ -224,11 +213,7 @@ project rules and bind you fully; this file makes the role explicit.
   scaffold the repo on that stack, prove the build and deploy path,
   wire auth and whatever platform shell the brief names (PWA, CLI,
   bot). The spec matures in parallel — features wait for it, the
-  foundation does not. Read \`~/code/business/hq/accounts.md\` before
-  asking the founder for any account or key. Accounts are shared,
-  credentials are not: provision this venture's own project, workspace
-  and API key, buckets, domain, and \`.env\` inside the founder's
-  existing accounts — nothing is copied from another venture's \`.env\`.
+  foundation does not.
 - The analyst commits its own doc edits (doc-scoped shell); only sweep up
   doc changes it left uncommitted when they would otherwise tangle with
   your commit.

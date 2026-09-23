@@ -6,7 +6,7 @@
 #   1. checks prerequisites (claude, node/npx, tmux or iTerm)
 #   2. creates ~/code/business/ventures
 #   3. creates the private files (founder.md, ventures.md, ideas.md,
-#      accounts.md,
+#      accounts.md, rules.md,
 #      journal.md) from templates/ if they don't exist yet
 #   4. writes team.conf (mentor + designer) if it doesn't exist yet
 #   5. symlinks skills/* into ~/.claude/skills/
@@ -43,7 +43,7 @@ echo "directories"
 if [ -d "$VENTURES" ]; then ok "$VENTURES"; else mkdir -p "$VENTURES"; made "$VENTURES"; fi
 
 echo "private files (created from templates/ when missing)"
-for f in founder.md ventures.md ideas.md journal.md accounts.md; do
+for f in founder.md ventures.md ideas.md journal.md accounts.md rules.md; do
   if [ -e "$HQ/$f" ]; then ok "$f"
   else cp "$HQ/templates/$f" "$HQ/$f"; made "$f (empty — the mentor fills it in)"; fi
 done

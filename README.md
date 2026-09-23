@@ -47,6 +47,7 @@ rather than things you remember to manage.
 │   ├── journal.md                 mentor's decision log          (private)
 │   ├── team.conf                  session roster                 (private)
 │   ├── accounts.md                external accounts registry     (private)
+│   ├── rules.md                   portfolio-wide founder rules   (private)
 │   ├── hq, bin/                   the commands
 │   ├── skills/                    machine-wide skills (symlinked in)
 │   ├── designer/                  the designer's bundle
@@ -273,6 +274,10 @@ files because those don't exist upstream.
   (a path or variable name, never a value), and standing spend
   approvals. Venture agents read it before asking you for an account.
   Private.
+- `rules.md` — the founder's standing rules, dated, one file for the
+  whole portfolio: every venture `CLAUDE.md` imports it, so a rule
+  stated in one venture binds all of them the same day. Venture files
+  and agent memories keep venture-specific facts only. Private.
 - `templates/` — the empty private files `setup` creates on a fresh
   clone (headers and format only).
 - `example/` — fictional, filled-in `founder.md`, `ventures.md`,
