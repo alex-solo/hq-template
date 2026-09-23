@@ -120,10 +120,10 @@ the product, the mentor reasons about allocation.
 - **Capital-light by default.** The mentor works the boring numbers —
   realistic pricing, reachable market, churn, support burden,
   time-to-first-dollar — unless you tell it otherwise.
-- **Drafts, not interrogation.** Roles propose whole drafts for you to
-  react to. A question is reserved for a fact only you hold or an item
-  gated on you, and then it is one concrete question with a proposed
-  default, never a list.
+- **Judgment, not procedure.** Rules in `rules.md` say what the founder
+  wants; agents apply them with judgment. Within their remit they
+  decide, record, and move on. What genuinely needs you comes one
+  question at a time, with a proposed default and the reasoning.
 
 ## Working with it
 

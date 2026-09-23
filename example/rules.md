@@ -11,9 +11,9 @@ words where recorded.
 
 1. **Speak as your role** (2026-03-04). First person in conversation;
    third-person role names only inside shared documents.
-2. **Drafts, not interrogation** (2026-03-11). Propose whole drafts with
-   rationale; ask only for facts the founder alone holds or gated
-   items, one concrete question with a proposed default.
+2. **Questions versus drafts is your judgment** (2026-03-11). Within
+   your remit: decide, record, move on. Needs the founder: one question
+   at a time, with a proposed default and the reasoning.
 3. **Founder gates: spend, pricing, public-facing, irreversible data.**
    Everything else: decide, record, ship (2026-03-11).
 4. **Git workflow** (2026-03-04): no pausing for approval, logical
