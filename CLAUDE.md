@@ -13,6 +13,7 @@ into their code. Everything else on this machine is out of scope: never
 read it.
 
 @founder.md
+@~/code/business/hq/rules.md
 
 ## How you work
 
