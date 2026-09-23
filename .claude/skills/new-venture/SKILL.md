@@ -11,6 +11,11 @@ lightweight intake, not a spec session.
 
 - First question, always: **"What do you want to build?"** The founder
   will answer with a rough description, often a ~60-second voice note.
+- Second, always: **source material.** "What already exists — chats,
+  spreadsheets, notes, screenshots?" Share links (claude.ai, ChatGPT)
+  are unreadable to agents, so say so: he exports the transcript and
+  downloads any artifacts, and they go into the new repo's
+  `docs/samples/` as files. Everything pasted, nothing linked.
 - Then at most one or two follow-ups, and only ones that would change
   the scaffolding — e.g. is there a heavy recurring non-product workstream
   (content production, ops/compliance, research) distinct from
@@ -54,11 +59,19 @@ lightweight intake, not a spec session.
     venture via Bash here-docs, and commit them with `git -C`.
   - Update the venture's entry in `ventures.md` if the shape is
     non-default, so the mentor knows the team it's advising.
+  - Ask the founder to drop the source material into
+    `<venture>/docs/samples/` now (the scaffold created it). If a share
+    link was the only form, wait for the export — the analyst's kickoff
+    reads that directory first, and an empty one costs a day.
 - Commit the venture repo and the hq changes (conventional single-line
   messages).
 
 ## 4. Close
 
-Tell the founder: the venture exists, which sessions were registered, and
-that `team` will bring the new panes up. Remind him the mentor should get
-a first crack at challenging the thesis before serious building starts.
+Tell the founder: the venture exists, which sessions were registered,
+that `team` will bring the new panes up, and what then happens without
+prompting — the analyst runs its kickoff (stack chosen for this venture,
+research memos, spec v1 draft, builder brief) and the builder starts on
+the stack the moment `docs/research-stack.md` lands. His job is to react
+to the spec draft as a whole and answer the gated items. The mentor sets
+kill criteria with him in parallel, before the first feature ships.

@@ -46,6 +46,7 @@ rather than things you remember to manage.
 │   ├── ideas.md                   parking lot with challenges    (private)
 │   ├── journal.md                 mentor's decision log          (private)
 │   ├── team.conf                  session roster                 (private)
+│   ├── accounts.md                external accounts registry     (private)
 │   ├── hq, bin/                   the commands
 │   ├── skills/                    machine-wide skills (symlinked in)
 │   ├── designer/                  the designer's bundle
@@ -118,10 +119,21 @@ the product, the mentor reasons about allocation.
 - **Capital-light by default.** The mentor works the boring numbers —
   realistic pricing, reachable market, churn, support burden,
   time-to-first-dollar — unless you tell it otherwise.
-- **One question at a time.** Every role asks one concrete question with
-  a proposed default, never a list.
+- **Drafts, not interrogation.** Roles propose whole drafts for you to
+  react to. A question is reserved for a fact only you hold or an item
+  gated on you, and then it is one concrete question with a proposed
+  default, never a list.
 
 ## Working with it
+
+A new venture: `hq new` runs a short intake (what you want to build,
+team shape, and your source material — exported chats and files into
+`docs/samples/`, since share links are unreadable to agents). Then
+`team` brings the pair up and the analyst runs its kickoff unprompted:
+a stack chosen for this venture (prior stacks are candidates, never
+defaults), research memos, a full spec v1 draft, and a builder brief.
+The builder starts on the stack the moment it lands. Your first job is
+reacting to the spec draft as a whole.
 
 A typical week:
 
@@ -256,6 +268,11 @@ files because those don't exist upstream.
   flags`), hand-editable. The optional 4th field is repeated on resume —
   the designer's `--plugin-dir` lives there, and a `--model` pin would
   too, since a bare `claude --resume` keeps the transcript's model.
+- `accounts.md` — registry of external accounts that already exist
+  (API providers, hosting, DNS, messaging), where each credential lives
+  (a path or variable name, never a value), and standing spend
+  approvals. Venture agents read it before asking you for an account.
+  Private.
 - `templates/` — the empty private files `setup` creates on a fresh
   clone (headers and format only).
 - `example/` — fictional, filled-in `founder.md`, `ventures.md`,
@@ -318,10 +335,12 @@ files because those don't exist upstream.
 - **Skills** — drop a folder into `skills/`, run `hq setup` to symlink
   it. Read any third-party skill before installing it; a skill is
   instructions your agents will follow.
-- **Tooling changes** — the mentor never touches scripts. Open a plain
-  Claude session in `hq/`; the charter binds it to the five-step
-  protocol (script in `bin/`, register in `hq`, document here, commit,
-  `/xref` after renames). A command exists only when all five are done.
+- **Tooling changes** — the mentor never touches scripts, and venture
+  sessions never relay them. Open a plain Claude session in `hq/`
+  yourself; the charter binds it to the five-step protocol (script in
+  `bin/`, register in `hq`, document here, commit, `/xref` after
+  renames). A command exists only when all five are done. Routing a
+  tooling request through an analyst costs that venture a relaunch.
 
 ## How continuity works (the short version)
 

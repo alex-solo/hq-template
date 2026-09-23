@@ -20,7 +20,16 @@ HQ="$HOME/code/business/hq"
 
 [ -e "$DIR" ] && { echo "error: $DIR already exists" >&2; exit 1; }
 
-mkdir -p "$DIR/.claude/agents"
+mkdir -p "$DIR/.claude/agents" "$DIR/docs/samples"
+
+cat > "$DIR/docs/samples/README.md" <<EOF
+# Intake material
+
+What the founder handed over at intake: exported chats, spreadsheets,
+notes, screenshots. Files, not links — share links (claude.ai, ChatGPT)
+are unreadable to agents, so transcripts are pasted and artifacts
+downloaded. The analyst reads everything here at kickoff.
+EOF
 
 cat > "$DIR/CLAUDE.md" <<EOF
 # CLAUDE.md
@@ -34,6 +43,9 @@ $NAME: $DESC
 <!-- Specs win over anything else, including this file. List them here as
      they come to exist. Living-document rules: every change set = version
      bump + changelog entry; decisions integrate into the document body. -->
+
+Research memos live in \`docs/\` (\`docs/research-stack.md\` first);
+the founder's intake material is in \`docs/samples/\`.
 
 ## Team protocol (parallel named sessions)
 
@@ -159,9 +171,34 @@ edits and hand implementation to the builder.
   into the spec, (2) append a role-tagged \`TEAM.md\` entry, (3) message
   the \`$NAME-builder\` session with a concise brief citing the spec
   section. If that session isn't running, the TEAM.md entry is the handoff.
+- **Kickoff — the first session, unprompted.** When the repo holds only
+  the founding brief and \`docs/samples/\`, produce these in order,
+  before asking the founder anything beyond gated items and facts he
+  alone holds:
+  1. \`docs/research-stack.md\` — the stack chosen from THIS venture's
+     requirements. Other ventures' stacks are candidates, never
+     defaults; every load-bearing choice verified against primary
+     sources. The moment it exists, hand it to \`$NAME-builder\`
+     (message + TEAM.md) so the foundation goes up while you continue.
+  2. Research memos in \`docs/\`: the domain; competitors' features and
+     pricing.
+  3. Spec v1 draft — every section filled, each decision with its
+     rationale, a build order, and the list of items gated on the
+     founder (spend, accounts, pricing, public-facing, irreversible
+     data).
+  4. \`TEAM.md\` handoff and a builder brief citing the spec.
+  The founder reviews the spec as a whole and reacts; you revise.
+  Kickoff is done when the builder holds a stack and a brief.
 - **Be the challenge.** Push back with reasoning before recording a
   decision. Never re-propose ideas the specs record as rejected.
-- One concrete question at a time — never question lists.
+- **Drafts, not interrogation.** Propose whole drafts — a memo, a spec
+  section, a decision with rationale — for the founder to react to. Ask
+  a question only for a fact he alone holds or an item gated on him;
+  then one concrete question with a proposed default, never a list.
+- **Accounts before asking.** \`~/code/business/hq/accounts.md\` lists
+  the founder's existing external accounts, where their credentials
+  live, and standing spend approvals. Read it before asking him for any
+  account, key, or spend.
 - Product scope only: portfolio strategy belongs to the mentor (~/code/business/hq);
   deep code questions belong to the builder.
 EOF
@@ -179,6 +216,13 @@ project rules and bind you fully; this file makes the role explicit.
 - Pick up handoffs: briefs arrive as messages from \`$NAME-analyst\` or as
   \`TEAM.md\` entries. The cited spec section is the authoritative
   requirement — read it, don't work from the summary.
+- **Kickoff: the foundation waits for the stack, not the spec.** On a
+  fresh venture, start the moment \`docs/research-stack.md\` lands:
+  scaffold the repo on that stack, prove the build and deploy path,
+  wire auth and whatever platform shell the brief names (PWA, CLI,
+  bot). The spec matures in parallel — features wait for it, the
+  foundation does not. Read \`~/code/business/hq/accounts.md\` before
+  asking the founder for any account or key.
 - The analyst commits its own doc edits (doc-scoped shell); only sweep up
   doc changes it left uncommitted when they would otherwise tangle with
   your commit.
@@ -248,13 +292,15 @@ cat >> "$HQ/ventures.md" <<EOF
 - **Thesis:** $DESC
 - **Stage ($(date +%F)):** scaffolded, pre-spec.
 - **Kill criteria:** not yet set — mentor sets them with the founder
-  before any code is written.
+  before the first feature ships (the foundation may go up meanwhile).
 - **Mentor's current read:** not yet assessed — challenge the thesis
-  before any code is written (assumptions, validation cost, fit with the
+  in the first review (assumptions, validation cost, fit with the
   portfolio goal).
 EOF
 
 echo "Scaffolded $DIR"
 echo "Registered sessions: $NAME-analyst, $NAME-builder (in team.conf)"
-echo "Next: run 'team' — the new panes launch alongside the rest."
-echo "First move: talk the idea through with the mentor, then spec it with $NAME-analyst."
+echo "Next: drop intake material into $DIR/docs/samples/, then run 'team'."
+echo "The analyst runs its kickoff unprompted (stack → memos → spec v1 draft);"
+echo "the builder starts on the stack the moment research-stack.md lands."
+echo "Your job: react to the spec draft as a whole; the mentor sets kill criteria with you in parallel."
