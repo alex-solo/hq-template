@@ -198,7 +198,10 @@ edits and hand implementation to the builder.
 - **Accounts before asking.** \`~/code/business/hq/accounts.md\` lists
   the founder's existing external accounts, where their credentials
   live, and standing spend approvals. Read it before asking him for any
-  account, key, or spend.
+  account, key, or spend. Accounts are shared, credentials are not:
+  this venture provisions its own project, workspace and API key,
+  buckets, domain, and \`.env\` inside the founder's existing accounts.
+  Spec the gated items accordingly.
 - Product scope only: portfolio strategy belongs to the mentor (~/code/business/hq);
   deep code questions belong to the builder.
 EOF
@@ -222,7 +225,10 @@ project rules and bind you fully; this file makes the role explicit.
   wire auth and whatever platform shell the brief names (PWA, CLI,
   bot). The spec matures in parallel — features wait for it, the
   foundation does not. Read \`~/code/business/hq/accounts.md\` before
-  asking the founder for any account or key.
+  asking the founder for any account or key. Accounts are shared,
+  credentials are not: provision this venture's own project, workspace
+  and API key, buckets, domain, and \`.env\` inside the founder's
+  existing accounts — nothing is copied from another venture's \`.env\`.
 - The analyst commits its own doc edits (doc-scoped shell); only sweep up
   doc changes it left uncommitted when they would otherwise tangle with
   your commit.
