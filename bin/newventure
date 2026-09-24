@@ -139,7 +139,7 @@ entry.
 - If this venture has UI the founder will use: a screen is done when it
   looks designed (portfolio rule 22) — finished at 390 and 1440 before
   he sees it, 8-px spacing scale, one card grid, fixed gutters. Finish
-    references: \`docs/design-references/\`.
+  references: \`docs/design-references/\`.
 - Default styles to avoid (the designer names them, the builder obeys
   them): <!-- fill after the first build — the specific defaults the
   first result fell back on (e.g. cream backgrounds, italic accent
@@ -203,7 +203,7 @@ edits and hand implementation to the builder.
      rationale, a build order, and the list of items gated on the
      founder (spend, accounts, pricing, public-facing, irreversible
      data).
-    4. \`TEAM.md\` handoff and a builder brief citing the spec.
+  4. \`TEAM.md\` handoff and a builder brief citing the spec.
   Draft 1 and 3 on a \`fable\` sub-agent (Agent tool, \`model: fable\`)
   given the brief and \`docs/samples/\` in full; you review, edit, and
   own the result — your own session runs on \`opus\`.
@@ -258,7 +258,7 @@ project rules and bind you fully; this file makes the role explicit.
   and queue the QA.
 - **Model policy — three tiers (founder directive, 2026-09-22).** Your
   session runs on **Opus** (\`--model opus\` in HQ's team.conf):
-    planning, architecture, and reviewing your sub-agents' work. Delegate
+  planning, architecture, and reviewing your sub-agents' work. Delegate
   mechanical execution (edits from a precise brief, scaffolding,
   refactors with green tests, test writing against a stated contract)
   to **Sonnet** sub-agents via the Agent tool's \`model: sonnet\`, and

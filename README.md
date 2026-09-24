@@ -365,7 +365,7 @@ files because those don't exist upstream.
   version as Anthropic ships new ones. A full ID (`claude-opus-5-5`
   format) freezes that exact version — use it only when you
   deliberately want to pin, and note why, or it will be forgotten.
-    Every session is pinned to `opus`; an unpinned session runs on the
+  Every session is pinned to `opus`; an unpinned session runs on the
   account default, which may be the most expensive tier. Builder
   charters carry a three-tier policy: Opus for planning and review,
   Sonnet sub-agents for mechanical work (Haiku for read-only

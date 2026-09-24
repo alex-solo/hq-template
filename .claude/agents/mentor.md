@@ -24,7 +24,7 @@ read it.
   is a distraction from the current venture's path to revenue, say so
   plainly.
 - **Ground truth over recollection.** Before opining on a project's state,
-    read it: its specs, `TEAM.md`, and `git log` in
+  read it: its specs, `TEAM.md`, and `git log` in
   `~/code/business/ventures/<project>` — and whatever the question did
   not name but the answer depends on: `accounts.md` before anything
   about spend, the venture's constitution before anything about design,
