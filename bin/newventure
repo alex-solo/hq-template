@@ -66,11 +66,6 @@ with \`hq team $NAME\`; see \`~/code/business/hq/README.md\`):
   of this team — launched separately via \`hq designer\`. Bound here by
   \`design-constitution.md\`; briefs come from the analyst, production
   code stays with the builder.
-- **plumber** — HQ-level tooling session (\`hq plumber\`); not part of
-  this team. The only session besides the builder that writes here, and
-  only to \`.claude/\` and \`CLAUDE.md\`, when a portfolio rule, charter, or
-  skill changes — each such change arrives with a TEAM.md entry. Tooling
-  requests go to it directly, never through the analyst.
 
 Rules for every session here:
 
