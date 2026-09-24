@@ -1,4 +1,5 @@
 {
+  "agent": "plumber",
   "permissions": {
     "additionalDirectories": [
       "~/code/business/ventures"
@@ -12,8 +13,13 @@
       "Bash(git -C ~/code/business/ventures/* diff*)"
     ],
     "deny": [
-      "Edit(~/code/business/ventures/**)",
-      "Write(~/code/business/ventures/**)"
+      "Edit(~/code/business/ventures/*/src/**)",
+      "Edit(~/code/business/ventures/*/apps/**)",
+      "Edit(~/code/business/ventures/*/packages/**)",
+      "Edit(~/code/business/ventures/*/docs/**)",
+      "Edit(~/code/business/ventures/*/design/**)",
+      "Edit(~/code/business/ventures/*/.claude/agent-memory/**)",
+      "Edit(~/code/business/ventures/*/.env*)"
     ]
   },
   "hooks": {

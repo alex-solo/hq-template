@@ -14,7 +14,8 @@ repo.
 
 - **In:** every repo under `~/code/business/ventures`.
 - **Out:** everything else on this machine. `~/code/business/hq` is the
-  mentor's office (my charter lives there; I leave it alone). The rest of
+  mentor's and the plumber's office (my charter lives there; the
+  plumber maintains it, I leave it alone). The rest of
   `~/code` stays unread — the boundary is structural, per
   the mentor's ruling of 2026-09-15.
 

@@ -8,7 +8,7 @@
 #   3. creates the private files (founder.md, ventures.md, ideas.md,
 #      accounts.md, rules.md,
 #      journal.md) from templates/ if they don't exist yet
-#   4. writes team.conf (mentor + designer) if it doesn't exist yet
+#   4. writes team.conf (mentor + plumber + designer) if it doesn't exist yet
 #   5. symlinks skills/* into ~/.claude/skills/
 #   6. adds the `hq` and `team` aliases to your shell rc
 #
@@ -57,11 +57,12 @@ else
 # unless --model is passed again)
 # Lines starting with # are ignored. \`hq new\` appends entries here.
 # Session names are <venture-dir>-<role> so \`team <venture>\` can filter
-# and cross-venture messaging never collides. mentor and designer (HQ-level) are the exceptions.
-mentor|$HQ|
+# and cross-venture messaging never collides. mentor, plumber and designer (HQ-level) are the exceptions.
+mentor|$HQ||--agent mentor --settings $HQ/.claude/settings-mentor.json
+plumber|$HQ||--agent plumber
 designer|$VENTURES|--agent designer:designer|--plugin-dir $HQ/designer
 EOF
-  made "team.conf (mentor + designer; hq new adds ventures)"
+  made "team.conf (mentor + plumber + designer; hq new adds ventures)"
 fi
 
 echo "skills → ~/.claude/skills"
@@ -91,4 +92,5 @@ cat <<EOF
 done. next:
   open a new shell, then 'hq mentor' (your advisor — knows every project)
   or 'hq new <name>' for your first venture
+  'hq plumber' when you want a command, a charter, or a skill changed
 EOF

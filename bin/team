@@ -5,6 +5,8 @@
 #                    ventures/). The mentor is NOT included — it sits
 #                    above the teams and is launched via `hq mentor`.
 #   team mentor      the mentor alone (what `hq mentor` calls)
+#   team plumber     the plumber alone (what `hq plumber` calls) —
+#                    HQ-level like the mentor
 #   team designer    the portfolio designer alone (what `hq designer`
 #                    calls) — HQ-level like the mentor, never bundled
 #                    into a venture launch
@@ -33,7 +35,7 @@ mkdir -p "$STATE_DIR"
 FILTER="${1:-}"
 
 # HQ-level sessions: launched by their own name, never as part of a venture.
-HQ_LEVEL="mentor designer"
+HQ_LEVEL="mentor plumber designer"
 is_hq_level() { case " $HQ_LEVEL " in *" $1 "*) return 0 ;; esac; return 1; }
 
 list_ventures() {
@@ -43,7 +45,7 @@ list_ventures() {
 }
 
 if [ -z "$FILTER" ]; then
-  echo "usage: team <venture> | team mentor | team designer | team all" >&2
+  echo "usage: team <venture> | team mentor | team plumber | team designer | team all" >&2
   echo "known ventures:" >&2
   list_ventures | sed 's/^/  /' >&2
   exit 1

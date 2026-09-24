@@ -26,7 +26,9 @@ ALLOWLIST=(
   example/
   templates/
   .claude/skills/
+  .claude/agents/
   .claude/settings.json
+  .claude/settings-mentor.json
   CLAUDE.md
   README.md
   .gitignore

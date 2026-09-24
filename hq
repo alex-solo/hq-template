@@ -9,6 +9,9 @@ case "${1:-help}" in
 hq — founder command center
 
   hq mentor                   your advisor — above the teams, launched alone
+  hq plumber                  the tooling session — scripts, charters,
+                              skills, propagation into ventures; a bare
+                              `claude` here is the same role, unnamed
   hq designer                 portfolio designer — serves every venture,
                               launched alone
   hq team <venture>           launch/resume that venture's working team
@@ -31,6 +34,7 @@ Full documentation:  ~/code/business/hq/README.md  (or ask the mentor)
 EOF
     ;;
   mentor) exec "$BIN/team" mentor ;;
+  plumber) exec "$BIN/team" plumber ;;
   designer) exec "$BIN/team" designer ;;
   team) shift; exec "$BIN/team" "$@" ;;
   new|newventure)
