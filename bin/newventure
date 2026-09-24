@@ -275,7 +275,8 @@ project rules and bind you fully; this file makes the role explicit.
   docs can't resolve — dispatch a Fable sub-agent with the full problem
   context for the diagnosis/design, then implement its answer yourself;
   (2) the **pre-deploy audit** above. Never spend an hour on Opus where
-  ten minutes of Fable would settle it; never send Fable   routine implementation. Part of what both buy is a fresh context: an
+  ten minutes of Fable would settle it; never send Fable
+  routine implementation. Part of what both buy is a fresh context: an
   escalation never continues inside the attempt that failed, and the
   audit never runs inside the session that wrote the code. Note each
   escalation in \`TEAM.md\`. The stack memo and spec v1 were drafted on
@@ -317,7 +318,7 @@ git -C "$DIR" add -A
 git -C "$DIR" commit -qm "chore: venture scaffold — team protocol, agents, journal, handoff"
 
 cat >> "$HQ/team.conf" <<EOF
-$NAME-analyst|$DIR|--agent analyst
+$NAME-analyst|$DIR|--agent analyst|--model opus
 $NAME-builder|$DIR|--agent builder|--model opus
 EOF
 

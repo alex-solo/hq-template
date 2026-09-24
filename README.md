@@ -290,8 +290,9 @@ files because those don't exist upstream.
   every hq session at start.
 - `team.conf` — session roster (`name|dir|first-launch flags|every-launch
   flags`), hand-editable. The optional 4th field is repeated on resume —
-  the designer's `--plugin-dir` lives there, and a `--model` pin would
-  too, since a bare `claude --resume` keeps the transcript's model.
+  every session's `--model opus` lives there, and the designer's
+  `--plugin-dir`, since a bare `claude --resume` keeps the transcript's
+  model.
 - `accounts.md` — registry of external accounts that already exist
   (API providers, hosting, DNS, messaging), where each credential lives
   (a path or variable name, never a value), and standing spend

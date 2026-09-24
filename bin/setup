@@ -58,9 +58,9 @@ else
 # Lines starting with # are ignored. \`hq new\` appends entries here.
 # Session names are <venture-dir>-<role> so \`team <venture>\` can filter
 # and cross-venture messaging never collides. mentor, plumber and designer (HQ-level) are the exceptions.
-mentor|$HQ||--agent mentor --settings $HQ/.claude/settings-mentor.json
-plumber|$HQ||--agent plumber
-designer|$VENTURES|--agent designer:designer|--plugin-dir $HQ/designer
+mentor|$HQ||--agent mentor --settings $HQ/.claude/settings-mentor.json --model opus
+plumber|$HQ||--agent plumber --model opus
+designer|$VENTURES|--agent designer:designer|--plugin-dir $HQ/designer --model opus
 EOF
   made "team.conf (mentor + plumber + designer; hq new adds ventures)"
 fi
