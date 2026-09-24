@@ -131,10 +131,10 @@ entry.
      rules, what the audience distrusts. Link the governing docs if they
      live elsewhere (e.g. a marketing-principles doc, spec sections). -->
 
-- Founder-facing screens ship designed, never functional-first
-  (portfolio rule 22): prototype → 1:1 build → designer QA at 390 and
-  1440 → founder. 8-px spacing scale, one card grid, fixed gutters.
-  Finish references: \`docs/design-references/\`.
+- If this venture has UI the founder will use: a screen is done when it
+  looks designed (portfolio rule 22) — finished at 390 and 1440 before
+  he sees it, 8-px spacing scale, one card grid, fixed gutters. Finish
+  references: \`docs/design-references/\`.
 
 ## 2. Design system (owner: designer; founder signs off tokens)
 
@@ -235,12 +235,12 @@ project rules and bind you fully; this file makes the role explicit.
   four areas always blocks the deploy. Note the audit in \`TEAM.md\` with
   spend per step as the proxy you can see: sub-agent runs by tier
   (Sonnet / Opus / Fable) and their reported token totals.
-- **Founder-facing screens ship designed** (rules.md 22). Default path:
-  designer prototype at 390 and 1440 → implement 1:1 → designer QA
-  passes → the founder sees it. 8-px spacing scale, one card grid,
-  fixed gutters. If the designer is the bottleneck, build to the
-  constitution's tokens and grid and queue the QA — the bar holds
-  either way.
+- **A founder-facing screen is done when it looks designed** (rules.md
+  22) — if this venture has UI he will use: finished at 390 and 1440
+  before he sees it, on the constitution's tokens, 8-px spacing scale,
+  one card grid, fixed gutters. Usual path designer prototype → build →
+  designer QA; when that's the bottleneck, build to the constitution
+  and queue the QA.
 - **Model policy — three tiers (founder directive, 2026-09-22).** Your
   session runs on **Opus** (\`--model opus\` in HQ's team.conf):
   planning, architecture, and reviewing your sub-agents' work. Delegate
