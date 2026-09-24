@@ -49,13 +49,18 @@ $NAME: $DESC
 Research memos live in \`docs/\` (\`docs/research-stack.md\` first);
 the founder's intake material is in \`docs/samples/\`.
 
+<!-- **Never re-propose:** as the specs record rejected ideas (rule 11),
+     list them here with the section that holds the reasons, so no
+     session re-opens one without reading the record. -->
+
 ## Team protocol (parallel named sessions)
 
 This repo is worked by named parallel sessions (launch/resume the pair
 with \`hq team $NAME\`; see \`~/code/business/hq/README.md\`):
 
 - **$NAME-builder** — \`.claude/agents/builder.md\`. Writes code, runs
-  tests, commits and pushes the implementation.
+  tests, commits and pushes the implementation; owns deploys and the
+  pre-deploy audit.
 - **$NAME-analyst** — \`.claude/agents/analyst.md\`. Product discussions
   and spec edits only; never modifies code. Shell is doc-scoped: commits
   its own doc edits, read-only otherwise.
