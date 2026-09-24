@@ -17,7 +17,8 @@ format, then confirm to the user in one line:
 ```
 
 Rules:
-- `<role>` is this session's role: builder, analyst, or mentor.
+- `<role>` is this session's role: builder, analyst, designer, mentor,
+  or plumber.
 - No filler. If the block produced nothing worth handing off, say so and
   write nothing.
 - Don't duplicate what specs/commits already record — reference them.

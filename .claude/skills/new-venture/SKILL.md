@@ -42,8 +42,8 @@ lightweight intake, not a spec session.
 
 - Run `bin/newventure <name> "<one-line thesis distilled from the
   interview>"` via Bash. This creates the base: repo, CLAUDE.md skeleton,
-  TEAM.md, design-constitution.md stub, analyst + builder agents, handoff skill, hooks, roster
-  registration, ventures.md stub.
+  TEAM.md, design-constitution.md stub, analyst + builder agents, the
+  SessionStart hook, roster registration, ventures.md stub.
 - Then tailor it:
   - Replace the venture CLAUDE.md `## Project` section with a faithful
     2–4 sentence distillation of the founder's description (his words,
@@ -54,9 +54,9 @@ lightweight intake, not a spec session.
     actual needs, then a short charter), add a
     `<name>-<role>|<dir>|--agent <role>` line to `team.conf`, and list
     the role in the venture CLAUDE.md team-protocol section.
-  - NOTE: this project's settings deny the Edit/Write tools under
-    `ventures/` (a mentor guardrail), so make file changes inside the new
-    venture via Bash here-docs, and commit them with `git -C`.
+  - The new venture's `.claude/` and `CLAUDE.md` are inside the
+    plumber's write scope; nothing else in the repo is (hq settings deny
+    code, docs, design, memory). Commit with `git -C`.
   - Update the venture's entry in `ventures.md` if the shape is
     non-default, so the mentor knows the team it's advising.
   - Ask the founder to drop the source material into
