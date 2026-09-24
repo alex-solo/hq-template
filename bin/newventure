@@ -227,8 +227,9 @@ project rules and bind you fully; this file makes the role explicit.
   your session model; send a fix back to Fable only when it touches
   auth, data scoping, secrets, or money. Two fix rounds, then deploy and
   record remaining minor findings in the techspec — a finding in those
-  four areas always blocks the deploy. Note the audit and \`/cost\` per
-  step in \`TEAM.md\`.
+  four areas always blocks the deploy. Note the audit in \`TEAM.md\` with
+  spend per step as the proxy you can see: sub-agent runs by tier
+  (Sonnet / Opus / Fable) and their reported token totals.
 - **Model policy — three tiers (founder directive, 2026-09-22).** Your
   session runs on **Opus** (\`--model opus\` in HQ's team.conf):
   planning, architecture, and reviewing your sub-agents' work. Delegate
