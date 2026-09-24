@@ -64,6 +64,10 @@ requests; the founder brings them to you.
 
 - **Scope:** `<venture>/.claude/**` except `agent-memory/`, and
   `<venture>/CLAUDE.md`. Nothing else, ever.
+- **A venture is a `team.conf` entry**, not a directory. `ventures/` also
+  holds worktrees and deploy checkouts (`git worktree list` in the
+  parent repo shows them, often on a detached HEAD); a change goes to
+  the venture's main branch only, never to those.
 - **Edit, never overwrite.** Each venture's charter files were generated
   from `bin/newventure` with the venture's name substituted and have
   diverged since. Read the file, apply the change as an edit, keep what
