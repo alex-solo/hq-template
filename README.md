@@ -365,11 +365,15 @@ files because those don't exist upstream.
   version as Anthropic ships new ones. A full ID (`claude-opus-5-5`
   format) freezes that exact version — use it only when you
   deliberately want to pin, and note why, or it will be forgotten.
-  Builder sessions run on `opus` and their charter carries a three-tier
-  model policy: Opus for planning and review, Sonnet sub-agents for
-  mechanical work, Fable sub-agents only for surprises (lasting
-  decisions, stalled debugging, unresolvable spec ambiguity) and the
-  pre-deploy audit.
+    Every session is pinned to `opus`; an unpinned session runs on the
+  account default, which may be the most expensive tier. Builder
+  charters carry a three-tier policy: Opus for planning and review,
+  Sonnet sub-agents for mechanical work (Haiku for read-only
+  exploration), Fable sub-agents only for surprises (lasting decisions,
+  stalled debugging, unresolvable spec ambiguity) and the pre-deploy
+  audit — Fable is the strongest tier, and a fresh context is part of
+  what those two uses buy. Analysts draft kickoff artifacts on a Fable
+  sub-agent.
 - **Skills** — drop a folder into `skills/`, run `hq setup` to symlink
   it. Read any third-party skill before installing it; a skill is
   instructions your agents will follow.

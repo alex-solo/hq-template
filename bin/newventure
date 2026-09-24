@@ -139,7 +139,12 @@ entry.
 - If this venture has UI the founder will use: a screen is done when it
   looks designed (portfolio rule 22) — finished at 390 and 1440 before
   he sees it, 8-px spacing scale, one card grid, fixed gutters. Finish
-  references: \`docs/design-references/\`.
+    references: \`docs/design-references/\`.
+- Default styles to avoid (the designer names them, the builder obeys
+  them): <!-- fill after the first build — the specific defaults the
+  first result fell back on (e.g. cream backgrounds, italic accent
+  words in headlines, "01/02/03" section labels, pill buttons), extended
+  as new ones appear. Visual defaults only; layout rules live in §2. -->
 
 ## 2. Design system (owner: designer; founder signs off tokens)
 
@@ -198,7 +203,10 @@ edits and hand implementation to the builder.
      rationale, a build order, and the list of items gated on the
      founder (spend, accounts, pricing, public-facing, irreversible
      data).
-  4. \`TEAM.md\` handoff and a builder brief citing the spec.
+    4. \`TEAM.md\` handoff and a builder brief citing the spec.
+  Draft 1 and 3 on a \`fable\` sub-agent (Agent tool, \`model: fable\`)
+  given the brief and \`docs/samples/\` in full; you review, edit, and
+  own the result — your own session runs on \`opus\`.
   The founder reviews the spec as a whole and reacts; you revise.
   Kickoff is done when the builder holds a stack and a brief.
 - **Be the challenge.** Push back with reasoning before recording a
@@ -241,7 +249,7 @@ project rules and bind you fully; this file makes the role explicit.
   record remaining minor findings in the techspec — a finding in those
   four areas always blocks the deploy. Note the audit in \`TEAM.md\` with
   spend per step as the proxy you can see: sub-agent runs by tier
-  (Sonnet / Opus / Fable) and their reported token totals.
+  (Sonnet / Opus / Fable) and their   token totals where the sub-agent result shows them.
 - **A founder-facing screen is done when it looks designed** (rules.md
   22) — if this venture has UI he will use: finished at 390 and 1440
   before he sees it, on the constitution's tokens, 8-px spacing scale,
@@ -250,10 +258,15 @@ project rules and bind you fully; this file makes the role explicit.
   and queue the QA.
 - **Model policy — three tiers (founder directive, 2026-09-22).** Your
   session runs on **Opus** (\`--model opus\` in HQ's team.conf):
-  planning, architecture, and reviewing your sub-agents' work. Delegate
-  mechanical execution (edits, scaffolding, refactors, test writing) to
-  **Sonnet** sub-agents via the Agent tool's \`model: sonnet\` —
-  self-directed, you judge which chunks qualify. **Fable is spent in
+    planning, architecture, and reviewing your sub-agents' work. Delegate
+  mechanical execution (edits from a precise brief, scaffolding,
+  refactors with green tests, test writing against a stated contract)
+  to **Sonnet** sub-agents via the Agent tool's \`model: sonnet\`, and
+  read-only exploration or summarizing to \`model: haiku\` —
+  self-directed, you judge which chunks qualify. A sub-agent brief
+  carries its completion criterion and, for mechanical work, a time or
+  turn budget ("time matters here: do not spend time that can be
+  avoided"); audit briefs get the criterion and no budget. **Fable is spent in
   exactly two places, via upward sub-agent (\`model: fable\`):**
   (1) **escalate on surprise** — the moment reality diverges from the
   plan (unexpected test failure, API mismatch, anything undocumented),
@@ -262,11 +275,15 @@ project rules and bind you fully; this file makes the role explicit.
   docs can't resolve — dispatch a Fable sub-agent with the full problem
   context for the diagnosis/design, then implement its answer yourself;
   (2) the **pre-deploy audit** above. Never spend an hour on Opus where
-  ten minutes of Fable would settle it; never send Fable routine
-  implementation. Note each escalation in \`TEAM.md\`. Specs are
-  authored at the top model (analyst) — you build against
-  already-expensive thinking.
-- Run \`/handoff\` before ending a work block.
+  ten minutes of Fable would settle it; never send Fable   routine implementation. Part of what both buy is a fresh context: an
+  escalation never continues inside the attempt that failed, and the
+  audit never runs inside the session that wrote the code. Note each
+  escalation in \`TEAM.md\`. The stack memo and spec v1 were drafted on
+  the top model — you build against already-expensive thinking.
+- A brief runs to its completion criterion. A status note travels with
+  your next action; the turn ends for a gated item, a blocker, or the
+  finished brief — never to summarize a milestone. Run \`/handoff\`
+  before ending a work block.
 EOF
 
 printf '# .claude/ is ignored globally but here it IS team infrastructure
