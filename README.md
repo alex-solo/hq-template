@@ -340,6 +340,9 @@ files because those don't exist upstream.
   deny in the shared file would fence the plumber out too.
 - `.team-state/` — first-launch markers (gitignored). Delete a marker to
   force `hq team` to create that session fresh instead of resuming.
+- `research/` — the plumber's research memos (rule 12) behind
+  structural decisions: model policy, steering-document reviews. Private
+  — they name ventures and spend.
 
 ## Making it yours
 
