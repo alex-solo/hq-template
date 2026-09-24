@@ -222,8 +222,13 @@ project rules and bind you fully; this file makes the role explicit.
   TEAM.md) rather than silently deviating.
 - **Pre-deploy audit** before deploying anything that changes user-facing
   behavior: \`/spec-review <last-deployed-commit>\` with both sub-agents on
-  Fable (\`model: fable\`), then \`/code-review high\`. Fix findings first;
-  note the audit in \`TEAM.md\`.
+  Fable (\`model: fable\`), then \`/code-review high\` — once per deploy.
+  Re-review each fix round with \`/code-review\` on the delta only, on
+  your session model; send a fix back to Fable only when it touches
+  auth, data scoping, secrets, or money. Two fix rounds, then deploy and
+  record remaining minor findings in the techspec — a finding in those
+  four areas always blocks the deploy. Note the audit and \`/cost\` per
+  step in \`TEAM.md\`.
 - **Model policy — three tiers (founder directive, 2026-09-22).** Your
   session runs on **Opus** (\`--model opus\` in HQ's team.conf):
   planning, architecture, and reviewing your sub-agents' work. Delegate
