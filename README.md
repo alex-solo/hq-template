@@ -304,8 +304,8 @@ files because those don't exist upstream.
 - `templates/` — the empty private files `setup` creates on a fresh
   clone (headers and format only).
 - `example/` — fictional, filled-in `founder.md`, `ventures.md`,
-  `ideas.md`, `journal.md`: reference for the shape, never copied into
-  place. Fiction on purpose — never a scrubbed copy of real files.
+  `ideas.md`, `journal.md`, `accounts.md`, `rules.md`: reference for
+  the shape, never copied into place. Fiction on purpose — never a scrubbed copy of real files.
 - `designer/` — the designer's bundle (a Claude Code plugin directory):
   charter, vendored skills, MCP config. To add a skill: copy its folder
   into `designer/skills/` after reading it, commit. A skill that fetches

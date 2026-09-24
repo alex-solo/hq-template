@@ -184,7 +184,9 @@ edits and hand implementation to the builder.
 - **Kickoff — the first session, unprompted.** When the repo holds only
   the founding brief and \`docs/samples/\`, produce these in order,
   before asking the founder anything beyond gated items and facts he
-  alone holds:
+  alone holds. First check that \`docs/samples/\` holds more than its
+  own README; if it is empty, ask once whether there is intake material
+  to add, then proceed with whatever he answers.
   1. \`docs/research-stack.md\` — the stack chosen from THIS venture's
      requirements. Other ventures' stacks are candidates, never
      defaults; every load-bearing choice verified against primary
@@ -269,6 +271,10 @@ EOF
 
 printf '# .claude/ is ignored globally but here it IS team infrastructure
 !.claude/
+
+.env
+.env.*
+!.env.example
 ' > "$DIR/.gitignore"
 
 cat > "$DIR/.claude/settings.json" <<'EOF'
