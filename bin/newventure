@@ -220,7 +220,6 @@ printf '# .claude/ is ignored globally but here it IS team infrastructure
 cat > "$DIR/.claude/settings.json" <<'EOF'
 {
   "autoMemoryEnabled": false,
-  "permissions": { "deny": ["mcp__claude-in-chrome"] },
   "hooks": {
     "SessionStart": [
       {
