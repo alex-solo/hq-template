@@ -10,7 +10,6 @@
 #      journal.md) from templates/ if they don't exist yet
 #   4. writes team.conf (mentor + plumber + designer) if it doesn't exist yet
 #   5. removes any machine-wide skill links (skills load per project)
-#      and installs the weekly sweep (launchd, Sundays 09:00)
 #   6. adds the `hq` and `team` aliases to your shell rc
 #
 # The clone must live at ~/code/business/hq — every script assumes it.
@@ -83,22 +82,6 @@ for l in "$HOME/.claude/skills"/*; do
 done
 ok "per-project links (no machine-wide skills)"
 
-echo "weekly sweep"
-PLIST="$HOME/Library/LaunchAgents/local.hq.sweep.plist"
-if [ -e "$PLIST" ]; then ok "launchd job (Sundays 09:00)"
-else
-  mkdir -p "$HOME/Library/LaunchAgents"
-  cat > "$PLIST" <<PL
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict>
-  <key>Label</key><string>local.hq.sweep</string>
-  <key>ProgramArguments</key><array><string>/bin/bash</string><string>-lc</string><string>$HQ/bin/sweep</string></array>
-  <key>StartCalendarInterval</key><dict><key>Weekday</key><integer>0</integer><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
-</dict></plist>
-PL
-  launchctl load "$PLIST" 2>/dev/null && made "launchd job (Sundays 09:00; runs at wake if the Mac slept)"
-fi
 
 echo "shell aliases"
 case "${SHELL:-}" in */zsh) RC="$HOME/.zshrc" ;; */bash) RC="$HOME/.bashrc" ;; *) RC="$HOME/.profile" ;; esac

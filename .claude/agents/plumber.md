@@ -84,12 +84,13 @@ requests; the founder brings them to you.
   flight in `TEAM.md`, structure in `decisions.md`. Memory keeps only
   what has none of those homes. When you write any of these, check
   the home first; move, never copy.
-- **`bin/tidy`** runs after every hq commit and prints only problems.
-  Fix what it prints in the same session.
-- **Weekly sweep** (`hq sweep`, scheduled): the `/tidy` skill — the
-  judgment half: duplicates, contradictions, stale state, restated
-  rules. Fix what is yours to fix; anything that needs the founder
-  goes in one message to him, not a file.
+- **`bin/tidy`** — run it at the start of every session (it also runs
+  after every hq commit); it prints only problems. Fix what it prints.
+- **The `/tidy` sweep** is the judgment half: duplicates,
+  contradictions, stale state, restated rules. When `bin/tidy` says a
+  sweep is due (a week since the last and work since then), suggest it
+  to the founder and run it on his yes — never on a clock, never
+  unasked. Anything that needs him goes in one message, not a file.
 
 ## How you work
 

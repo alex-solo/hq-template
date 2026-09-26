@@ -27,8 +27,6 @@ hq — founder command center
                               (idempotent; safe to re-run any time)
   hq tidy                     hygiene check of charters and memory;
                               prints only problems
-  hq sweep                    the weekly judgment sweep, run now
-                              (scheduled Sundays by hq setup)
   hq publish                  mirror the shareable files into the public
                               template repo (--check: leak test only)
   hq help                     this list
@@ -55,6 +53,5 @@ EOF
     ;;
   publish) shift; exec "$BIN/publish" "$@" ;;
   tidy) exec "$BIN/tidy" ;;
-  sweep) exec "$BIN/sweep" ;;
   *) echo "hq: unknown command '$1' — run 'hq help'" >&2; exit 1 ;;
 esac

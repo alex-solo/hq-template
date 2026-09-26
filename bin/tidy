@@ -5,8 +5,8 @@
 #   tidy --quiet   same, prefixed for a session-start hook
 #
 # Checks only what a script can decide with certainty. Judgment calls
-# (duplicates, contradictions, stale state) are the weekly sweep's job
-# (`hq sweep`, the /tidy skill). Always exits 0: it reports, it never
+# (duplicates, contradictions, stale state) are the /tidy sweep's job;
+# check 6 says when one is due. Always exits 0: it reports, it never
 # blocks a session or a commit.
 
 HQ="$HOME/code/business/hq"
@@ -80,6 +80,17 @@ done
 for d in $ventures; do for l in "$d/.claude/skills/"*; do
   [ -L "$l" ] && [ ! -e "$l" ] && say "broken skill link: ${l#$HOME/}"
 done; done
+
+# 6. Judgment sweep due: a week since the last one AND work since then.
+#    Never on a clock alone — no activity, nothing due.
+last="$HQ/.team-state/last-sweep"
+since=$( [ -s "$last" ] && cat "$last" || echo "1970-01-01" )
+age=$(( ( $(date +%s) - $(date -j -f %F "$since" +%s 2>/dev/null || echo 0) ) / 86400 ))
+if [ "$age" -ge 7 ]; then
+  n=$(git -C "$HQ" log --oneline --since="$since" 2>/dev/null | wc -l)
+  for d in $ventures; do n=$((n + $(git -C "$d" log --oneline --since="$since" 2>/dev/null | wc -l))); done
+  [ "$n" -gt 0 ] && say "sweep due: last /tidy $since, $n commits since — suggest it to the founder"
+fi
 
 # subshell-printed lines (while loops) already went to stdout
 for o in "${out[@]}"; do

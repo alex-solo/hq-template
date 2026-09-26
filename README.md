@@ -69,7 +69,7 @@ rather than things you remember to manage.
 | Session | Lives in | Does | May not |
 |---|---|---|---|
 | **`mentor`** | `hq/` | Business and entrepreneurship advisor with context on every project. Reads every venture repo, challenges ideas, keeps the registry, journal, and kill criteria. Records your goals when you state them and weighs advice against them. | Edit anything under `ventures/` (permission-enforced). Touch the machinery — that's the plumber. |
-| **`plumber`** | `hq/` | Keeps the machinery working: scripts, charters, skills, templates, permission rules, the public template mirror. Propagates a rule or charter change into every venture's `.claude/` and `CLAUDE.md`, and keeps charters and memory free of repeats (`hq tidy`, weekly `hq sweep`). A bare `claude` in `hq/` runs as the plumber. | Write the mentor's books (`founder.md`, `ventures.md`, `ideas.md`, `journal.md`, `accounts.md`). Touch a venture's code, specs, docs, or secrets (permission-enforced). |
+| **`plumber`** | `hq/` | Keeps the machinery working: scripts, charters, skills, templates, permission rules, the public template mirror. Propagates a rule or charter change into every venture's `.claude/` and `CLAUDE.md`, and keeps charters and memory free of repeats (`hq tidy`, and a `/tidy` sweep when a week of work calls for one). A bare `claude` in `hq/` runs as the plumber. | Write the mentor's books (`founder.md`, `ventures.md`, `ideas.md`, `journal.md`, `accounts.md`). Touch a venture's code, specs, docs, or secrets (permission-enforced). |
 | **`<venture>-analyst`** | that venture | Product thinking: discussion → decision → spec edit with a version bump → brief to the builder. | Touch code. Its shell is doc-scoped. |
 | **`<venture>-builder`** | that venture | Implements the cited spec section, tests, commits, pushes. Pushes back through the analyst when a spec is wrong. | Silently deviate from the spec. |
 | **`designer`** | `ventures/` | One designer for all ventures — one accumulated taste. Design systems, screen specs, prototypes; opens built UI in a browser and reviews it before presenting. | Write production code (that's the builder's). Read anything outside `ventures/`. |
@@ -102,8 +102,9 @@ the product, the mentor reasons about allocation.
   its charter, procedures in skills, product truth in specs, work in
   flight in `TEAM.md`. Agent memory keeps only what has none of those
   homes, so nothing is said twice and nothing contradicts. `hq tidy`
-  checks this mechanically after every hq commit; a weekly plumber
-  sweep (`hq sweep`) handles what needs judgment.
+  checks this mechanically; when a week of real work has passed, the
+  plumber suggests a `/tidy` sweep for what needs judgment. Nothing runs
+  on a clock.
 - **Separation is enforced, not requested.** The mentor's read-only
   access to ventures is a permission rule, not a sentence in a prompt.
   The analyst's shell is scoped to documents. The designer physically
@@ -199,7 +200,7 @@ The clone must live at `~/code/business/hq` — every script assumes it.
    prerequisites, creates `~/code/business/ventures`, creates the private
    files from `templates/` (empty — the mentor fills them in as it
    learns), writes `team.conf` with the mentor, plumber and designer,
-   creates `ventures/CLAUDE.md`, installs the weekly sweep, adds the `hq` and `team` aliases
+   creates `ventures/CLAUDE.md`, adds the `hq` and `team` aliases
    to your shell rc.
 2. **Opens your first mentor session.** It knows nothing about you yet.
    There is no interview: tell it what you want, when you want. Goals
@@ -281,13 +282,9 @@ files because those don't exist upstream.
 - **`hq tidy`** — the mechanical hygiene check: banned words, memory
   indexes out of step with their files, links to missing memories,
   auto-memory switched back on, `TEAM.md` tails holding entries from
-  outside the team, broken skill links. Prints only problems; runs
-  after every hq commit.
-- **`hq sweep`** — the plumber's judgment sweep (`/tidy`) run headless:
-  restated rules, contradictions, stale state, guesses stored as facts.
-  `hq setup` schedules it weekly (launchd, Sundays 09:00, catches up at
-  wake); the result is one macOS notification and
-  `.team-state/sweep.log`.
+  outside the team, broken skill links — and whether a `/tidy` sweep is
+  due (a week since the last *and* work since). Prints only problems;
+  runs after every hq commit and at the start of each plumber session.
 
 `team` is a shell alias for `hq team` — so `team <venture>` works too.
 

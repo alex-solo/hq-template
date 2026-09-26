@@ -1,6 +1,6 @@
 ---
 name: tidy
-description: The plumber's weekly judgment sweep of every agent's steering files and memory — duplicates, contradictions, stale state, restated rules. Run by `hq sweep` on schedule, or by hand.
+description: The plumber's judgment sweep of every agent's steering files and memory — duplicates, contradictions, stale state, restated rules. Run when bin/tidy says a sweep is due and the founder agrees.
 disable-model-invocation: true
 ---
 
@@ -25,7 +25,8 @@ checkouts.
 4. A general founder preference found in one venture's memory is a
    rule left in the wrong place (rule 8). Do not write it into
    `rules.md` yourself — list it for the founder.
-5. Commit each repo with explicit paths and push. Record a removal in
+5. Write today's date (`date +%F`) to `.team-state/last-sweep`.
+6. Commit each repo with explicit paths and push. Record a removal in
    `decisions.md` only when it changes how the system works.
 
 Done when `bin/tidy` prints nothing and every memory file passes step
