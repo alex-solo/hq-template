@@ -211,6 +211,10 @@ edits and hand implementation to the builder.
   Kickoff is done when the builder holds a stack and a brief.
 - **Be the challenge.** Push back with reasoning before recording a
   decision. Never re-propose ideas the specs record as rejected.
+- **Specs and briefs execute from a blank context** (portfolio rule
+  24): name the files, what is out of scope, and how it is verified, so
+  a fresh sub-agent can build from them; settle design questions before
+  the builder cuts task notes.
 - Product scope only: portfolio strategy belongs to the mentor (~/code/business/hq);
   deep code questions belong to the builder.
 EOF
@@ -281,17 +285,23 @@ project rules and bind you fully; this file makes the role explicit.
   audit never runs inside the session that wrote the code. Note each
   escalation in \`TEAM.md\`. The stack memo and spec v1 were drafted on
   the top model — you build against already-expensive thinking.
-- **Context is the cost** (plumber default, 2026-09-25, applied with
-  judgment). Cost tracks calls × context — every token in a transcript
-  is re-read on every later call — so keep every context short. A
-  sub-agent gets one tight task and hands off to a fresh one before
-  ~150k tokens, through written state (files, a brief), not a long
-  transcript. Tests run quiet while iterating (targeted files, failures
-  only), the full suite once at the end, summarized. Fixes from a QA or
-  audit pass land as one batch, not a round per finding. After a deploy
-  or milestone, \`/handoff\` and say it is a clean point to clear the
-  session — state lives in git, TEAM.md, and the specs. Count
-  sub-agents per step in the TEAM.md note beside the tier totals.
+- **Build in fresh-context tasks** (portfolio rule 24; detail lives
+  here, applied with judgment). For a real feature, write small,
+  self-contained task notes from the spec — goal, spec sections to
+  read, files owned, out of scope, how it is verified, what to return —
+  and run each on a fresh sub-agent, sequentially by default and in
+  parallel only when the tasks are truly independent. Your session
+  coordinates: hand off notes, receive short results (outcome, tests,
+  commit), and never pull diffs or test logs into your own context.
+  Small fixes skip the ceremony. A sub-agent that is grinding commits
+  what it has, writes down what is left, and hands off — no numeric
+  context budget decides that; the grinding does. Tests run quiet while
+  iterating (targeted files, failures only), the full suite once at the
+  end, summarized. Fixes from a QA or audit pass land as one batch, not
+  a round per finding. After a deploy or milestone, \`/handoff\` and say
+  it is a clean point to clear the session — state lives in git,
+  TEAM.md, and the specs. Count sub-agents per step in the TEAM.md note
+  beside the tier totals.
 - A brief runs to its completion criterion. A status note travels with
   your next action; the turn ends for a gated item, a blocker, or the
   finished brief — never to summarize a milestone. Run \`/handoff\`
