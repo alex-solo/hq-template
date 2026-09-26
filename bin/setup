@@ -46,7 +46,7 @@ if [ -d "$VENTURES" ]; then ok "$VENTURES"; else mkdir -p "$VENTURES"; made "$VE
 if [ -e "$VENTURES/CLAUDE.md" ]; then ok "ventures/CLAUDE.md"
 else cp "$HQ/templates/ventures-CLAUDE.md" "$VENTURES/CLAUDE.md"; made "ventures/CLAUDE.md"; fi
 mkdir -p "$VENTURES/.claude/skills"
-[ -e "$VENTURES/.claude/settings.json" ] || { echo '{ "autoMemoryEnabled": false }' > "$VENTURES/.claude/settings.json"; made "ventures/.claude/settings.json"; }
+[ -e "$VENTURES/.claude/settings.json" ] || { echo '{ "autoMemoryEnabled": false, "permissions": { "deny": ["mcp__claude-in-chrome"] } }' > "$VENTURES/.claude/settings.json"; made "ventures/.claude/settings.json"; }
 for s in handoff diagnosing-bugs grilling wizard retro wait-what; do
   [ -e "$VENTURES/.claude/skills/$s" ] || ln -s "../../../hq/skills/$s" "$VENTURES/.claude/skills/$s"
 done
