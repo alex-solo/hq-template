@@ -1,0 +1,88 @@
+#!/bin/bash
+# tidy — mechanical hygiene check for the agent team's steering files.
+#
+#   tidy           print one line per problem; nothing when clean
+#   tidy --quiet   same, prefixed for a session-start hook
+#
+# Checks only what a script can decide with certainty. Judgment calls
+# (duplicates, contradictions, stale state) are the weekly sweep's job
+# (`hq sweep`, the /tidy skill). Always exits 0: it reports, it never
+# blocks a session or a commit.
+
+HQ="$HOME/code/business/hq"
+V="$HOME/code/business/ventures"
+out=()
+say() { out+=("$1"); }
+
+# Ventures = team.conf entries, never worktrees or deploy checkouts.
+ventures=$(grep -v '^\s*#' "$HQ/team.conf" | awk -F'|' 'NF>1{print $2}' \
+  | grep "^$V/" | sort -u)
+
+# Steering files: loaded or consulted by agents.
+steering=("$HQ/CLAUDE.md" "$HQ/rules.md" "$HQ/.claude/agents/"*.md \
+  "$HQ/designer/agents/"*.md "$V/CLAUDE.md" "$HQ/skills/"*/SKILL.md)
+memdirs=("$HQ/.claude/agent-memory/"* "$V/.claude/agent-memory/"*)
+for d in $ventures; do
+  steering+=("$d/CLAUDE.md" "$d/.claude/agents/"*.md)
+  memdirs+=("$d/.claude/agent-memory/"*)
+done
+
+# 1. Words the founder banned (rule 1).
+hits=$(grep -l -i 'dogfood' "${steering[@]}" 2>/dev/null
+       for m in "${memdirs[@]}"; do grep -l -i 'dogfood' "$m"/*.md 2>/dev/null; done)
+for h in $hits; do
+  # a memory that exists only to ban the word is allowed to name it
+  grep -q -i 'never.*dogfood\|dogfood.*never' "$h" || say "banned word 'dogfood': ${h#$HOME/}"
+done
+
+# 2. Memory index and files agree; no empty memory dirs.
+names=""
+for m in "${memdirs[@]}"; do
+  [ -d "$m" ] || continue
+  files=$(ls "$m"/*.md 2>/dev/null | grep -v '/MEMORY.md$')
+  if [ -z "$files" ] && [ ! -s "$m/MEMORY.md" ]; then
+    say "empty memory dir: ${m#$HOME/}"; continue
+  fi
+  for f in $files; do
+    b=$(basename "$f")
+    grep -q "($b)" "$m/MEMORY.md" 2>/dev/null || say "memory not in index: ${f#$HOME/}"
+    names="$names $(sed -n 's/^name: *//p' "$f" | head -1)"
+  done
+  grep -o '([^)]*\.md)' "$m/MEMORY.md" 2>/dev/null | tr -d '()' | while read -r l; do
+    [ -f "$m/$l" ] || echo "index points at missing file: ${m#$HOME/}/$l"
+  done
+done
+for m in "${memdirs[@]}"; do
+  for f in "$m"/*.md; do
+    [ -f "$f" ] || continue
+    for l in $(grep -o '\[\[[^]]*\]\]' "$f" | tr -d '[]' | sort -u); do
+      case " $names " in *" $l "*) ;; *) say "link to missing memory [[${l}]]: ${f#$HOME/}";; esac
+    done
+  done
+done
+
+# 3. Auto-memory is off for the team (rule 26): its dirs stay empty.
+for d in "$HQ" $ventures "$V"; do
+  a="$HOME/.claude/projects/$(echo "$d" | sed 's|[/._]|-|g')/memory"
+  ls "$a"/*.md >/dev/null 2>&1 && say "auto-memory has files (should be off): ${a#$HOME/}"
+done
+
+# 4. TEAM.md tails hold the venture's own roles only.
+for d in $ventures; do
+  tail -n 40 "$d/TEAM.md" 2>/dev/null | grep '^## ' | grep -v -E '— (analyst|builder|designer)' \
+    | sed "s|^|TEAM.md tail entry from outside the team (${d##*/}): |" | while read -r l; do echo "$l"; done
+done
+
+# 5. Skill links resolve.
+for l in "$HQ/.claude/skills/"* "$V/.claude/skills/"*; do
+  [ -L "$l" ] && [ ! -e "$l" ] && say "broken skill link: ${l#$HOME/}"
+done
+for d in $ventures; do for l in "$d/.claude/skills/"*; do
+  [ -L "$l" ] && [ ! -e "$l" ] && say "broken skill link: ${l#$HOME/}"
+done; done
+
+# subshell-printed lines (while loops) already went to stdout
+for o in "${out[@]}"; do
+  [ "${1:-}" = "--quiet" ] && echo "tidy: $o" || echo "$o"
+done
+exit 0

@@ -3,7 +3,13 @@
     "playwright": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@0.0.81", "--isolated"]
+      "args": [
+        "-y",
+        "@playwright/mcp@0.0.81",
+        "--isolated",
+        "--output-dir",
+        "/tmp/playwright-mcp"
+      ]
     }
   }
 }

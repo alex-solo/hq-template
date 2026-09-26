@@ -9,7 +9,8 @@
 #      accounts.md, rules.md,
 #      journal.md) from templates/ if they don't exist yet
 #   4. writes team.conf (mentor + plumber + designer) if it doesn't exist yet
-#   5. symlinks skills/* into ~/.claude/skills/
+#   5. removes any machine-wide skill links (skills load per project)
+#      and installs the weekly sweep (launchd, Sundays 09:00)
 #   6. adds the `hq` and `team` aliases to your shell rc
 #
 # The clone must live at ~/code/business/hq — every script assumes it.
@@ -41,6 +42,15 @@ else warn "neither tmux nor iTerm found — 'hq team' can't open sessions; brew 
 
 echo "directories"
 if [ -d "$VENTURES" ]; then ok "$VENTURES"; else mkdir -p "$VENTURES"; made "$VENTURES"; fi
+# Shared by every venture session and the designer: the rules import,
+# auto-memory off, and the designer's skill links (one copy, in hq).
+if [ -e "$VENTURES/CLAUDE.md" ]; then ok "ventures/CLAUDE.md"
+else cp "$HQ/templates/ventures-CLAUDE.md" "$VENTURES/CLAUDE.md"; made "ventures/CLAUDE.md"; fi
+mkdir -p "$VENTURES/.claude/skills"
+[ -e "$VENTURES/.claude/settings.json" ] || { echo '{ "autoMemoryEnabled": false }' > "$VENTURES/.claude/settings.json"; made "ventures/.claude/settings.json"; }
+for s in handoff diagnosing-bugs grilling wizard retro wait-what; do
+  [ -e "$VENTURES/.claude/skills/$s" ] || ln -s "../../../hq/skills/$s" "$VENTURES/.claude/skills/$s"
+done
 
 echo "private files (created from templates/ when missing)"
 for f in founder.md ventures.md ideas.md journal.md accounts.md rules.md; do
@@ -65,14 +75,30 @@ EOF
   made "team.conf (mentor + plumber + designer; hq new adds ventures)"
 fi
 
-echo "skills → ~/.claude/skills"
-mkdir -p "$HOME/.claude/skills"
-for d in "$HQ"/skills/*/; do
-  name=$(basename "$d"); link="$HOME/.claude/skills/$name"
-  if [ -L "$link" ] && [ "$(readlink "$link")" = "${d%/}" ]; then ok "$name"
-  elif [ -e "$link" ]; then warn "$name: $link exists and is not our symlink — left alone"
-  else ln -s "${d%/}" "$link"; made "$name"; fi
+echo "skills"
+# Skills load per project (relative links in hq/.claude/skills, ventures'
+# .claude/skills), never machine-wide. Remove links an older setup made.
+for l in "$HOME/.claude/skills"/*; do
+  [ -L "$l" ] && case "$(readlink "$l")" in "$HQ"/skills/*) rm "$l"; made "removed machine-wide link $(basename "$l")";; esac
 done
+ok "per-project links (no machine-wide skills)"
+
+echo "weekly sweep"
+PLIST="$HOME/Library/LaunchAgents/local.hq.sweep.plist"
+if [ -e "$PLIST" ]; then ok "launchd job (Sundays 09:00)"
+else
+  mkdir -p "$HOME/Library/LaunchAgents"
+  cat > "$PLIST" <<PL
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>local.hq.sweep</string>
+  <key>ProgramArguments</key><array><string>/bin/bash</string><string>-lc</string><string>$HQ/bin/sweep</string></array>
+  <key>StartCalendarInterval</key><dict><key>Weekday</key><integer>0</integer><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
+</dict></plist>
+PL
+  launchctl load "$PLIST" 2>/dev/null && made "launchd job (Sundays 09:00; runs at wake if the Mac slept)"
+fi
 
 echo "shell aliases"
 case "${SHELL:-}" in */zsh) RC="$HOME/.zshrc" ;; */bash) RC="$HOME/.bashrc" ;; *) RC="$HOME/.profile" ;; esac

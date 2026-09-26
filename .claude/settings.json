@@ -22,17 +22,5 @@
       "Edit(~/code/business/ventures/*/.env*)"
     ]
   },
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "tail -n 30 journal.md 2>/dev/null || true",
-            "statusMessage": "Loading journal"
-          }
-        ]
-      }
-    ]
-  }
+  "autoMemoryEnabled": false
 }

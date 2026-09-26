@@ -25,9 +25,3 @@ words where recorded.
 ## Every builder
 
 6. **Everything is tested**; adapters at every seam (2026-03-04).
-
-## Changelog
-
-- 2026-03-20 — v1.1: rule 5 added after a venture asked for a second
-  messaging-provider login.
-- 2026-03-11 — v1: created.

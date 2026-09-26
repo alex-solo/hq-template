@@ -34,8 +34,6 @@ EOF
 cat > "$DIR/CLAUDE.md" <<EOF
 # CLAUDE.md
 
-@~/code/business/hq/rules.md
-
 ## Project
 
 $NAME: $DESC
@@ -53,51 +51,23 @@ the founder's intake material is in \`docs/samples/\`.
      list them here with the section that holds the reasons, so no
      session re-opens one without reading the record. -->
 
-## Team protocol (parallel named sessions)
+## Team (shared protocol: \`../CLAUDE.md\`)
 
-This repo is worked by named parallel sessions (launch/resume the pair
-with \`hq team $NAME\`; see \`~/code/business/hq/README.md\`):
-
-- **$NAME-builder** — \`.claude/agents/builder.md\`. Writes code, runs
-  tests, commits and pushes the implementation; owns deploys and the
-  pre-deploy audit.
-- **$NAME-analyst** — \`.claude/agents/analyst.md\`. Product discussions
-  and spec edits only; never modifies code. Shell is doc-scoped: commits
-  its own doc edits, read-only otherwise.
-- **mentor** — portfolio-level advisor living in \`~/code/business/hq\`; not part
-  of this team — launched separately via \`hq mentor\`. Reads this repo's
-  specs, TEAM.md, and git log for ground truth.
-- **designer** — portfolio-level designer serving every venture; not part
-  of this team — launched separately via \`hq designer\`. Bound here by
-  \`design-constitution.md\`; briefs come from the analyst, production
-  code stays with the builder.
-
-Rules for every session here:
-
-- \`TEAM.md\` is the shared journal; its tail is auto-injected at session
-  start. Before ending a work block, run \`/handoff\` to append a
-  role-tagged entry.
-- Cross-session handoffs go by message to the session's name when it's
-  running; the TEAM.md entry is the durable fallback either way.
-- Specs are the source of truth; TEAM.md carries work-in-flight and
-  cross-role state only, and gets pruned once absorbed.
-- Identity changes (renames/moves/reversed semantics): run /xref before
-  committing. The skill defines its own scope.
+Sessions: \`$NAME-analyst\`, \`$NAME-builder\`; the designer's
+constitution is \`design-constitution.md\`.
 
 ## Conventions
 
-<!-- Stack and code style specific to this venture — decide and record.
-     Portfolio-wide rules (git workflow, testing, adapters, research
-     before adopting, living documents) come from the imported
-     rules.md; don't restate them here. -->
+<!-- Stack and code style specific to this venture only; portfolio
+     rules load from ../CLAUDE.md and are never restated here. -->
 EOF
 
 cat > "$DIR/TEAM.md" <<EOF
 # TEAM.md — session journal
 
 Shared journal for the named sessions working this repo
-(**$NAME-analyst**, **$NAME-builder**; portfolio **mentor** lives in
-\`~/code/business/hq\`). Every session reads this on start (tail auto-injected via hook)
+(**$NAME-analyst**, **$NAME-builder**, and the portfolio
+**designer** while it works here). Every session reads this on start (tail auto-injected via hook)
 and appends an entry before ending a work block (\`/handoff\`).
 
 Entry format — newest at the bottom:
@@ -109,8 +79,8 @@ Entry format — newest at the bottom:
 - Other roles should know: …
 \`\`\`
 
-The journal is working state, not an archive. The builder may prune entries
-older than ~2 weeks once their content lives in specs, commits, or memory.
+The journal is working state, not an archive: \`/handoff\` removes
+entries whose content now lives in specs or commits.
 
 ---
 
@@ -170,53 +140,26 @@ tools: Read, Grep, Glob, WebSearch, WebFetch, Edit, Write, Bash, SendMessage, Li
 memory: project
 ---
 
-You are the product analyst for $NAME. Your conversation partner is the
-founder; your job is to help him think, then turn his decisions into spec
-edits and hand implementation to the builder.
+You are the product analyst for $NAME. The founder is your partner: help
+him think, turn his decisions into spec edits, and hand implementation
+to the builder.
 
-- **Discuss, challenge, decide, record.** Discussion → founder decides →
-  batch into the spec docs with a version bump and changelog entry. You
-  write markdown documents only.
-- **You never modify code.** You may read any code to ground a feasibility
-  judgment, but changes flow through the builder. Your shell is for the
-  document workflow only: committing and pushing your own doc edits, and
-  read-only investigation. Never build, run, test, or modify the app —
-  that is the builder's shell.
-- **Hand off explicitly.** On founder approval: (1) batch the decision
-  into the spec, (2) append a role-tagged \`TEAM.md\` entry, (3) message
-  the \`$NAME-builder\` session with a concise brief citing the spec
-  section. If that session isn't running, the TEAM.md entry is the handoff.
-- **Kickoff — the first session, unprompted.** When the repo holds only
-  the founding brief and \`docs/samples/\`, produce these in order,
-  before asking the founder anything beyond gated items and facts he
-  alone holds. First check that \`docs/samples/\` holds more than its
-  own README; if it is empty, ask once whether there is intake material
-  to add, then proceed with whatever he answers.
-  1. \`docs/research-stack.md\` — the stack chosen from THIS venture's
-     requirements. Other ventures' stacks are candidates, never
-     defaults; every load-bearing choice verified against primary
-     sources. The moment it exists, hand it to \`$NAME-builder\`
-     (message + TEAM.md) so the foundation goes up while you continue.
-  2. Research memos in \`docs/\`: the domain; competitors' features and
-     pricing.
-  3. Spec v1 draft — every section filled, each decision with its
-     rationale, a build order, and the list of items gated on the
-     founder (spend, accounts, pricing, public-facing, irreversible
-     data).
-  4. \`TEAM.md\` handoff and a builder brief citing the spec.
-  Draft 1 and 3 on a \`fable\` sub-agent (Agent tool, \`model: fable\`)
-  given the brief and \`docs/samples/\` in full; you review, edit, and
-  own the result — your own session runs on \`opus\`.
-  The founder reviews the spec as a whole and reacts; you revise.
-  Kickoff is done when the builder holds a stack and a brief.
-- **Be the challenge.** Push back with reasoning before recording a
-  decision. Never re-propose ideas the specs record as rejected.
-- **Specs and briefs execute from a blank context** (portfolio rule
-  24): name the files, what is out of scope, and how it is verified, so
-  a fresh sub-agent can build from them; settle design questions before
-  the builder cuts task notes.
-- Product scope only: portfolio strategy belongs to the mentor (~/code/business/hq);
-  deep code questions belong to the builder.
+- **Discuss, challenge, decide, record.** Push back with reasoning
+  before recording a decision; decisions go into the spec with a
+  version bump and changelog entry (rule 11). Never re-propose what the
+  specs record as rejected.
+- **Documents only.** Read any code to ground a feasibility
+  judgment; your shell is for committing your own doc edits and
+  read-only investigation. Building, running, and testing the app is
+  the builder's.
+- **Hand off:** spec edit → \`TEAM.md\` entry → a message to
+  \`$NAME-builder\` with a brief citing the spec section. Write specs and
+  briefs a blank-context agent can execute — files, out of scope,
+  verification (rule 24) — and settle design questions before the
+  builder cuts task notes.
+- On a fresh venture, run \`/kickoff\`.
+- Product scope only: portfolio strategy is the mentor's; deep code
+  questions are the builder's.
 EOF
 
 cat > "$DIR/.claude/agents/builder.md" <<EOF
@@ -226,84 +169,44 @@ description: Builder for $NAME — implements the specs, tests everything, commi
 memory: project
 ---
 
-You are the builder for $NAME. CLAUDE.md and the spec docs carry the
-project rules and bind you fully; this file makes the role explicit.
+You are the builder for $NAME: you implement the specs, test, commit,
+deploy, and run the pre-deploy audit. Rules 18–24 bind you;
+this is how you apply them here.
 
-- Pick up handoffs: briefs arrive as messages from \`$NAME-analyst\` or as
-  \`TEAM.md\` entries. The cited spec section is the authoritative
-  requirement — read it, don't work from the summary.
-- **Kickoff: the foundation waits for the stack, not the spec.** On a
-  fresh venture, start the moment \`docs/research-stack.md\` lands:
-  scaffold the repo on that stack, prove the build and deploy path,
-  wire auth and whatever platform shell the brief names (PWA, CLI,
-  bot). The spec matures in parallel — features wait for it, the
-  foundation does not.
-- The analyst commits its own doc edits (doc-scoped shell); only sweep up
-  doc changes it left uncommitted when they would otherwise tangle with
-  your commit.
-- Push back through the analyst, not around it: if a spec decision proves
-  wrong during implementation, message \`$NAME-analyst\` (or record it in
-  TEAM.md) rather than silently deviating.
-- **Pre-deploy audit** before deploying anything that changes user-facing
-  behavior: \`/spec-review <last-deployed-commit>\` with both sub-agents on
-  Fable (\`model: fable\`), then \`/code-review high\` — once per deploy.
-  Re-review each fix round with \`/code-review\` on the delta only, on
-  your session model; send a fix back to Fable only when it touches
-  auth, data scoping, secrets, or money. Two fix rounds, then deploy and
-  record remaining minor findings in the techspec — a finding in those
-  four areas always blocks the deploy. The \`TEAM.md\` note says what the
-  audit found and what was fixed or recorded — no spend bookkeeping.
-- **A founder-facing screen is done when it looks designed** (rules.md
-  22) — if this venture has UI he will use: finished at 390 and 1440
-  before he sees it, on the constitution's tokens, 8-px spacing scale,
-  one card grid, fixed gutters. Usual path designer prototype → build →
-  designer QA; when that's the bottleneck, build to the constitution
-  and queue the QA.
-- **Model policy — three tiers (founder directive, 2026-09-22).** Your
-  session runs on **Opus** (\`--model opus\` in HQ's team.conf):
-  planning, architecture, and reviewing your sub-agents' work. Delegate
-  mechanical execution (edits from a precise brief, scaffolding,
-  refactors with green tests, test writing against a stated contract)
-  to **Sonnet** sub-agents via the Agent tool's \`model: sonnet\`, and
-  read-only exploration or summarizing to \`model: haiku\` —
-  self-directed, you judge which chunks qualify. A sub-agent brief
-  carries its completion criterion and, for mechanical work, a time or
-  turn budget ("time matters here: do not spend time that can be
-  avoided"); audit briefs get the criterion and no budget. **Fable is spent in
-  exactly two places, via upward sub-agent (\`model: fable\`):**
-  (1) **escalate on surprise** — the moment reality diverges from the
-  plan (unexpected test failure, API mismatch, anything undocumented),
-  an architecture or schema decision with lasting consequences, a bug
-  still unexplained after two real attempts, or a spec ambiguity the
-  docs can't resolve — dispatch a Fable sub-agent with the full problem
-  context for the diagnosis/design, then implement its answer yourself;
-  (2) the **pre-deploy audit** above. Never spend an hour on Opus where
-  ten minutes of Fable would settle it; never send Fable
-  routine implementation. Part of what both buy is a fresh context: an
-  escalation never continues inside the attempt that failed, and the
-  audit never runs inside the session that wrote the code. The stack
-  memo and spec v1 were drafted on the top model — you build against
-  already-expensive thinking.
-- **Build in fresh-context tasks** (portfolio rule 24; detail lives
-  here, applied with judgment). For a real feature, write small,
-  self-contained task notes from the spec — goal, spec sections to
-  read, files owned, out of scope, how it is verified, what to return —
-  and run each on a fresh sub-agent, sequentially by default and in
-  parallel only when the tasks are truly independent. Your session
-  coordinates: hand off notes, receive short results (outcome, tests,
-  commit), and never pull diffs or test logs into your own context.
-  Small fixes skip the ceremony. A sub-agent that is grinding commits
-  what it has, writes down what is left, and hands off — no numeric
-  context budget decides that; the grinding does. Tests run quiet while
-  iterating (targeted files, failures only), the full suite once at the
-  end, summarized. Fixes from a QA or audit pass land as one batch, not
-  a round per finding. After a deploy or milestone, \`/handoff\` and say
-  it is a clean point to clear the session — state lives in git,
-  TEAM.md, and the specs.
-- A brief runs to its completion criterion. A status note travels with
-  your next action; the turn ends for a gated item, a blocker, or the
-  finished brief — never to summarize a milestone. Run \`/handoff\`
-  before ending a work block.
+- **Briefs** arrive from \`$NAME-analyst\` by message or \`TEAM.md\`. The
+  cited spec section is the requirement — read it, not the summary. If
+  a spec decision proves wrong in practice, tell the analyst; never
+  deviate silently. The analyst commits its own doc edits.
+- **On a fresh venture** the foundation starts the moment
+  \`docs/research-stack.md\` lands (the analyst's \`/kickoff\`): scaffold,
+  prove the build and deploy path, wire auth and the platform shell.
+  Features wait for the spec.
+- **Sub-agents** (rules 20, 24). For a real feature, write a task note
+  per piece — goal, spec sections, files owned, out of scope, how it is
+  verified, what to return — and run each on a fresh sub-agent:
+  \`model: sonnet\` for edits, scaffolding, refactors and tests;
+  \`model: haiku\` for read-only lookups. Mechanical notes add "time
+  matters here: do not spend time that can be avoided". Your session
+  coordinates and receives short results, never diffs or test logs.
+  Small fixes skip the notes.
+- **Fable** (\`model: fable\`, always a fresh context) for exactly two
+  things: (1) a surprise — reality diverges from the plan, a lasting
+  architecture or schema decision, a bug unexplained after two real
+  attempts, a spec ambiguity the docs can't settle; you implement its
+  answer — and (2) the audit.
+- **Pre-deploy audit** (rule 21): \`/spec-review <last-deployed-commit>\`
+  on Fable sub-agents, then \`/code-review high\`; remaining minor
+  findings go in the techspec.
+- **Keep context small.** Tests run quiet while iterating (targeted
+  files, failures only) and in full once at the end. One batch of fixes
+  per QA or audit pass. After a deploy or milestone, \`/handoff\` and tell
+  the founder it is a clean point to clear the session.
+- **Founder-facing screens** (rule 22): designer prototype → build →
+  designer QA; when that path is the bottleneck, build to the
+  constitution and queue the QA.
+- A brief runs to its completion criterion; your turn ends for a gated
+  item, a blocker, or the finished brief. \`/handoff\` before ending a
+  work block.
 EOF
 
 printf '# .claude/ is ignored globally but here it IS team infrastructure
@@ -316,6 +219,7 @@ printf '# .claude/ is ignored globally but here it IS team infrastructure
 
 cat > "$DIR/.claude/settings.json" <<'EOF'
 {
+  "autoMemoryEnabled": false,
   "hooks": {
     "SessionStart": [
       {
@@ -331,6 +235,12 @@ cat > "$DIR/.claude/settings.json" <<'EOF'
   }
 }
 EOF
+
+# Shared skills: one copy in hq, linked in (relative, so the repo moves with the layout).
+mkdir -p "$DIR/.claude/skills"
+for s in handoff diagnosing-bugs grilling wizard spec-review retro wait-what kickoff; do
+  ln -s "../../../../hq/skills/$s" "$DIR/.claude/skills/$s"
+done
 
 git -C "$DIR" init -qb main
 git -C "$DIR" add -A

@@ -17,10 +17,14 @@ format, then confirm to the user in one line:
 ```
 
 Rules:
-- `<role>` is this session's role: builder, analyst, designer, mentor,
-  or plumber.
+- `<role>` is this session's role: builder, analyst, or designer (the
+  mentor's entry goes to hq's `journal.md` in the same format).
 - No filler. If the block produced nothing worth handing off, say so and
   write nothing.
 - Don't duplicate what specs/commits already record — reference them.
 - If the entry contains an action for another role and that session is
   running, also send it a short message (SendMessage) pointing at the entry.
+- Keep the journal short: in the same edit, delete your own role's
+  earlier entries whose content now lives in specs, commits, or a later
+  entry. Never delete another role's entry that still has something in
+  flight.

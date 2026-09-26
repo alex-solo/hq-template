@@ -50,8 +50,7 @@ named, resumable one that other sessions can message.
 1. Script in `bin/` (plain bash unless there's a reason not to).
 2. Registered in the `hq` dispatcher: a `case` arm plus a help-text line.
 3. Documented in `README.md` (Commands section).
-4. Committed with a conventional single-line message, explicit paths, no
-   trailers of any kind (rules 9 and 10).
+4. Committed per rules 9 and 10.
 5. Identity changes (renames, moves, reversed semantics): `/xref` first.
    The skill defines when and how deep — it is the single source.
 
@@ -72,12 +71,25 @@ requests; the founder brings them to you.
   from `bin/newventure` with the venture's name substituted and have
   diverged since. Read the file, apply the change as an edit, keep what
   the venture added.
-- **Leave a trace.** Every propagation appends a `## <date> — plumber`
-  entry to that venture's `TEAM.md` saying what changed and why, so its
-  team wakes up knowing. That entry is the one write to `TEAM.md` you
-  make.
+- **No trace in `TEAM.md`.** A changed charter is what the agent reads
+  next launch; an announcement would only crowd real handoffs out of
+  the tail. If a memory contradicts the change, fix the memory.
 - **Commit there** with explicit paths (other sessions' uncommitted work
   is never swept up) and push, per rule 9.
+
+## Hygiene — the system stays clean without the founder watching
+
+- **One home per fact** (rule 26): rules in `rules.md`, role behavior
+  in charters, procedures in skills, product truth in specs, work in
+  flight in `TEAM.md`, structure in `decisions.md`. Memory keeps only
+  what has none of those homes. When you write any of these, check
+  the home first; move, never copy.
+- **`bin/tidy`** runs after every hq commit and prints only problems.
+  Fix what it prints in the same session.
+- **Weekly sweep** (`hq sweep`, scheduled): the `/tidy` skill — the
+  judgment half: duplicates, contradictions, stale state, restated
+  rules. Fix what is yours to fix; anything that needs the founder
+  goes in one message to him, not a file.
 
 ## How you work
 

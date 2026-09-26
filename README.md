@@ -51,15 +51,16 @@ rather than things you remember to manage.
 │   ├── accounts.md                external accounts registry     (private)
 │   ├── rules.md                   portfolio-wide founder rules   (private)
 │   ├── hq, bin/                   the commands
-│   ├── skills/                    machine-wide skills (symlinked in)
+│   ├── skills/                    shared skills (linked per project)
 │   ├── designer/                  the designer's bundle
 │   └── example/, templates/       what the private files look like
 └── ventures/
+    ├── CLAUDE.md                  imports rules.md; shared team protocol
     ├── <venture-a>/               its own git repo
-    │   ├── CLAUDE.md                project rules + team protocol
+    │   ├── CLAUDE.md                this venture's rules and files
     │   ├── TEAM.md                  the venture's shared journal
     │   ├── design-constitution.md   binds the designer here
-    │   └── .claude/agents/          analyst.md, builder.md
+    │   └── .claude/                 agents/ (analyst, builder), skill links
     └── <venture-b>/ …
 ```
 
@@ -68,7 +69,7 @@ rather than things you remember to manage.
 | Session | Lives in | Does | May not |
 |---|---|---|---|
 | **`mentor`** | `hq/` | Business and entrepreneurship advisor with context on every project. Reads every venture repo, challenges ideas, keeps the registry, journal, and kill criteria. Records your goals when you state them and weighs advice against them. | Edit anything under `ventures/` (permission-enforced). Touch the machinery — that's the plumber. |
-| **`plumber`** | `hq/` | Keeps the machinery working: scripts, charters, skills, templates, permission rules, the public template mirror. Propagates a rule or charter change into every venture's `.claude/` and `CLAUDE.md`, leaving a `TEAM.md` line. A bare `claude` in `hq/` runs as the plumber. | Write the mentor's books (`founder.md`, `ventures.md`, `ideas.md`, `journal.md`, `accounts.md`). Touch a venture's code, specs, docs, or secrets (permission-enforced). |
+| **`plumber`** | `hq/` | Keeps the machinery working: scripts, charters, skills, templates, permission rules, the public template mirror. Propagates a rule or charter change into every venture's `.claude/` and `CLAUDE.md`, and keeps charters and memory free of repeats (`hq tidy`, weekly `hq sweep`). A bare `claude` in `hq/` runs as the plumber. | Write the mentor's books (`founder.md`, `ventures.md`, `ideas.md`, `journal.md`, `accounts.md`). Touch a venture's code, specs, docs, or secrets (permission-enforced). |
 | **`<venture>-analyst`** | that venture | Product thinking: discussion → decision → spec edit with a version bump → brief to the builder. | Touch code. Its shell is doc-scoped. |
 | **`<venture>-builder`** | that venture | Implements the cited spec section, tests, commits, pushes. Pushes back through the analyst when a spec is wrong. | Silently deviate from the spec. |
 | **`designer`** | `ventures/` | One designer for all ventures — one accumulated taste. Design systems, screen specs, prototypes; opens built UI in a browser and reviews it before presenting. | Write production code (that's the builder's). Read anything outside `ventures/`. |
@@ -95,8 +96,14 @@ the product, the mentor reasons about allocation.
 
 - **Files are the memory, not the chat.** Specs, `TEAM.md`, `ventures.md`,
   `journal.md`: every session reads the relevant files on start (a hook
-  injects the journal tail), and anything decided gets written down
+  injects the tail of `TEAM.md`, or the journal for the mentor), and anything decided gets written down
   before the session ends (`/handoff`). Closing a terminal loses nothing.
+- **One home per fact.** Rules live in `rules.md`, how a role works in
+  its charter, procedures in skills, product truth in specs, work in
+  flight in `TEAM.md`. Agent memory keeps only what has none of those
+  homes, so nothing is said twice and nothing contradicts. `hq tidy`
+  checks this mechanically after every hq commit; a weekly plumber
+  sweep (`hq sweep`) handles what needs judgment.
 - **Separation is enforced, not requested.** The mentor's read-only
   access to ventures is a permission rule, not a sentence in a prompt.
   The analyst's shell is scoped to documents. The designer physically
@@ -191,8 +198,8 @@ The clone must live at `~/code/business/hq` — every script assumes it.
 1. **`bin/setup`** (mechanical, idempotent, re-run any time): checks
    prerequisites, creates `~/code/business/ventures`, creates the private
    files from `templates/` (empty — the mentor fills them in as it
-   learns), writes `team.conf` with the mentor, plumber and designer, symlinks
-   `skills/` into `~/.claude/skills/`, adds the `hq` and `team` aliases
+   learns), writes `team.conf` with the mentor, plumber and designer,
+   creates `ventures/CLAUDE.md`, installs the weekly sweep, adds the `hq` and `team` aliases
    to your shell rc.
 2. **Opens your first mentor session.** It knows nothing about you yet.
    There is no interview: tell it what you want, when you want. Goals
@@ -209,9 +216,8 @@ Then, in a new shell:
   `ventures.md`. Let the mentor challenge the thesis before serious
   building starts.
 - **`hq team <name>`** — the venture's sessions. On the first launch,
-  Claude Code asks to approve an *external import*: the venture's
-  `CLAUDE.md` imports `hq/rules.md`, which sits outside the venture's
-  directory. Approve it. Declining disables the portfolio rules in that
+  Claude Code asks to approve an *external import*: `ventures/CLAUDE.md`
+  imports `hq/rules.md`, which sits outside the venture's directory. Approve it. Declining disables the portfolio rules in that
   venture, and the dialog doesn't come back.
 
 Your clone is your private hq. Point `origin` at a private remote of
@@ -272,6 +278,16 @@ files because those don't exist upstream.
 - **`hq publish`** — mirror the shareable files of this hq into a
   public template checkout for others to clone (`bin/publish` documents
   the allowlist and the leak check; `--check` runs the leak test only).
+- **`hq tidy`** — the mechanical hygiene check: banned words, memory
+  indexes out of step with their files, links to missing memories,
+  auto-memory switched back on, `TEAM.md` tails holding entries from
+  outside the team, broken skill links. Prints only problems; runs
+  after every hq commit.
+- **`hq sweep`** — the plumber's judgment sweep (`/tidy`) run headless:
+  restated rules, contradictions, stale state, guesses stored as facts.
+  `hq setup` schedules it weekly (launchd, Sundays 09:00, catches up at
+  wake); the result is one macOS notification and
+  `.team-state/sweep.log`.
 
 `team` is a shell alias for `hq team` — so `team <venture>` works too.
 
@@ -302,8 +318,11 @@ files because those don't exist upstream.
   (a path or variable name, never a value), and standing spend
   approvals. Venture agents read it before asking you for an account.
   Private.
+- `rules-changelog.md` — history of `rules.md`, kept out of it so the
+  history never loads into a session. Private.
 - `rules.md` — the founder's standing rules, dated, one file for the
-  whole portfolio: every venture `CLAUDE.md` imports it, so a rule
+  whole portfolio: `ventures/CLAUDE.md` imports it for every venture
+  and the designer, so a rule
   stated in one venture binds all of them the same day. Venture files
   and agent memories keep venture-specific facts only. Private.
 - `templates/` — the empty private files `setup` creates on a fresh
@@ -318,10 +337,13 @@ files because those don't exist upstream.
   pinned instead (see `web-design-guidelines/SKILL.md` for the pattern).
   To update `frontend-design`: re-copy from github.com/anthropics/skills.
 - `bin/` — the scripts behind `hq` subcommands.
-- `skills/` — canonical machine-wide skills, symlinked into
-  `~/.claude/skills/` so they load in every session. ONE copy each: edit
-  here, git-versioned here, live everywhere instantly. Current roster:
-  `/handoff`, `/xref` (team protocol); `/grilling` (design-tree
+- `skills/` — the shared skills, one copy each, linked (relative
+  symlinks) into the projects that use them: `hq/.claude/skills/`,
+  `ventures/.claude/skills/` for the designer, and each venture's
+  `.claude/skills/`. They load only in team sessions, never machine-wide.
+  Roster: `/handoff` (team protocol; prunes absorbed entries);
+  `/kickoff` (a new venture's first analyst session); `/xref`
+  (identity changes, hq only); `/grilling` (design-tree
   interview, rounds with recommended answers); `/wizard` (bash walkthrough
   for founder-gated setup steps); `/diagnosing-bugs` (tight-loop
   discipline); `/retro` (agent-environment retrospective, user-invoked);
@@ -379,15 +401,15 @@ files because those don't exist upstream.
   audit — Fable is the strongest tier, and a fresh context is part of
   what those two uses buy. Analysts draft kickoff artifacts on a Fable
   sub-agent.
-- **Skills** — drop a folder into `skills/`, run `hq setup` to symlink
-  it. Read any third-party skill before installing it; a skill is
+- **Skills** — drop a folder into `skills/` and link it into the
+  projects that need it (`hq plumber` does this). Read any third-party skill before installing it; a skill is
   instructions your agents will follow.
 - **Tooling changes** — `hq plumber` (or any bare `claude` in `hq/`).
   The mentor never touches scripts, and venture sessions never relay
   them. The plumber's charter carries the five-step protocol (script in
   `bin/`, register in `hq`, document here, commit, `/xref` after
   renames) and the propagation rule (edit each venture's `.claude/` and
-  `CLAUDE.md`, never overwrite; leave a `TEAM.md` line; fix the scaffold
+  `CLAUDE.md`, never overwrite; fix the scaffold
   in the same change). A command exists only when all five are done.
   Routing a tooling request through an analyst costs that venture a
   relaunch.

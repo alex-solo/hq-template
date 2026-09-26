@@ -33,5 +33,3 @@ Two roles work here, each a named resumable session with its charter in
   and the portfolio are the mentor's and go to `journal.md`; decisions
   about this repo's own structure and tooling are the plumber's and go
   to `decisions.md`. Never the other way round.
-- Commits here: conventional single-line message, explicit paths, no
-  trailers of any kind (rules 9 and 10).

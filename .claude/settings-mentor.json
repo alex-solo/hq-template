@@ -3,5 +3,18 @@
     "deny": [
       "Edit(~/code/business/ventures/**)"
     ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "tail -n 30 journal.md 2>/dev/null || true",
+            "statusMessage": "Loading journal"
+          }
+        ]
+      }
+    ]
   }
 }

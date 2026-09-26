@@ -3,3 +3,5 @@
 # Installed by hand (hooks aren't versioned): ln -s ../../bin/post-commit .git/hooks/post-commit
 # Never fails the commit — publish's own refusal/offline messages are enough.
 "$HOME/code/business/hq/bin/publish" || true
+# Mechanical hygiene check after every hq commit; prints only problems.
+"$HOME/code/business/hq/bin/tidy" || true
