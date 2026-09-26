@@ -19,9 +19,8 @@ description: "Review the changes since a fixed point (commit, branch, tag, or me
 > `/code-review high` for correctness. The audit is one of the two
 > places the charter spends the top model; running it at your own tier,
 > or inside the session that wrote the code, defeats the point. Findings
-> are fixed or recorded per rule 21, and the audit is noted in `TEAM.md`
-> with sub-agent runs by tier and token totals where the result shows
-> them.
+> are fixed or recorded per rule 21, and the `TEAM.md` note says what
+> the audit found and what was fixed or recorded — no spend bookkeeping.
 
 Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
