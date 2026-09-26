@@ -15,6 +15,7 @@ checkouts.
 2. Read every memory file. Each must hold a non-obvious lesson for its
    role in its venture, or a pointer — nothing that `rules.md`, a
    charter, a skill, a spec, or `TEAM.md` already says (rule 26).
+   Translate any quote of the founder into plain language (rule 26).
    Delete restatements; delete project state (it belongs in specs and
    `TEAM.md`); delete anything written as fact that the founder only
    floated, and any guess about what he did or thinks. Keep the index
