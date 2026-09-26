@@ -208,7 +208,11 @@ Then, in a new shell:
   scaffolded repo under `ventures/<name>` registered in `team.conf` and
   `ventures.md`. Let the mentor challenge the thesis before serious
   building starts.
-- **`hq team <name>`** — the venture's sessions.
+- **`hq team <name>`** — the venture's sessions. On the first launch,
+  Claude Code asks to approve an *external import*: the venture's
+  `CLAUDE.md` imports `hq/rules.md`, which sits outside the venture's
+  directory. Approve it. Declining disables the portfolio rules in that
+  venture, and the dialog doesn't come back.
 
 Your clone is your private hq. Point `origin` at a private remote of
 your own and commit your journal there. Template updates come in with

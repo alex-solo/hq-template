@@ -357,6 +357,8 @@ EOF
 echo "Scaffolded $DIR"
 echo "Registered sessions: $NAME-analyst, $NAME-builder (in team.conf)"
 echo "Next: drop intake material into $DIR/docs/samples/, then run 'team'."
+echo "First launch asks to approve an external import of hq/rules.md: approve it."
+echo "Declining disables the portfolio rules in this venture, and the dialog never returns."
 echo "The analyst runs its kickoff unprompted (stack → memos → spec v1 draft);"
 echo "the builder starts on the stack the moment research-stack.md lands."
 echo "Your job: react to the spec draft as a whole; the mentor sets kill criteria with you in parallel."
