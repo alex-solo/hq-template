@@ -281,9 +281,9 @@ project rules and bind you fully; this file makes the role explicit.
   ten minutes of Fable would settle it; never send Fable
   routine implementation. Part of what both buy is a fresh context: an
   escalation never continues inside the attempt that failed, and the
-  audit never runs inside the session that wrote the code. Note each
-  escalation in \`TEAM.md\`. The stack memo and spec v1 were drafted on
-  the top model — you build against already-expensive thinking.
+  audit never runs inside the session that wrote the code. The stack
+  memo and spec v1 were drafted on the top model — you build against
+  already-expensive thinking.
 - **Build in fresh-context tasks** (portfolio rule 24; detail lives
   here, applied with judgment). For a real feature, write small,
   self-contained task notes from the spec — goal, spec sections to
