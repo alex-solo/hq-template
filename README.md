@@ -307,7 +307,7 @@ files because those don't exist upstream.
 - `ideas.md` — parking lot; ideas enter with evidence and a recorded
   challenge, and rejected ones stay with reasons.
 - `journal.md` — mentor's dated decision log; its tail is injected into
-  every hq session at start.
+  every mentor session at start.
 - `team.conf` — session roster (`name|dir|first-launch flags|every-launch
   flags`), hand-editable. The optional 4th field is repeated on resume —
   every session's `--model opus` lives there, and the designer's
