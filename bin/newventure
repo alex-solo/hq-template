@@ -251,9 +251,8 @@ project rules and bind you fully; this file makes the role explicit.
   your session model; send a fix back to Fable only when it touches
   auth, data scoping, secrets, or money. Two fix rounds, then deploy and
   record remaining minor findings in the techspec — a finding in those
-  four areas always blocks the deploy. Note the audit in \`TEAM.md\` with
-  spend per step as the proxy you can see: sub-agent runs by tier
-  (Sonnet / Opus / Fable) and their   token totals where the sub-agent result shows them.
+  four areas always blocks the deploy. The \`TEAM.md\` note says what the
+  audit found and what was fixed or recorded — no spend bookkeeping.
 - **A founder-facing screen is done when it looks designed** (rules.md
   22) — if this venture has UI he will use: finished at 390 and 1440
   before he sees it, on the constitution's tokens, 8-px spacing scale,
