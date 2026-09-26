@@ -300,8 +300,7 @@ project rules and bind you fully; this file makes the role explicit.
   end, summarized. Fixes from a QA or audit pass land as one batch, not
   a round per finding. After a deploy or milestone, \`/handoff\` and say
   it is a clean point to clear the session — state lives in git,
-  TEAM.md, and the specs. Count sub-agents per step in the TEAM.md note
-  beside the tier totals.
+  TEAM.md, and the specs.
 - A brief runs to its completion criterion. A status note travels with
   your next action; the turn ends for a gated item, a blocker, or the
   finished brief — never to summarize a milestone. Run \`/handoff\`
