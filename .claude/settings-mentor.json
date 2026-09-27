@@ -1,7 +1,13 @@
 {
   "permissions": {
     "deny": [
-      "Edit(~/code/business/ventures/**)"
+      "Edit(~/code/business/ventures/**)",
+      "Edit(~/code/business/hq/rules.md)",
+      "Write(~/code/business/hq/rules.md)",
+      "Edit(~/code/business/hq/.claude/agents/**)",
+      "Write(~/code/business/hq/.claude/agents/**)",
+      "Edit(~/code/business/hq/designer/agents/**)",
+      "Write(~/code/business/hq/designer/agents/**)"
     ]
   },
   "hooks": {

@@ -229,6 +229,12 @@ printf '# .claude/ is ignored globally but here it IS team infrastructure
 cat > "$DIR/.claude/settings.json" <<'EOF'
 {
   "autoMemoryEnabled": false,
+  "permissions": {
+    "deny": [
+      "Edit(~/code/business/hq/**)", "Write(~/code/business/hq/**)",
+      "Edit(.claude/agents/**)", "Write(.claude/agents/**)"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {

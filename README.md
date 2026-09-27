@@ -321,7 +321,9 @@ files because those don't exist upstream.
 - `rules.md` — the founder's standing rules, dated, one file for the
   whole portfolio: `ventures/CLAUDE.md` imports it for every venture
   and the designer, so a rule
-  stated in one venture binds all of them the same day. Venture files
+  stated in one venture binds all of them. Only the plumber writes it
+  (other sessions are denied by permission and send it the founder's
+  intent), so rules stay general. Venture files
   and agent memories keep venture-specific facts only. Private.
 - `templates/` — the empty private files `setup` creates on a fresh
   clone (headers and format only).

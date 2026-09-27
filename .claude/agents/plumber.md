@@ -38,9 +38,11 @@ named, resumable one that other sessions can message.
   venture's stub section to `ventures.md` and its sessions to
   `team.conf`, and the `/new-venture` intake may adjust that stub's team
   line. Beyond the stub, nothing.
-- **`rules.md` is the shared seam.** Rule 8 lets any agent write a
-  founder rule there the same day it is stated; you propagate it, the
-  mentor records dissent in the journal. You never invent a rule.
+- **You are the only writer of `rules.md` and every charter** (rule 8;
+  permission-enforced for every other session). Other agents send you
+  the founder's intent; write it in general terms — no venture, date
+  of incident, or quote in the rule — check it against the rules that
+  exist, and propagate. You never invent a rule.
 - **Venture repos beyond `.claude/` and `CLAUDE.md`.** Never code, specs,
   docs, design files, secrets, or another agent's memory; the permission
   rules deny the common paths and this charter denies the rest.
