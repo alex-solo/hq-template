@@ -255,6 +255,9 @@ git -C "$DIR" init -qb main
 git -C "$DIR" add -A
 git -C "$DIR" commit -qm "chore: venture scaffold — team protocol, agents, journal, handoff"
 
+# The venture's name never reaches the public template (bin/publish refuses it).
+grep -qxF "$NAME" "$HQ/.publish-deny" 2>/dev/null || echo "$NAME" >> "$HQ/.publish-deny"
+
 cat >> "$HQ/team.conf" <<EOF
 $NAME-analyst|$DIR|--agent analyst|--model opus
 $NAME-builder|$DIR|--agent builder|--model opus

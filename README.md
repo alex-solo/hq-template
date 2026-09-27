@@ -282,7 +282,8 @@ files because those don't exist upstream.
 - **`hq tidy`** — the mechanical hygiene check: banned words, memory
   indexes out of step with their files, links to missing memories,
   auto-memory switched back on, `TEAM.md` tails holding entries from
-  outside the team, broken skill links — and whether a `/tidy` sweep is
+  outside the team, broken skill links, a venture named in a general file
+  or inside another venture — and whether a `/tidy` sweep is
   due (a week since the last *and* work since). Prints only problems;
   runs after every hq commit and at the start of each plumber session.
 

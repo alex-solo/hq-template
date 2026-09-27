@@ -81,7 +81,27 @@ for d in $ventures; do for l in "$d/.claude/skills/"*; do
   [ -L "$l" ] && [ ! -e "$l" ] && say "broken skill link: ${l#$HOME/}"
 done; done
 
-# 6. Judgment sweep due: a week since the last one AND work since then.
+# 6. No venture named where it doesn't belong: general files (loaded by
+#    every session or mirrored publicly) and the designer's shared memory
+#    name no venture; a venture's steering files name no other venture.
+names=$(for d in $ventures; do b=${d##*/}; echo "$b"; echo "${b%%-*}"; done | sort -u)
+general=("$HQ/rules.md" "$HQ/CLAUDE.md" "$HQ/README.md" "$V/CLAUDE.md" "$HQ/.claude/agents/"*.md \
+  "$HQ/designer/agents/"*.md "$HQ/skills/"*/*.md "$HQ/.claude/skills/"*/SKILL.md "$HQ/templates/"* \
+  "$HQ/example/"* "$V/.claude/agent-memory/"*/*.md)
+for n in $names; do
+  for f in $(grep -l -i -w -F "$n" "${general[@]}" 2>/dev/null); do say "venture '$n' named in a general file: ${f#$HOME/}"; done
+done
+for d in $ventures; do
+  own=${d##*/}
+  for n in $names; do
+    case "$own" in "$n"|"$n"-*) continue ;; esac
+    for f in $(grep -l -i -w -F "$n" "$d/CLAUDE.md" "$d/.claude/agents/"*.md "$d/.claude/agent-memory/"*/*.md 2>/dev/null); do
+      say "venture '$n' named inside ${own}: ${f#$HOME/}"
+    done
+  done
+done
+
+# 7. Judgment sweep due: a week since the last one AND work since then.
 #    Never on a clock alone — no activity, nothing due.
 last="$HQ/.team-state/last-sweep"
 since=$( [ -s "$last" ] && cat "$last" || echo "1970-01-01" )
