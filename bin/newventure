@@ -110,16 +110,25 @@ entry.
   looks designed (portfolio rule 22) — finished at 390 and 1440 before
   he sees it, 8-px spacing scale, one card grid, fixed gutters. Finish
   references: \`docs/design-references/\`.
-- Default styles to avoid (the designer names them, the builder obeys
-  them): <!-- fill after the first build — the specific defaults the
-  first result fell back on (e.g. cream backgrounds, italic accent
-  words in headlines, "01/02/03" section labels, pill buttons), extended
-  as new ones appear. Visual defaults only; layout rules live in §2. -->
+- **Defaults to avoid** (the designer keeps and extends this list after
+  every build; the builder builds to it; QA checks it — rule 23):
+  - decorative gradients, glassmorphism, animation on things that
+    don't change;
+  - more than one accent colour — neutrals otherwise;
+  - cards for everything — cards only for things you act on; lists,
+    rows, dividers and headings for the rest; radii on tokens;
+  - default type (Inter, mono) and code-style decoration;
+  - emoji in the interface;
+  - text that serves no user: "built with", version strings, hype
+    words, generic greetings where a useful status line fits — and the
+    same voice for anything the app's AI writes (§2 copy voice);
+  - icons and glyphs not optically centred.
 
 ## 2. Design system (owner: designer; founder signs off tokens)
 
 <!-- Tokens before pixels: color (4–6 named hex values), type (families,
-     roles, scale), spacing, radius, motion, copy voice. Screens inherit
+     roles, scale), spacing, radius, motion, copy voice (which also binds
+     the text the app's AI generates). Screens inherit
      from here; the builder treats this section as source of truth. -->
 
 ## 3. Screen specs & review notes
