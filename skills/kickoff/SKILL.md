@@ -24,7 +24,7 @@ nothing beyond gated items (rule 7) and facts only he holds.
    so a blank-context agent can build from it (rule 24).
 5. **Hand off** — a `TEAM.md` entry and a builder brief citing the spec.
 
-Draft 2 and 4 on a `fable` sub-agent (`model: fable`) given the brief
+Draft 2 and 4 on a fresh `opus` sub-agent (`model: opus`) given the brief
 and `docs/samples/` in full; review, edit, and own the result.
 
 Done when the builder holds a stack and a brief. The founder then

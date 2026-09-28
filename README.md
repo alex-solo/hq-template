@@ -351,7 +351,7 @@ files because those don't exist upstream.
   `/spec-review` (two-axis diff review — standards + spec — on parallel
   sub-agents; complements the bundled `/code-review` bug hunt; in
   builder sessions the two together are the pre-deploy audit, run on
-  Fable);
+  fresh Opus sub-agents);
   `writing-for-agents` (style guide for steering files and skills).
   Several adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT).
 - `.claude/skills/new-venture/` — the `hq new` intake interview
@@ -396,11 +396,12 @@ files because those don't exist upstream.
   account default, which may be the most expensive tier. Builder
   charters carry a three-tier policy: Opus for planning and review,
   Sonnet sub-agents for mechanical work (Haiku for read-only
-  exploration), Fable sub-agents only for surprises (lasting decisions,
-  stalled debugging, unresolvable spec ambiguity) and the pre-deploy
-  audit — Fable is the strongest tier, and a fresh context is part of
-  what those two uses buy. Analysts draft kickoff artifacts on a Fable
-  sub-agent.
+  exploration), fresh-context Opus sub-agents for surprises (lasting
+  decisions, stalled debugging, unresolvable spec ambiguity) and the
+  pre-deploy audit — the fresh context is what those two uses buy.
+  Analysts draft kickoff artifacts on an Opus sub-agent. Fable, the
+  priciest tier, is used nowhere by default; name it on a sub-agent
+  (`model: fable`) if you want it for a specific hard problem.
 - **Skills** — drop a folder into `skills/` and link it into the
   projects that need it (`hq plumber` does this). Read any third-party skill before installing it; a skill is
   instructions your agents will follow.

@@ -198,13 +198,13 @@ this is how you apply them here.
   matters here: do not spend time that can be avoided". Your session
   coordinates and receives short results, never diffs or test logs.
   Small fixes skip the notes.
-- **Fable** (\`model: fable\`, always a fresh context) for exactly two
+- **Escalation** (\`model: opus\`, always a fresh context) for exactly two
   things: (1) a surprise — reality diverges from the plan, a lasting
   architecture or schema decision, a bug unexplained after two real
   attempts, a spec ambiguity the docs can't settle; you implement its
   answer — and (2) the audit.
 - **Pre-deploy audit** (rule 21): \`/spec-review <last-deployed-commit>\`
-  on Fable sub-agents, then \`/code-review high\`; remaining minor
+  on fresh Opus sub-agents, then \`/code-review high\`; remaining minor
   findings go in the techspec.
 - **Keep context small.** Tests run quiet while iterating (targeted
   files, failures only) and in full once at the end. One batch of fixes

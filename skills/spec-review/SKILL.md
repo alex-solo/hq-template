@@ -15,10 +15,10 @@ description: "Review the changes since a fixed point (commit, branch, tag, or me
 > audit** is this skill plus the bundled `/code-review`. Before deploying
 > a phase or milestone that changes user-facing behavior: run
 > `/spec-review` with the fixed point = the last deployed commit and
-> **both sub-agents on Fable** (`model: fable` on the Agent tool), then
-> `/code-review high` for correctness. The audit is one of the two
-> places the charter spends the top model; running it at your own tier,
-> or inside the session that wrote the code, defeats the point. Findings
+> **both sub-agents on Opus** (`model: opus` on the Agent tool), then
+> `/code-review high` for correctness. The audit's value is its fresh
+> context; running it inside the session that wrote the code defeats
+> the point. Findings
 > are fixed or recorded per rule 21, and the `TEAM.md` note says what
 > the audit found and what was fixed or recorded — no spend bookkeeping.
 
