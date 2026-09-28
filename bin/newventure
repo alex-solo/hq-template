@@ -3,7 +3,7 @@
 # its own analyst + builder team, wired into `team` and the mentor's books.
 #
 # Creates ~/code/business/ventures/<name> with: CLAUDE.md skeleton (incl. team protocol),
-# TEAM.md journal, design-constitution.md stub (binds the portfolio
+# TEAM.md journal, BACKLOG.md queue, design-constitution.md stub (binds the portfolio
 # designer), analyst + builder agent definitions, .gitignore,
 # SessionStart hook; git-inits and commits it; registers <name>-analyst
 # and <name>-builder in ~/code/business/hq/team.conf; stubs the venture in ventures.md.
@@ -90,6 +90,53 @@ entries whose content now lives in specs or commits.
 - Other roles should know: nothing.
 EOF
 
+ID=$(echo "$NAME" | awk -F- '{for(i=1;i<=NF;i++) printf toupper(substr($i,1,1))}')
+cat > "$DIR/BACKLOG.md" <<EOF
+# $NAME — Backlog
+
+The one ordered list of everything not yet shipped: bugs, features,
+fixes (rule 28). **Specs say what the product does; this file says
+what's next.** TEAM.md is the journal, not the queue.
+
+**Ownership.** The analyst adds items, writes them so a blank-context
+agent can execute them, and orders them. The builder takes the top
+\`ready\` item, cuts a task note from it (rule 24), sets \`in progress\`,
+and on commit sets \`done <sha>\`; after each deploy the builder moves
+done items to the Shipped log with the deploy sha and prunes that log to
+the last two deploys. Anyone who finds a bug adds it under Inbox; the
+analyst triages.
+
+**Status:** \`needs decision\` (an open design question; not buildable) ·
+\`ready\` (spec settled, buildable by a fresh agent) · \`in progress\` ·
+\`done <sha>\` (committed, awaiting deploy) · \`blocked: <what>\`.
+
+**Item format:**
+\`\`\`
+### $ID-N — title  ·  bug | feature | fix | chore  ·  status
+- Spec: the sections to build against (the source of truth)
+- What: for a bug, steps → what happens → what should happen;
+  for work, the outcome in one or two lines
+- Done when: how it is verified
+- Notes: files known to be involved, out of scope, dependencies
+\`\`\`
+
+---
+
+## Inbox (untriaged)
+
+_Empty._
+
+## Now (in order)
+
+_Empty until the analyst's kickoff hands off spec v1._
+
+## Next (in order)
+
+## Needs decision
+
+## Shipped log
+EOF
+
 cat > "$DIR/design-constitution.md" <<EOF
 # Design constitution — $NAME
 
@@ -161,11 +208,15 @@ to the builder.
   judgment; your shell is for committing your own doc edits and
   read-only investigation. Building, running, and testing the app is
   the builder's.
-- **Hand off:** spec edit → \`TEAM.md\` entry → a message to
-  \`$NAME-builder\` with a brief citing the spec section. Write specs and
-  briefs a blank-context agent can execute — files, out of scope,
-  verification (rule 24) — and settle design questions before the
-  builder cuts task notes.
+- **The backlog is yours** (rule 28): triage the Inbox, keep
+  \`BACKLOG.md\` ordered, and mark an item \`ready\` only when it names
+  its spec sections, what (for a bug: steps → what happens → what
+  should happen), done-when, files and out of scope. Work queued
+  anywhere else — \`TEAM.md\` lines, roadmap sections — moves in.
+- **Hand off:** spec edit → backlog item set \`ready\` → a message to
+  \`$NAME-builder\` when what's next changes. Write specs and items a blank-context agent
+  can execute (rule 24), and settle design questions before an item
+  goes \`ready\`.
 - On a fresh venture, run \`/kickoff\`.
 - Product scope only: portfolio strategy is the mentor's; deep code
   questions are the builder's.
@@ -182,7 +233,10 @@ You are the builder for $NAME: you implement the specs, test, commit,
 deploy, and run the pre-deploy audit. Rules 18–24 bind you;
 this is how you apply them here.
 
-- **Briefs** arrive from \`$NAME-analyst\` by message or \`TEAM.md\`. The
+- **Work comes from \`BACKLOG.md\`** (rule 28): take the top \`ready\`
+  item, set it \`in progress\`, cut task notes from it, and set
+  \`done <sha>\` on commit; after a deploy, move done items to the
+  Shipped log. Bugs you find go in the Inbox. The item's
   cited spec section is the requirement — read it, not the summary. If
   a spec decision proves wrong in practice, tell the analyst; never
   deviate silently. The analyst commits its own doc edits.
@@ -213,8 +267,8 @@ this is how you apply them here.
 - **Founder-facing screens** (rule 22): designer prototype → build →
   designer QA; when that path is the bottleneck, build to the
   constitution and queue the QA.
-- A brief runs to its completion criterion; your turn ends for a gated
-  item, a blocker, or the finished brief. \`/handoff\` before ending a
+- An item runs to its done-when; your turn ends for a gated item, a
+  blocker, or the finished item. \`/handoff\` before ending a
   work block.
 EOF
 

@@ -21,7 +21,8 @@ Rules:
   mentor's entry goes to hq's `journal.md` in the same format).
 - No filler. If the block produced nothing worth handing off, say so and
   write nothing.
-- Don't duplicate what specs/commits already record — reference them.
+- Don't duplicate what specs, commits, or `BACKLOG.md` already record —
+  reference them (a backlog item by its ID).
 - If the entry contains an action for another role and that session is
   running, also send it a short message (SendMessage) pointing at the entry.
 - Keep the journal short: in the same edit, delete your own role's

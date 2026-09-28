@@ -43,9 +43,9 @@ Before going further, confirm the fixed point resolves (`git rev-parse <fixed-po
 
 Look for the originating spec, in this order:
 
-1. The spec section cited by the brief that started the work — the
-   analyst's message or the `TEAM.md` entry (this system's briefs always
-   cite one).
+1. The spec section cited by the item that started the work — its
+   `BACKLOG.md` entry or the analyst's message (this system's items
+   always cite one).
 2. A path the user passed as an argument.
 3. A spec file under `docs/`, `specs/`, or the repo root whose changelog
    covers the commits in the range.

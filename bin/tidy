@@ -6,7 +6,7 @@
 #
 # Checks only what a script can decide with certainty. Judgment calls
 # (duplicates, contradictions, stale state) are the /tidy sweep's job;
-# check 6 says when one is due. Always exits 0: it reports, it never
+# check 8 says when one is due. Always exits 0: it reports, it never
 # blocks a session or a commit.
 
 HQ="$HOME/code/business/hq"
@@ -101,7 +101,12 @@ for d in $ventures; do
   done
 done
 
-# 7. Judgment sweep due: a week since the last one AND work since then.
+# 7. Every venture keeps its one queue (rule 28).
+for d in $ventures; do
+  [ -f "$d/BACKLOG.md" ] || say "no BACKLOG.md (rule 28) in ${d##*/}: its analyst moves the queue in"
+done
+
+# 8. Judgment sweep due: a week since the last one AND work since then.
 #    Never on a clock alone — no activity, nothing due.
 last="$HQ/.team-state/last-sweep"
 since=$( [ -s "$last" ] && cat "$last" || echo "1970-01-01" )

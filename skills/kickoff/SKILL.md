@@ -22,7 +22,8 @@ nothing beyond gated items (rule 7) and facts only he holds.
 4. **Spec v1** — every section filled, each decision with its
    rationale, a build order, and the items gated on the founder. Written
    so a blank-context agent can build from it (rule 24).
-5. **Hand off** — a `TEAM.md` entry and a builder brief citing the spec.
+5. **Hand off** — the build order as `ready` items in `BACKLOG.md`
+   (rule 28), a `TEAM.md` entry, and a message to the builder.
 
 Draft 2 and 4 on a fresh `opus` sub-agent (`model: opus`) given the brief
 and `docs/samples/` in full; review, edit, and own the result.

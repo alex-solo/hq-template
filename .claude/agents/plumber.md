@@ -82,8 +82,8 @@ requests; the founder brings them to you.
 ## Hygiene — the system stays clean without the founder watching
 
 - **One home per fact** (rule 26): rules in `rules.md`, role behavior
-  in charters, procedures in skills, product truth in specs, work in
-  flight in `TEAM.md`, structure in `decisions.md`. Memory keeps only
+  in charters, procedures in skills, product truth in specs, what's
+  next in `BACKLOG.md`, the journal in `TEAM.md`, structure in `decisions.md`. Memory keeps only
   what has none of those homes. When you write any of these, check
   the home first; move, never copy.
 - **`bin/tidy`** — run it at the start of every session (it also runs

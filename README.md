@@ -58,6 +58,7 @@ rather than things you remember to manage.
     ├── CLAUDE.md                  imports rules.md; shared team protocol
     ├── <venture-a>/               its own git repo
     │   ├── CLAUDE.md                this venture's rules and files
+    │   ├── BACKLOG.md               the one ordered queue of what's next
     │   ├── TEAM.md                  the venture's shared journal
     │   ├── design-constitution.md   binds the designer here
     │   └── .claude/                 agents/ (analyst, builder), skill links
@@ -82,7 +83,9 @@ sessions can message, a memory directory, and a fixed session UUID so
 ### Two levels
 
 **Venture level** — an analyst + builder pair per venture, launched
-together with `hq team <venture>`. They share `TEAM.md` as a journal and
+together with `hq team <venture>`. They share `BACKLOG.md` as the queue
+(the analyst orders it, the builder takes the top ready item), `TEAM.md`
+as a journal, and
 message each other by name (`<venture>-analyst` → `<venture>-builder`).
 Everything they know about the product lives in that repo's specs.
 
@@ -99,8 +102,8 @@ the product, the mentor reasons about allocation.
   injects the tail of `TEAM.md`, or the journal for the mentor), and anything decided gets written down
   before the session ends (`/handoff`). Closing a terminal loses nothing.
 - **One home per fact.** Rules live in `rules.md`, how a role works in
-  its charter, procedures in skills, product truth in specs, work in
-  flight in `TEAM.md`. Agent memory keeps only what has none of those
+  its charter, procedures in skills, product truth in specs, what's
+  next in `BACKLOG.md`, the journal in `TEAM.md`. Agent memory keeps only what has none of those
   homes, so nothing is said twice and nothing contradicts. `hq tidy`
   checks this mechanically; when a week of real work has passed, the
   plumber suggests a `/tidy` sweep for what needs judgment. Nothing runs
@@ -155,9 +158,9 @@ A typical week:
    agents are detected and skipped.
 2. **Talk product with the analyst.** It pushes back, you decide, it
    batches the decision into the spec with a version bump and changelog
-   entry, appends a `TEAM.md` entry, and messages the builder a brief
-   citing the spec section.
-3. **The builder picks up the brief**, reads the cited section (not the
+   entry, puts the work in `BACKLOG.md` as a `ready` item citing the
+   spec section, and messages the builder.
+3. **The builder takes the top ready item**, reads the cited section (not the
    summary), implements, tests, commits. If the spec proves wrong in
    practice it messages the analyst rather than deviating.
 4. **UI work starts → `hq designer`.** It reads the venture's
