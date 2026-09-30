@@ -61,7 +61,6 @@ rather than things you remember to manage.
     │   ├── BACKLOG.md               the one ordered queue of what's next
     │   ├── TEAM.md                  the venture's shared journal
     │   ├── design-constitution.md   binds the designer here
-    │   ├── .githooks/commit-msg     refuses commit trailers (rule 9)
     │   └── .claude/                 agents/ (analyst, builder), skill links
     └── <venture-b>/ …
 ```

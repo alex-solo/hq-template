@@ -6,7 +6,7 @@
 #
 # Checks only what a script can decide with certainty. Judgment calls
 # (duplicates, contradictions, stale state) are the /tidy sweep's job;
-# check 9 says when one is due. Always exits 0: it reports, it never
+# check 8 says when one is due. Always exits 0: it reports, it never
 # blocks a session or a commit.
 
 HQ="$HOME/code/business/hq"
@@ -106,15 +106,7 @@ for d in $ventures; do
   [ -f "$d/BACKLOG.md" ] || say "no BACKLOG.md (rule 28) in ${d##*/}: its analyst moves the queue in"
 done
 
-# 8. Every venture refuses commit trailers by setup (rule 9).
-for d in $ventures; do
-  [ -x "$d/.githooks/commit-msg" ] && [ "$(git -C "$d" config core.hooksPath)" = ".githooks" ] \
-    || say "no trailer hook wired in ${d##*/} (rule 9): its builder adds .githooks/commit-msg"
-  grep -q '"attribution"' "$d/.claude/settings.json" 2>/dev/null \
-    || say "attribution not off in ${d##*/}/.claude/settings.json (rule 9)"
-done
-
-# 9. Judgment sweep due: a week since the last one AND work since then.
+# 8. Judgment sweep due: a week since the last one AND work since then.
 #    Never on a clock alone — no activity, nothing due.
 last="$HQ/.team-state/last-sweep"
 since=$( [ -s "$last" ] && cat "$last" || echo "1970-01-01" )
