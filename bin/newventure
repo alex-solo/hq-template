@@ -260,6 +260,12 @@ this is how you apply them here.
 - **Pre-deploy audit** (rule 21): \`/spec-review <last-deployed-commit>\`
   on fresh Opus sub-agents, then \`/code-review high\`; remaining minor
   findings go in the techspec.
+- **Housekeeping** (rule 29): local databases, dead code, stale
+  worktrees, branches and scratch data are yours to clean without
+  asking.
+- **No trailers** (rule 9): \`.githooks/commit-msg\` refuses them, and
+  the install step wires it (\`git config core.hooksPath .githooks\`;
+  with npm, a root \`prepare\` script). If the hook is missing, add it.
 - **Keep context small.** Tests run quiet while iterating (targeted
   files, failures only) and in full once at the end. One batch of fixes
   per QA or audit pass. After a deploy or milestone, \`/handoff\` and tell
@@ -272,6 +278,18 @@ this is how you apply them here.
   work block.
 EOF
 
+mkdir -p "$DIR/.githooks"
+cat > "$DIR/.githooks/commit-msg" <<'EOF'
+#!/bin/sh
+# Portfolio rule 9: no trailers of any kind on commits (no Co-Authored-By, no session ids).
+# Enforced here, not by prompt: any agent or person committing in this repo is refused.
+if grep -qiE '^(Co-Authored-By|Claude-Session|Signed-off-by|Generated-by):' "$1"; then
+  echo "commit-msg: trailers are not allowed in this repo (rule 9). Remove the trailer line and commit again." >&2
+  exit 1
+fi
+EOF
+chmod +x "$DIR/.githooks/commit-msg"
+
 printf '# .claude/ is ignored globally but here it IS team infrastructure
 !.claude/
 
@@ -283,6 +301,7 @@ printf '# .claude/ is ignored globally but here it IS team infrastructure
 cat > "$DIR/.claude/settings.json" <<'EOF'
 {
   "autoMemoryEnabled": false,
+  "attribution": { "commit": "", "pr": "", "sessionUrl": false },
   "permissions": {
     "deny": [
       "Edit(~/code/business/hq/**)", "Write(~/code/business/hq/**)",
@@ -312,6 +331,7 @@ for s in handoff diagnosing-bugs grilling wizard spec-review retro wait-what kic
 done
 
 git -C "$DIR" init -qb main
+git -C "$DIR" config core.hooksPath .githooks
 git -C "$DIR" add -A
 git -C "$DIR" commit -qm "chore: venture scaffold — team protocol, agents, journal, handoff"
 
