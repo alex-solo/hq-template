@@ -260,9 +260,13 @@ this is how you apply them here.
   architecture or schema decision, a bug unexplained after two real
   attempts, a spec ambiguity the docs can't settle; you implement its
   answer — and (2) the audit.
-- **Pre-deploy audit** (rule 21): \`/spec-review <last-deployed-commit>\`
-  on fresh Opus sub-agents, then \`/code-review high\`; remaining minor
-  findings go in the techspec.
+- **Before a deploy** (rule 21): a change that alters no behaviour
+  (copy, CSS, small visual tweaks) gets tests plus \`/code-review\` on
+  the delta and ships as soon as it is ready. Anything touching logic,
+  data or schema, AI prompts, auth, scoping, secrets or money gets the
+  full audit: \`/spec-review <last-deployed-commit>\` on fresh Opus
+  sub-agents, then \`/code-review high\`; remaining minor findings go
+  in the techspec.
 - **Maintenance is yours** (rules 7, 29): cleanup, deploys, production
   logs, stray resources you created, and production data fixes he has
   approved — do them without asking, and carry out an approved gated

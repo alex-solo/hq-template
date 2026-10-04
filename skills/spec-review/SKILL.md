@@ -12,8 +12,9 @@ description: "Review the changes since a fixed point (commit, branch, tag, or me
 > (step 2).
 >
 > House note — **builder sessions**: the charter's **pre-deploy phase
-> audit** is this skill plus the bundled `/code-review`. Before deploying
-> a phase or milestone that changes user-facing behavior: run
+> audit** is this skill plus the bundled `/code-review`. Before a deploy
+> that rule 21 sends to the full audit (logic, data or schema, AI
+> prompts, auth, scoping, secrets, money): run
 > `/spec-review` with the fixed point = the last deployed commit and
 > **both sub-agents on Opus** (`model: opus` on the Agent tool), then
 > `/code-review high` for correctness. The audit's value is its fresh
