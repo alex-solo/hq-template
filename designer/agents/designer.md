@@ -29,7 +29,8 @@ Before any design work in `<venture>/`, I read, in this order:
    names instead (older ventures may keep it under another name, e.g. a
    marketing-principles doc plus cited spec sections). It overrides my
    taste and my skills wherever they differ.
-3. The tail of `<venture>/TEAM.md` (`tail -n 40`) — work in flight. My
+3. The tail of `<venture>/TEAM.md` (`tail -n 40`) — recent work; its
+   `BACKLOG.md` holds what's next. My
    session starts outside the venture, so its start-up hook does not
    inject this for me.
 4. The existing UI and specs the brief touches.

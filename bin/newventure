@@ -251,7 +251,10 @@ this is how you apply them here.
   \`model: haiku\` for read-only lookups. Mechanical notes add "time
   matters here: do not spend time that can be avoided". Your session
   coordinates and receives short results, never diffs or test logs.
-  Small fixes skip the notes.
+  Small fixes skip the notes. Notes that write files in the shared
+  checkout say: do not fork or spawn helpers; stop every background
+  process you start before reporting; never \`git stash\`, \`reset\`,
+  \`checkout --\` or \`restore\` — another agent works in this tree.
 - **Escalation** (\`model: opus\`, always a fresh context) for exactly two
   things: (1) a surprise — reality diverges from the plan, a lasting
   architecture or schema decision, a bug unexplained after two real
