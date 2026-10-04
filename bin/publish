@@ -32,6 +32,7 @@ ALLOWLIST=(
   CLAUDE.md
   README.md
   .gitignore
+  tmux.conf
 )
 
 CHECK_ONLY=0

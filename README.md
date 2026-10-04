@@ -261,10 +261,25 @@ files because those don't exist upstream.
   resumes that venture's working team (analyst, builder, any extra
   roles), each exactly where it left off. `hq team all` launches every
   venture's team (an explicit keyword so a slip of the enter key can
-  never stand up thirty ventures' agents); bare `hq team` just lists the
-  known ventures. Uses tmux if installed, otherwise one iTerm window
-  with a tab per agent. Re-running is safe: agents already running are
-  skipped, never duplicated.
+  never stand up thirty ventures' agents); bare `hq team` lists the
+  known ventures and which teams are running. Re-running is safe:
+  agents already running are skipped, never duplicated, and an agent
+  that exited is relaunched in its own window.
+  - **With tmux** (`brew install tmux`): hq runs its own tmux server
+    (socket `hq`, config `tmux.conf`), never touching any other tmux
+    you use. Each venture and each hq role is one tmux session with a
+    window per agent. In iTerm it attaches through iTerm's tmux
+    integration, so the windows are ordinary iTerm tabs, and **closing
+    the window leaves the agents running**: `hq team <venture>` brings
+    them back as they are. In any other terminal it is plain tmux
+    (mouse on, Ctrl-b then a window number to switch, Ctrl-b d to
+    detach).
+  - **Without tmux:** one iTerm window with a tab per agent; closing a
+    tab ends that agent.
+- **`hq team stop <venture>`** (or `mentor`, `plumber`, `designer`,
+  `all`) — ends the agents running under tmux. Every session is saved
+  as it goes, so the next `hq team` resumes it. A restart of the Mac
+  ends them too, with the same result.
 - **`hq new [name]`** — start a new venture the intelligent way: opens a
   short Claude interview, proposes the agent-team shape (default:
   analyst + builder; a third role only if the venture genuinely needs
@@ -314,6 +329,9 @@ files because those don't exist upstream.
   every session's `--model opus` lives there, and the designer's
   `--plugin-dir`, since a bare `claude --resume` keeps the transcript's
   model.
+- `tmux.conf` — loaded only by `hq team`'s own tmux server: full colour,
+  Shift+Enter and alerts passing through to iTerm, agent names kept on
+  windows, mouse and long scrollback for plain-terminal use.
 - `accounts.md` — registry of external accounts that already exist
   (API providers, hosting, DNS, messaging), where each credential lives
   (a path or variable name, never a value), and standing spend

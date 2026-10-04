@@ -16,6 +16,8 @@ hq — founder command center
                               launched alone
   hq team <venture>           launch/resume that venture's working team
   hq team all                 every venture's team at once (explicit on purpose)
+  hq team                     list ventures and which teams are running
+  hq team stop <venture|all>  end a team's agents (they resume next launch)
   hq new [name]               start a new venture: short interview, then
                               scaffolding tailored to the venture's shape
   hq new --bare <name> ["thesis"]
