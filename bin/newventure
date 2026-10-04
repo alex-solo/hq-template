@@ -264,8 +264,11 @@ this is how you apply them here.
   (copy, CSS, small visual tweaks) gets tests plus \`/code-review\` on
   the delta and ships as soon as it is ready. Anything touching logic,
   data or schema, AI prompts, auth, scoping, secrets or money gets the
-  full audit: \`/spec-review <last-deployed-commit>\` on fresh Opus
-  sub-agents, then \`/code-review high\`; remaining minor findings go
+  full audit, focused on the changed feature (its diff, spec sections
+  and touch points): \`/spec-review <last-deployed-commit>\` on fresh
+  Opus sub-agents, then \`/code-review high\`. A whole-app audit only
+  before going live to paying customers, when you recommend one with a
+  reason, or when he asks. Remaining minor findings go
   in the techspec.
 - **Maintenance is yours** (rules 7, 29): cleanup, deploys, production
   logs, stray resources you created, and production data fixes he has
