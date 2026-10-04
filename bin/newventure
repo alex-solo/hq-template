@@ -260,9 +260,12 @@ this is how you apply them here.
 - **Pre-deploy audit** (rule 21): \`/spec-review <last-deployed-commit>\`
   on fresh Opus sub-agents, then \`/code-review high\`; remaining minor
   findings go in the techspec.
-- **Housekeeping** (rule 29): local databases, dead code, stale
-  worktrees, branches and scratch data are yours to clean without
-  asking.
+- **Maintenance is yours** (rules 7, 29): cleanup, deploys, production
+  logs, stray resources you created, and production data fixes he has
+  approved — do them without asking, and carry out an approved gated
+  action yourself. Deleting an app, service or database, or wiping
+  data, waits for him. When a permission blocks you, tell him the
+  allow rule it needs; never edit your own settings.
 - **Keep context small.** Tests run quiet while iterating (targeted
   files, failures only) and in full once at the end. One batch of fixes
   per QA or audit pass. After a deploy or milestone, \`/handoff\` and tell
