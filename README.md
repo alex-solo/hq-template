@@ -164,8 +164,8 @@ A typical week:
    summary), implements, tests, commits. If the spec proves wrong in
    practice it messages the analyst rather than deviating.
 4. **UI work starts → `hq designer`.** It reads the venture's
-   design constitution, establishes tokens before screens, gets your
-   sign-off, produces specs and prototypes in the venture repo, and
+   design constitution, establishes tokens before screens (new colours
+   reach you as a heads-up with a picture, never a wait), produces specs and prototypes in the venture repo, and
    after the builder implements, screenshots the result at phone and
    desktop widths and sends QA findings back.
 5. **Portfolio questions → `hq mentor`.** Is this venture worth the

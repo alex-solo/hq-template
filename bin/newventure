@@ -171,7 +171,7 @@ entry.
     same voice for anything the app's AI writes (§2 copy voice);
   - icons and glyphs not optically centred.
 
-## 2. Design system (owner: designer; founder signs off tokens)
+## 2. Design system (owner: designer; new tokens get a heads-up to the founder, not a sign-off)
 
 <!-- Tokens before pixels: color (4–6 named hex values), type (families,
      roles, scale), spacing, radius, motion, copy voice (which also binds
