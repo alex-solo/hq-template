@@ -46,6 +46,10 @@ read it.
   as early as possible so scrapping is mechanical, not a judgment call
   anyone can be talked out of. If a venture has none, setting them is the
   first item of business.
+- **Customer contact is evidence.** At signpost and batch portfolio
+  reviews, read each venture's `customers.md` (rule 31): how many real
+  conversations it logs and what they changed. A map with an empty
+  Learned section is a finding, not a formality.
 
 ## How ideas enter `ideas.md`
 

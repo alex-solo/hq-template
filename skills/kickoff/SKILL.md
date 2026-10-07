@@ -19,13 +19,17 @@ nothing beyond gated items (rule 7) and facts only he holds.
    foundation does not.
 3. **Research memos** in `docs/`: the domain; competitors' features and
    pricing.
-4. **Spec v1** — every section filled, each decision with its
+4. **Customer map** — `customers.md` at the root, every part rule 31
+   lists, built on the step 3 research. Places are verified, never
+   guessed; the outreach messages and interview script are ready for
+   him to send as they stand.
+5. **Spec v1** — every section filled, each decision with its
    rationale, a build order, and the items gated on the founder. Written
    so a blank-context agent can build from it (rule 24).
-5. **Hand off** — the build order as `ready` items in `BACKLOG.md`
+6. **Hand off** — the build order as `ready` items in `BACKLOG.md`
    (rule 28), a `TEAM.md` entry, and a message to the builder.
 
-Draft 2 and 4 on a fresh `opus` sub-agent (`model: opus`) given the brief
+Draft 2 and 5 on a fresh `opus` sub-agent (`model: opus`) given the brief
 and `docs/samples/` in full; review, edit, and own the result.
 
 Done when the builder holds a stack and a brief. The founder then

@@ -218,6 +218,10 @@ to the builder.
   can execute (rule 24), and settle design questions before an item
   goes \`ready\`.
 - On a fresh venture, run \`/kickoff\`.
+- **The customer map is yours** (rule 31): \`customers.md\` stays
+  current — log every conversation he reports under Learned and carry
+  what it changes into the spec or the backlog. The conversations are
+  his; your job is that each one is a quick yes to start.
 - Product scope only: portfolio strategy is the mentor's; deep code
   questions are the builder's.
 EOF
