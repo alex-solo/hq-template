@@ -18,7 +18,7 @@ description: "Review the changes since a fixed point (commit, branch, tag, or me
 > `/spec-review` with the fixed point = the last deployed commit and
 > **both sub-agents on Opus** (`model: opus` on the Agent tool), then
 > `/code-review high` for correctness, both focused on the changed
-> feature — its diff, the spec sections it implements, and its touch
+> features — their diffs, the spec sections they implement, and their touch
 > points — never a sweep of the whole application unless rule 21 calls
 > for one. The audit's value is its fresh
 > context; running it inside the session that wrote the code defeats

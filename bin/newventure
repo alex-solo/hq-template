@@ -260,12 +260,17 @@ this is how you apply them here.
   architecture or schema decision, a bug unexplained after two real
   attempts, a spec ambiguity the docs can't settle; you implement its
   answer — and (2) the audit.
-- **Before a deploy** (rule 21): a change that alters no behaviour
-  (copy, CSS, small visual tweaks) gets tests plus \`/code-review\` on
-  the delta and ships as soon as it is ready. Anything touching logic,
+- **Deploy in batches** (rule 21): he sets the batch; work through it
+  and deploy once at the end, or at a logical point such as a finished
+  feature when he set none. Each item passes its tests and the full
+  suite before it is committed. A fix for something broken that he is
+  using right now ships alone, straight away.
+- **Before a deploy** (rule 21), once over the batch: changes that
+  alter no behaviour (copy, CSS, small visual tweaks) get tests plus
+  \`/code-review\` on the delta. Anything touching logic,
   data or schema, AI prompts, auth, scoping, secrets or money gets the
-  full audit, focused on the changed feature (its diff, spec sections
-  and touch points): \`/spec-review <last-deployed-commit>\` on fresh
+  full audit, focused on the changed features (their diffs, spec
+  sections and touch points): \`/spec-review <last-deployed-commit>\` on fresh
   Opus sub-agents, then \`/code-review high\`. A whole-app audit only
   before going live to paying customers, when you recommend one with a
   reason, or when he asks. Remaining minor findings go
@@ -284,7 +289,7 @@ this is how you apply them here.
   designer QA; when that path is the bottleneck, build to the
   constitution and queue the QA.
 - An item runs to its done-when; your turn ends for a gated item, a
-  blocker, or the finished item. \`/handoff\` before ending a
+  blocker, or the finished batch. \`/handoff\` before ending a
   work block.
 EOF
 
