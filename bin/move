@@ -1,0 +1,155 @@
+#!/bin/bash
+# move <team> here|server [--dry-run] — give a team a new home.
+#
+#   <team>    a venture (its directory name), or mentor, plumber, designer
+#   here      this machine (the laptop that drives a server via .hq-remote)
+#   server    the machine named in .hq-remote
+#
+# A team lives in one place at a time, so no agent's conversation ever
+# forks into two. A move stops the team where it runs, then carries
+# across everything that isn't already shared through git:
+#   - a venture's working tree, uncommitted work and .env included
+#     (node_modules excepted; reinstalled at the destination when the
+#     lockfile changed or it is missing)
+#   - the designer's memory (ventures/.claude/agent-memory, not in git)
+#   - each agent's conversation (~/.claude/projects/<dir>/<uuid>.jsonl
+#     and its folder) and session id (.team-state/<agent>)
+# mentor and plumber work in hq itself: hq must be committed at the
+# source, and the destination pulls. Then it records the new home on
+# both machines (.team-state/home-<team>) and opens the team there.
+# `hq team` refuses to start a team on a machine it doesn't live on.
+
+set -euo pipefail
+
+HQ="$HOME/code/business/hq"
+STATE="$HQ/.team-state"
+CONF="$HQ/team.conf"
+REMOTE_FILE="$HQ/.hq-remote"
+
+die() { echo "move: $*" >&2; exit 1; }
+usage() { die "usage: hq move <venture|mentor|plumber|designer> here|server [--dry-run]"; }
+
+G="${1:-}"; TO="${2:-}"; DRY="${3:-}"
+[ -n "$G" ] && [ -n "$TO" ] || usage
+case "$TO" in here|local|laptop) TO=local ;; server|remote) TO=remote ;; *) usage ;; esac
+[ -s "$REMOTE_FILE" ] || die "this machine drives no server (no $REMOTE_FILE) — run it on the laptop."
+R=$(cat "$REMOTE_FILE")
+
+run() { # print in a dry run, execute otherwise
+  if [ "$DRY" = --dry-run ]; then printf '  would: %s\n' "$*"; else "$@"; fi
+}
+rsh() { ssh -n "$R" "$@"; }
+
+ME=$(hostname -s)
+RHOST=$(rsh 'hostname -s') || die "can't reach $R — a move needs both machines online."
+RHOME=$(rsh 'echo $HOME')
+
+cur=remote
+[ "$(cat "$STATE/home-$G" 2>/dev/null)" = "$ME" ] && cur=local
+[ "$cur" = "$TO" ] && { echo "move: '$G' already lives $( [ "$TO" = local ] && echo here || echo "on $RHOST")."; exit 0; }
+
+# The team's agents, from the roster: name|dir (dir as written, ~/…)
+agents=""
+while IFS='|' read -r name dir _; do
+  case "$name" in ''|\#*) continue ;; esac
+  case "$G" in
+    mentor|plumber|designer) [ "$name" = "$G" ] || continue ;;
+    *) case "$name" in mentor|plumber|designer) continue ;; esac
+       [ "$(basename "$dir")" = "$G" ] || continue ;;
+  esac
+  agents="$agents$name|$dir"$'\n'
+done < "$CONF"
+[ -n "$agents" ] || die "no roster entries for '$G' in team.conf"
+
+munge() { echo "$1" | sed 's|[/._]|-|g'; }   # claude's per-directory session folder
+lpath() { echo "${1/#\~/$HOME}"; }
+rpath() { echo "${1/#\~/$RHOME}"; }
+# src/dst as rsync operands: S x = source side, D x = destination side
+if [ "$TO" = remote ]; then
+  S() { echo "$1"; }; D() { echo "$R:$2"; }; at_src() { bash -c "$1"; }; at_dst() { rsh "$1"; }
+  SRC_NAME="here"; DST_NAME="$RHOST"
+else
+  S() { echo "$R:$2"; }; D() { echo "$1"; }; at_src() { rsh "$1"; }; at_dst() { bash -c "$1"; }
+  SRC_NAME="$RHOST"; DST_NAME="here"
+fi
+
+echo "move: '$G' from $SRC_NAME to $DST_NAME"
+
+# 1. hq-level roles that work in hq itself: it must be committed first.
+case "$G" in mentor|plumber)
+  dirty=$(at_src 'git -C ~/code/business/hq status --porcelain --untracked-files=no')
+  [ -z "$dirty" ] || die "hq has uncommitted changes on $SRC_NAME — commit them first:
+$dirty"
+  ;;
+esac
+
+# 2. Stop the team where it runs, and wait until its agents have exited.
+run at_src "~/code/business/hq/bin/team stop $G >/dev/null"
+if [ "$DRY" != --dry-run ]; then
+  for _ in $(seq 1 30); do
+    busy=0
+    while IFS='|' read -r -u 3 name _; do
+      [ -n "$name" ] || continue
+      u=$(cat "$STATE/$name" 2>/dev/null || true)
+      [ -n "$u" ] && at_src "pgrep -f '[c]laude.*$u' >/dev/null" && busy=1
+    done 3<<<"$agents"
+    [ "$busy" = 0 ] && break
+    sleep 1
+  done
+  [ "$busy" = 0 ] || die "'$G' is still running on $SRC_NAME after 30s — stop it there and re-run."
+fi
+
+# 3. The working tree, or hq through git.
+case "$G" in
+  mentor|plumber)
+    run at_src 'git -C ~/code/business/hq push -q 2>/dev/null || true'
+    run at_dst 'git -C ~/code/business/hq pull -q --rebase'
+    ;;
+  designer)
+    m=code/business/ventures/.claude/agent-memory/
+    run at_dst "mkdir -p ~/$m"
+    run rsync -a --delete "$(S "$HOME/$m" "$m")" "$(D "$HOME/$m" "$m")"
+    ;;
+  *)
+    v=code/business/ventures/$G/
+    lock_before=$(at_dst "cksum ~/${v}package-lock.json 2>/dev/null | cut -d' ' -f1; true")
+    run at_dst "mkdir -p ~/$v"
+    run rsync -a --delete --exclude node_modules --exclude .DS_Store \
+      "$(S "$HOME/$v" "$v")" "$(D "$HOME/$v" "$v")"
+    run at_dst "git -C ~/$v worktree prune"
+    if [ "$DRY" != --dry-run ]; then
+      lock_after=$(at_dst "cksum ~/${v}package-lock.json 2>/dev/null | cut -d' ' -f1; true")
+      if [ -n "$lock_after" ] && { [ "$lock_before" != "$lock_after" ] || ! at_dst "[ -d ~/${v}node_modules ]"; }; then
+        echo "move: installing $G's dependencies on $DST_NAME"
+        at_dst "cd ~/$v && export NVM_DIR=\$HOME/.nvm && . \$NVM_DIR/nvm.sh && { nvm use >/dev/null 2>&1 || true; } && npm ci --no-audit --no-fund --loglevel=error"
+      fi
+    else
+      echo "  would: npm ci on $DST_NAME if package-lock.json changed or node_modules is missing"
+    fi
+    ;;
+esac
+
+# 4. Each agent's conversation and session id.
+while IFS='|' read -r -u 3 name dir; do
+  [ -n "$name" ] || continue
+  u=$(cat "$STATE/$name" 2>/dev/null || true)
+  [ -n "$u" ] || { echo "move: $name has no session yet — nothing to carry"; continue; }
+  lp="$HOME/.claude/projects/$(munge "$(lpath "$dir")")"
+  rp="$RHOME/.claude/projects/$(munge "$(rpath "$dir")")"
+  if [ "$TO" = remote ]; then sp=$lp; dp="$R:$rp"; run rsh "mkdir -p '$rp'"
+  else sp="$R:$rp"; dp=$lp; run mkdir -p "$lp"; fi
+  at_src "[ -f '$( [ "$TO" = remote ] && echo "$lp" || echo "$rp")/$u.jsonl' ]" \
+    && run rsync -a "$sp/$u.jsonl" "$dp/"
+  at_src "[ -d '$( [ "$TO" = remote ] && echo "$lp" || echo "$rp")/$u' ]" \
+    && run rsync -a "$sp/$u" "$dp/"
+  if [ "$TO" = remote ]; then run rsync -a "$STATE/$name" "$R:code/business/hq/.team-state/"
+  else run rsync -a "$R:code/business/hq/.team-state/$name" "$STATE/"; fi
+done 3<<<"$agents"
+
+# 5. Record the new home on both machines, then open the team there.
+new=$( [ "$TO" = local ] && echo "$ME" || echo "$RHOST" )
+run bash -c "echo '$new' > '$STATE/home-$G'"
+run rsh "echo '$new' > ~/code/business/hq/.team-state/home-$G"
+[ "$DRY" = --dry-run ] && { echo "move: dry run — nothing changed."; exit 0; }
+echo "move: '$G' now lives $( [ "$TO" = local ] && echo here || echo "on $RHOST") — opening it."
+exec "$HQ/hq" team "$G"

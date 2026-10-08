@@ -282,6 +282,8 @@ files because those don't exist upstream.
   `all`) — ends the agents running under tmux. Every session is saved
   as it goes, so the next `hq team` resumes it. A restart of the Mac
   ends them too, with the same result.
+- **`hq move <team> here|server`** — move a team between the laptop
+  and the server (see Running on a server).
 - **`hq new [name]`** — start a new venture the intelligent way: opens a
   short Claude interview, proposes the agent-team shape (default:
   analyst + builder; a third role only if the venture genuinely needs
@@ -328,7 +330,19 @@ are windows onto it.
   command on the laptop runs on the server — `hq team <venture>` opens
   the server's agents as iTerm tabs — so agents never start on the
   laptop by accident. `HQ_LOCAL=1 hq …` runs one command locally.
-- **Moving sessions to a server:** stop the agents, then copy
+- **`hq move <team> here|server`** — a team (a venture, or `mentor`,
+  `plumber`, `designer`) lives on one machine at a time, so no agent's
+  conversation ever forks. A move stops the team where it runs, carries
+  the venture's working tree (uncommitted work and `.env` included,
+  `node_modules` reinstalled when the lockfile changed), the designer's
+  memory, and each agent's conversation and session id; mentor and
+  plumber need hq committed and move through git. It records the new
+  home on both machines (`.team-state/home-<team>`) and opens the team
+  there. `hq team <team>` then runs wherever the team lives, even with
+  the server unreachable, and refuses to start it anywhere else.
+  `--dry-run` prints the steps. Move before going offline; keep the
+  designer where the ventures it is working on live.
+- **Moving sessions to a server by hand:** stop the agents, then copy
   `~/.claude/projects/<dir>/` for hq, `ventures` and each venture (the
   directory names encode the path, so rename them for the server's
   home) and `hq/.team-state/`; each agent resumes its own conversation.

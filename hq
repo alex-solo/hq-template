@@ -6,10 +6,36 @@ BIN="$HOME/code/business/hq/bin"
 # A machine that drives a server: .hq-remote holds that server's ssh host,
 # and every command runs there, so agents never start on this machine.
 # HQ_LOCAL=1 runs one command here anyway.
+# A team moved here with `hq move` runs here; `team all`, `team stop all`
+# and the listing cover both machines.
 REMOTE="$HOME/code/business/hq/.hq-remote"
-if [ -s "$REMOTE" ] && [ -z "${HQ_LOCAL:-}" ]; then
-  cmd="\$HOME/code/business/hq/hq $(printf '%q ' "$@")"
-  exec ssh -t "$(cat "$REMOTE")" "bash -ic $(printf '%q' "$cmd")"
+if [ -s "$REMOTE" ] && [ -z "${HQ_LOCAL:-}" ] && [ "${1:-}" != move ]; then
+  here_groups() {
+    for f in "$HOME/code/business/hq/.team-state"/home-*; do
+      [ -s "$f" ] && [ "$(cat "$f")" = "$(hostname -s)" ] && basename "$f" | sed 's/^home-//'
+    done
+  }
+  g=
+  case "${1:-}" in
+    mentor|plumber|designer) g=$1 ;;
+    team) case "${2:-}" in stop) g=${3:-} ;; *) g=${2:-} ;; esac ;;
+  esac
+  local_run=
+  if [ -n "$g" ] && [ "$g" != all ]; then
+    here_groups | grep -qxF "$g" && local_run=1
+  elif [ "${1:-}" = team ]; then
+    for h in $(here_groups); do
+      case "${2:-}" in
+        all) HQ_TEAM_NO_ATTACH=1 "$BIN/team" "$h" ;;
+        stop) "$BIN/team" stop "$h" ;;
+        *) echo "living on this machine: $h" >&2 ;;
+      esac
+    done
+  fi
+  if [ -z "$local_run" ]; then
+    cmd="\$HOME/code/business/hq/hq $(printf '%q ' "$@")"
+    exec ssh -t "$(cat "$REMOTE")" "bash -ic $(printf '%q' "$cmd")"
+  fi
 fi
 
 case "${1:-help}" in
@@ -27,6 +53,9 @@ hq — founder command center
   hq team all                 every venture's team at once (explicit on purpose)
   hq team                     list ventures and which teams are running
   hq team stop <venture|all>  end a team's agents (they resume next launch)
+  hq move <team> here|server  give a team (venture, mentor, plumber,
+                              designer) a new home: stop it, carry its
+                              work and conversations across, start it there
   hq new [name]               start a new venture: short interview, then
                               scaffolding tailored to the venture's shape
   hq new --bare <name> ["thesis"]
@@ -53,6 +82,7 @@ EOF
   plumber) exec "$BIN/team" plumber ;;
   designer) exec "$BIN/team" designer ;;
   team) shift; exec "$BIN/team" "$@" ;;
+  move) shift; exec "$BIN/move" "$@" ;;
   new|newventure)
     shift
     case "${1:-}" in
