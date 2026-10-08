@@ -204,7 +204,9 @@ The clone must live at `~/code/business/hq` — every script assumes it.
    files from `templates/` (empty — the mentor fills them in as it
    learns), writes `team.conf` with the mentor, plumber and designer,
    creates `ventures/CLAUDE.md`, adds the `hq` and `team` aliases
-   to your shell rc.
+   to your shell rc, and, with nvm installed, installs each venture's
+   `.nvmrc` Node version and a shell hook that switches to it in that
+   folder, so local runs match production.
 2. **Opens your first mentor session.** It knows nothing about you yet.
    There is no interview: tell it what you want, when you want. Goals
    are optional — when you state one it records it in `founder.md`,
@@ -303,7 +305,8 @@ files because those don't exist upstream.
 - **`hq onboard`** — first run on a fresh clone: `setup`, then your
   first mentor session (see Getting started).
 - **`hq setup`** — the mechanical half alone; idempotent, re-run after
-  pulling template updates that add skills.
+  pulling template updates that add skills, and on every machine a
+  team moves to.
 - **`hq publish`** — mirror the shareable files of this hq into a
   public template checkout for others to clone (`bin/publish` documents
   the allowlist and the leak check; `--check` runs the leak test only).

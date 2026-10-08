@@ -11,6 +11,8 @@
 #   4. writes team.conf (mentor + plumber + designer) if it doesn't exist yet
 #   5. removes any machine-wide skill links (skills load per project)
 #   6. adds the `hq` and `team` aliases to your shell rc
+#   7. Node per venture: installs each venture's .nvmrc version via nvm
+#      and adds a shell hook that switches to it in that folder
 #
 # The clone must live at ~/code/business/hq — every script assumes it.
 
@@ -101,6 +103,43 @@ alias hq="$HOME/code/business/hq/hq"
 alias team="$HOME/code/business/hq/hq team"
 EOF
   made "hq/team aliases in $RC (open a new shell to use them)"
+fi
+
+echo "node versions (each venture runs its .nvmrc, the version production runs)"
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  set +eu; . "$NVM_DIR/nvm.sh"
+  for f in "$VENTURES"/*/.nvmrc; do
+    [ -e "$f" ] || continue
+    v=$(tr -d '[:space:]' < "$f")
+    if nvm ls "$v" >/dev/null 2>&1; then ok "node $v ($(basename "$(dirname "$f")"))"
+    else nvm install "$v" >/dev/null 2>&1 && made "node $v ($(basename "$(dirname "$f")"))" || warn "nvm install $v failed"; fi
+  done
+  set -eu
+  if grep -qs '_nvmrc_use' "$RC"; then ok ".nvmrc hook in $RC"
+  else
+    case "$RC" in
+      *.zshrc) cat >> "$RC" <<'EOF'
+
+# Use the Node version in the current folder's .nvmrc (each venture pins its production version).
+_nvmrc_use() { [ -f .nvmrc ] && nvm use --silent >/dev/null 2>&1 || true; }
+autoload -U add-zsh-hook && add-zsh-hook chpwd _nvmrc_use
+command -v nvm >/dev/null && _nvmrc_use
+EOF
+      ;;
+      *) cat >> "$RC" <<'EOF'
+
+# Use the Node version in the current folder's .nvmrc (each venture pins its production version).
+_nvmrc_use() { [ -f .nvmrc ] && nvm use --silent >/dev/null 2>&1 || true; }
+cd() { builtin cd "$@" && _nvmrc_use; }
+command -v nvm >/dev/null && _nvmrc_use
+EOF
+      ;;
+    esac
+    made ".nvmrc hook in $RC (open a new shell)"
+  fi
+else
+  warn "nvm not found — install it (github.com/nvm-sh/nvm) so each venture runs its .nvmrc Node version; re-run setup"
 fi
 
 cat <<EOF
