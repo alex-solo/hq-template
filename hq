@@ -9,7 +9,7 @@ BIN="$HOME/code/business/hq/bin"
 # A team moved here with `hq move` runs here; `team all`, `team stop all`
 # and the listing cover both machines.
 REMOTE="$HOME/code/business/hq/.hq-remote"
-if [ -s "$REMOTE" ] && [ -z "${HQ_LOCAL:-}" ] && [ "${1:-}" != move ]; then
+if [ -s "$REMOTE" ] && [ -z "${HQ_LOCAL:-}" ] && [ "${1:-}" != move ] && [ "${1:-}" != send ]; then
   here_groups() {
     for f in "$HOME/code/business/hq/.team-state"/home-*; do
       [ -s "$f" ] && [ "$(cat "$f")" = "$(hostname -s)" ] && basename "$f" | sed 's/^home-//'
@@ -56,6 +56,10 @@ hq — founder command center
   hq move <team> here|server  give a team (venture, mentor, plumber,
                               designer) a new home: stop it, carry its
                               work and conversations across, start it there
+  hq send [file...]           laptop → agents: the clipboard (a screenshot
+                              or Finder-copied files) or the named files
+                              go to the server; their path is on your
+                              clipboard to paste into the agent
   hq new [name]               start a new venture: short interview, then
                               scaffolding tailored to the venture's shape
   hq new --bare <name> ["thesis"]
@@ -97,5 +101,6 @@ EOF
     ;;
   publish) shift; exec "$BIN/publish" "$@" ;;
   tidy) exec "$BIN/tidy" ;;
+  send) shift; exec "$BIN/send" "$@" ;;
   *) echo "hq: unknown command '$1' — run 'hq help'" >&2; exit 1 ;;
 esac

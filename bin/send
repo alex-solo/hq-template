@@ -1,0 +1,55 @@
+#!/bin/bash
+# send — get a file or screenshot from this laptop to the agents on the
+# server. Run on the laptop (the machine with .hq-remote).
+#
+#   hq send             the clipboard: an image (screenshot) or files
+#                       copied in Finder
+#   hq send <file>...   those files
+#
+# Copies them into ventures/.drop/ on the server, which every agent can
+# read, and puts the server path(s) on the clipboard: paste into the
+# agent with Cmd+V. Files older than 7 days are removed on each send.
+
+set -euo pipefail
+HQ="$HOME/code/business/hq"
+REMOTE_FILE="$HQ/.hq-remote"
+DROP='code/business/ventures/.drop'
+
+[ -s "$REMOTE_FILE" ] || { echo "send: run this on the laptop that drives the server (no .hq-remote here)." >&2; exit 1; }
+HOST=$(cat "$REMOTE_FILE")
+TMP=$(mktemp -d); trap 'rm -rf "$TMP"' EXIT
+files=()
+
+if [ $# -gt 0 ]; then
+  for f in "$@"; do [ -f "$f" ] || { echo "send: not a file: $f" >&2; exit 1; }; files+=("$f"); done
+else
+  # Files copied in Finder come first; otherwise an image on the clipboard.
+  list=$(osascript -e 'try' -e 'set out to ""' \
+    -e 'repeat with f in (the clipboard as «class furl» as list)' \
+    -e 'set out to out & POSIX path of f & linefeed' -e 'end repeat' \
+    -e 'return out' -e 'on error' -e 'return ""' -e 'end try' 2>/dev/null || true)
+  if [ -n "$list" ]; then
+    while IFS= read -r f; do [ -n "$f" ] && [ -f "$f" ] && files+=("$f"); done <<<"$list"
+  fi
+  if [ ${#files[@]} -eq 0 ]; then
+    img="$TMP/clipboard-$(date +%Y%m%d-%H%M%S).png"
+    osascript -e "set f to open for access POSIX file \"$img\" with write permission" \
+      -e 'try' -e 'write (the clipboard as «class PNGf») to f' -e 'end try' \
+      -e 'close access f' >/dev/null 2>&1 || true
+    [ -s "$img" ] || { echo "send: the clipboard holds no image or file — copy a screenshot (Cmd+Ctrl+Shift+4) or a file first, or pass a path." >&2; exit 1; }
+    files+=("$img")
+  fi
+fi
+
+stamp=$(date +%Y%m%d-%H%M%S)
+RHOME=$(ssh "$HOST" "mkdir -p ~/$DROP && find ~/$DROP -type f -mtime +7 -delete; echo \$HOME")
+paths=()
+for f in "${files[@]}"; do
+  base=$(basename "$f"); name="$stamp-${base// /_}"
+  scp -q "$f" "$HOST:$DROP/$name"
+  paths+=("$RHOME/$DROP/$name")
+done
+
+printf '%s\n' "${paths[@]}" | tr '\n' ' ' | sed 's/ $//' | pbcopy
+printf 'sent %d file(s); paste into the agent (Cmd+V):\n' "${#paths[@]}"
+printf '  %s\n' "${paths[@]}"

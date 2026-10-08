@@ -309,6 +309,7 @@ cat > "$DIR/.claude/settings.json" <<'EOF'
 {
   "autoMemoryEnabled": false,
   "permissions": {
+    "allow": ["Read(~/code/business/ventures/.drop/**)"],
     "deny": [
       "Edit(~/code/business/hq/**)", "Write(~/code/business/hq/**)",
       "Edit(.claude/agents/**)", "Write(.claude/agents/**)"

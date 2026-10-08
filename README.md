@@ -304,6 +304,14 @@ files because those don't exist upstream.
 - **`hq publish`** — mirror the shareable files of this hq into a
   public template checkout for others to clone (`bin/publish` documents
   the allowlist and the leak check; `--check` runs the leak test only).
+- **`hq send [file...]`** — on a laptop that drives a server: sends the
+  clipboard (a screenshot, or files copied in Finder) or the named files
+  to the server's `ventures/.drop/`, which every agent can read, and puts
+  the server paths on the clipboard to paste into the agent. Pasting or
+  dropping a file straight into an agent over ssh only types a laptop
+  path the server can't open; the Claude app and claude.ai/code take
+  attachments directly through Remote Control. Files older than 7 days
+  are removed on the next send.
 - **`hq tidy`** — the mechanical hygiene check: banned words, memory
   indexes out of step with their files, links to missing memories,
   auto-memory switched back on, `TEAM.md` tails holding entries from
