@@ -269,6 +269,10 @@ this is how you apply them here.
   feature when he set none. Each item passes its tests and the full
   suite before it is committed. A fix for something broken that he is
   using right now ships alone, straight away.
+- **Deploying is promoting** (rule 21): hosting watches \`production\`,
+  never main. After the checks pass, fast-forward it to the audited
+  main commit (\`git push origin <sha>:production\`); never commit on it.
+  \`production\` is the last-deployed commit the audit diffs against.
 - **Before a deploy** (rule 21), once over the batch: changes that
   alter no behaviour (copy, CSS, small visual tweaks) get tests plus
   \`/code-review\` on the delta. Anything touching logic,
