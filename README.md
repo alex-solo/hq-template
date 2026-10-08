@@ -275,7 +275,10 @@ files because those don't exist upstream.
     `hq team <venture>` brings them back as they are. Tabs need one
     iTerm setting: Settings → General → tmux → *Open tmux windows as
     tabs in the attaching window* (without it, each agent opens in a
-    separate window). In any other terminal it is plain tmux (mouse
+    separate window). Closing a window asks Kill, Hide, or Detach:
+    choose **Detach tmux Session** and tick *Remember my choice*. Detach
+    leaves the agents running; Kill ends them mid-step (stop them on
+    purpose with `hq team stop`). In any other terminal it is plain tmux (mouse
     on, Ctrl-b then a window number to switch, Ctrl-b d to detach).
   - **Without tmux:** one iTerm window with a tab per agent; closing a
     tab ends that agent.
