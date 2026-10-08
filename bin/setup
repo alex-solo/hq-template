@@ -83,6 +83,13 @@ done
 ok "per-project links (no machine-wide skills)"
 
 
+echo "commit hook"
+# Hooks don't travel with a clone: without this, commits on a new machine
+# skip the hygiene check (and, for the maintainer, the template mirror).
+HOOK="$HQ/.git/hooks/post-commit"
+if [ -L "$HOOK" ] || [ -e "$HOOK" ]; then ok "post-commit hook"
+else ln -s ../../bin/post-commit "$HOOK"; made "post-commit hook (tidy after every commit)"; fi
+
 echo "shell aliases"
 case "${SHELL:-}" in */zsh) RC="$HOME/.zshrc" ;; */bash) RC="$HOME/.bashrc" ;; *) RC="$HOME/.profile" ;; esac
 if grep -qs 'alias hq=' "$RC"; then ok "hq/team aliases in $RC"
