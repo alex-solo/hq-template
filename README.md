@@ -268,7 +268,8 @@ files because those don't exist upstream.
   - **With tmux** (`brew install tmux`): hq runs its own tmux server
     (socket `hq`, config `tmux.conf`), never touching any other tmux
     you use. Each venture and each hq role is one tmux session with a
-    window per agent. In iTerm, locally or over ssh, it attaches
+    window per agent, named `<agent> · <where>`: the server's name when
+    it runs on a server, `here` on a laptop. In iTerm, locally or over ssh, it attaches
     through iTerm's tmux integration, so each agent is an ordinary iTerm
     tab or window, and **closing it leaves the agent running**:
     `hq team <venture>` brings them back as they are. Tabs need one

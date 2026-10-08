@@ -171,12 +171,26 @@ fi
 if command -v tmux >/dev/null 2>&1; then
   # One tmux session per group: each venture, and each hq role alone.
   group_of() { if is_hq_level "$1"; then echo "$1"; else basename "$2"; fi; }
+  # Window names say where the agent runs: the server's name on the
+  # server, "here" on a laptop (a laptop is the machine with .hq-remote).
+  # The agent's identity rides on the window option @agent, so the
+  # visible name can change without breaking lookups.
+  if [ -e "$HOME/code/business/hq/.hq-remote" ]; then WHERE=here; else WHERE=$(hostname -s); fi
+  win_of() { # session agent -> window index (by @agent, or a pre-label name)
+    "${TX[@]}" list-windows -t "=$1" -F '#{window_index}|#{@agent}|#W' 2>/dev/null \
+      | awk -F'|' -v n="$2" '$2==n || $3==n {print $1; exit}'
+  }
+  label() { # session index agent -> name the window and tag it
+    "${TX[@]}" set-option -w -t "=$1:$2" @agent "$3"
+    "${TX[@]}" rename-window -t "=$1:$2" "$3 · $WHERE"
+  }
   groups=""
   while IFS='|' read -r name dir flags always; do
     s=$(group_of "$name" "$dir")
     case " $groups " in *" $s "*) ;; *) groups="$groups $s" ;; esac
-    if "${TX[@]}" has-session -t "=$s" 2>/dev/null \
-       && "${TX[@]}" list-windows -t "=$s" -F '#W' | grep -qxF "$name"; then
+    w=$("${TX[@]}" has-session -t "=$s" 2>/dev/null && win_of "$s" "$name")
+    if [ -n "$w" ]; then
+      label "$s" "$w" "$name"   # also relabels windows made before labels
       if already_running "$name"; then
         echo "team: '$name' is already running."
         continue
@@ -185,12 +199,16 @@ if command -v tmux >/dev/null 2>&1; then
     elif already_running "$name"; then
       echo "team: '$name' is running outside tmux (an iTerm tab?) — skipping."
       continue
-    elif "${TX[@]}" has-session -t "=$s" 2>/dev/null; then
-      "${TX[@]}" new-window -d -t "=$s:" -n "$name" -c "$dir"
     else
-      "${TX[@]}" new-session -d -s "$s" -n "$name" -c "$dir" -x 200 -y 50
+      if "${TX[@]}" has-session -t "=$s" 2>/dev/null; then
+        "${TX[@]}" new-window -d -t "=$s:" -n "$name" -c "$dir"
+      else
+        "${TX[@]}" new-session -d -s "$s" -n "$name" -c "$dir" -x 200 -y 50
+      fi
+      w=$(win_of "$s" "$name")
+      label "$s" "$w" "$name"
     fi
-    "${TX[@]}" send-keys -t "=$s:$name" "$(cmd_for "$name" "$dir" "$flags" "$always")" C-m
+    "${TX[@]}" send-keys -t "=$s:$w" "$(cmd_for "$name" "$dir" "$flags" "$always")" C-m
   done <<<"$MATCHES"
 
   set -- $groups
