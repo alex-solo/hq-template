@@ -3,6 +3,15 @@
 set -u
 BIN="$HOME/code/business/hq/bin"
 
+# A machine that drives a server: .hq-remote holds that server's ssh host,
+# and every command runs there, so agents never start on this machine.
+# HQ_LOCAL=1 runs one command here anyway.
+REMOTE="$HOME/code/business/hq/.hq-remote"
+if [ -s "$REMOTE" ] && [ -z "${HQ_LOCAL:-}" ]; then
+  cmd="\$HOME/code/business/hq/hq $(printf '%q ' "$@")"
+  exec ssh -t "$(cat "$REMOTE")" "bash -ic $(printf '%q' "$cmd")"
+fi
+
 case "${1:-help}" in
   help|-h|--help)
     cat <<'EOF'
@@ -32,6 +41,9 @@ hq — founder command center
   hq publish                  mirror the shareable files into the public
                               template repo (--check: leak test only)
   hq help                     this list
+
+Run from a laptop that drives a server (.hq-remote names its ssh host),
+every command runs on the server.
 
 Roster of sessions:  ~/code/business/hq/team.conf
 Full documentation:  ~/code/business/hq/README.md  (or ask the mentor)

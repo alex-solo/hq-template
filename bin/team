@@ -182,7 +182,9 @@ if command -v tmux >/dev/null 2>&1; then
   case "${TMUX:-}" in
     *"/${HQ_TMUX_SOCKET:-hq},"*) exec "${TX[@]}" switch-client -t "=$1" ;;
   esac
-  if [ "${TERM_PROGRAM:-}" = iTerm.app ] && [ -z "${TMUX:-}" ]; then
+  # iTerm locally sets TERM_PROGRAM; over ssh only LC_TERMINAL arrives.
+  if { [ "${TERM_PROGRAM:-}" = iTerm.app ] || [ "${LC_TERMINAL:-}" = iTerm2 ]; } \
+     && [ -z "${TMUX:-}" ]; then
     exec "${TX[@]}" -CC attach -t "=$1"
   fi
   TMUX= exec "${TX[@]}" attach -t "=$1"
