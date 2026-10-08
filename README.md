@@ -268,12 +268,14 @@ files because those don't exist upstream.
   - **With tmux** (`brew install tmux`): hq runs its own tmux server
     (socket `hq`, config `tmux.conf`), never touching any other tmux
     you use. Each venture and each hq role is one tmux session with a
-    window per agent. In iTerm it attaches through iTerm's tmux
-    integration, so the windows are ordinary iTerm tabs, and **closing
-    the window leaves the agents running**: `hq team <venture>` brings
-    them back as they are. In any other terminal it is plain tmux
-    (mouse on, Ctrl-b then a window number to switch, Ctrl-b d to
-    detach).
+    window per agent. In iTerm, locally or over ssh, it attaches
+    through iTerm's tmux integration, so each agent is an ordinary iTerm
+    tab or window, and **closing it leaves the agent running**:
+    `hq team <venture>` brings them back as they are. Tabs need one
+    iTerm setting: Settings → General → tmux → "When attaching, restore
+    windows as" → *Tabs in the attaching window* (the default opens
+    separate windows). In any other terminal it is plain tmux (mouse
+    on, Ctrl-b then a window number to switch, Ctrl-b d to detach).
   - **Without tmux:** one iTerm window with a tab per agent; closing a
     tab ends that agent.
 - **`hq team stop <venture>`** (or `mentor`, `plumber`, `designer`,
@@ -286,7 +288,9 @@ files because those don't exist upstream.
   one), then scaffolds `~/code/business/ventures/<name>` tailored to it
   — repo, CLAUDE.md seeded from your description, journal,
   design-constitution stub, agents, hooks — and registers everything in
-  `team.conf` and `ventures.md`. The interview protocol lives in
+  `team.conf` and `ventures.md`, and marks the new folder trusted, so
+  the agents' first launch doesn't stop at Claude Code's trust
+  question. The interview protocol lives in
   `.claude/skills/new-venture/`.
 - **`hq new --bare <name> ["thesis"]`** — skip the interview; scaffold
   the default analyst + builder shape mechanically (`bin/newventure`).
@@ -306,6 +310,28 @@ files because those don't exist upstream.
   runs after every hq commit and at the start of each plumber session.
 
 `team` is a shell alias for `hq team` — so `team <venture>` works too.
+
+### Running on a server
+
+The agents can live on an always-on Linux server instead of your
+laptop, so a closed laptop stops nothing. The server holds hq, the
+ventures, their `.env` files and every session; your laptop and phone
+are windows onto it.
+
+- **Setup:** clone hq to `~/code/business/hq` on the server and run
+  `hq setup`. In the server's `~/.claude/settings.json`, set
+  `remoteControlAtStartup: true`: every agent then also appears by name
+  in the Claude app's Code tab and at claude.ai/code, in the same
+  conversation, and permission prompts reach your phone.
+- **Your laptop:** write the server's ssh host into
+  `~/code/business/hq/.hq-remote` (not in git). From then on every `hq`
+  command on the laptop runs on the server — `hq team <venture>` opens
+  the server's agents as iTerm tabs — so agents never start on the
+  laptop by accident. `HQ_LOCAL=1 hq …` runs one command locally.
+- **Moving sessions to a server:** stop the agents, then copy
+  `~/.claude/projects/<dir>/` for hq, `ventures` and each venture (the
+  directory names encode the path, so rename them for the server's
+  home) and `hq/.team-state/`; each agent resumes its own conversation.
 
 ## Files
 
