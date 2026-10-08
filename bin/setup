@@ -37,7 +37,7 @@ command -v npx >/dev/null 2>&1 && ok "npx (designer's Playwright MCP needs it)" 
   || warn "npx not found — the designer's browser tooling needs Node"
 if command -v tmux >/dev/null 2>&1; then ok "tmux"
 elif [ -d "/Applications/iTerm.app" ]; then ok "iTerm (tmux not installed — tabs won't survive closing the terminal)"
-else warn "neither tmux nor iTerm found — 'hq team' can't open sessions; brew install tmux"; fi
+else warn "neither tmux nor iTerm found — 'hq team' can't open sessions; install tmux (brew or apt)"; fi
 
 echo "directories"
 if [ -d "$VENTURES" ]; then ok "$VENTURES"; else mkdir -p "$VENTURES"; made "$VENTURES"; fi
@@ -67,9 +67,9 @@ else
 # Lines starting with # are ignored. \`hq new\` appends entries here.
 # Session names are <venture-dir>-<role> so \`team <venture>\` can filter
 # and cross-venture messaging never collides. mentor, plumber and designer (HQ-level) are the exceptions.
-mentor|$HQ||--agent mentor --settings $HQ/.claude/settings-mentor.json --model opus
-plumber|$HQ||--agent plumber --model opus
-designer|$VENTURES|--agent designer:designer|--plugin-dir $HQ/designer --model opus
+mentor|~/code/business/hq||--agent mentor --settings ~/code/business/hq/.claude/settings-mentor.json --model opus
+plumber|~/code/business/hq||--agent plumber --model opus
+designer|~/code/business/ventures|--agent designer:designer|--plugin-dir ~/code/business/hq/designer --model opus
 EOF
   made "team.conf (mentor + plumber + designer; hq new adds ventures)"
 fi

@@ -20,7 +20,7 @@
 #                    which teams are running under tmux
 #
 # Roster: ~/code/business/hq/team.conf (name|directory|first-launch
-# flags|every-launch flags); `hq new` appends entries. Every-launch flags
+# flags|every-launch flags; paths written as ~/, expanded here); `hq new` appends entries. Every-launch flags
 # (optional 4th field) are repeated on resume — for things a resumed
 # session would otherwise lose, like the designer's --plugin-dir. First run creates each named session
 # under a fixed uuid (stored in .team-state/<name>); later runs resume
@@ -126,7 +126,9 @@ roster() {
       is_hq_level "$name" && continue
       [ "$(basename "$dir")" = "$FILTER" ] || continue
     fi
-    printf '%s|%s|%s|%s\n' "$name" "$dir" "$flags" "$always"
+    # team.conf writes paths as ~/ so one roster works on any machine
+    printf '%s|%s|%s|%s\n' "$name" "${dir//\~\//$HOME/}" \
+      "${flags//\~\//$HOME/}" "${always//\~\//$HOME/}"
   done
 }
 

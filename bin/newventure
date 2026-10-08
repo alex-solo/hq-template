@@ -344,8 +344,8 @@ git -C "$DIR" commit -qm "chore: venture scaffold — team protocol, agents, jou
 grep -qxF "$NAME" "$HQ/.publish-deny" 2>/dev/null || echo "$NAME" >> "$HQ/.publish-deny"
 
 cat >> "$HQ/team.conf" <<EOF
-$NAME-analyst|$DIR|--agent analyst|--model opus
-$NAME-builder|$DIR|--agent builder|--model opus
+$NAME-analyst|~/code/business/ventures/$NAME|--agent analyst|--model opus
+$NAME-builder|~/code/business/ventures/$NAME|--agent builder|--model opus
 EOF
 
 cat >> "$HQ/ventures.md" <<EOF

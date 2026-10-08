@@ -110,7 +110,7 @@ done
 #    Never on a clock alone — no activity, nothing due.
 last="$HQ/.team-state/last-sweep"
 since=$( [ -s "$last" ] && cat "$last" || echo "1970-01-01" )
-age=$(( ( $(date +%s) - $(date -j -f %F "$since" +%s 2>/dev/null || echo 0) ) / 86400 ))
+age=$(( ( $(date +%s) - $(date -j -f %F "$since" +%s 2>/dev/null || date -d "$since" +%s 2>/dev/null || echo 0) ) / 86400 ))
 if [ "$age" -ge 7 ]; then
   n=$(git -C "$HQ" log --oneline --since="$since" 2>/dev/null | wc -l)
   for d in $ventures; do n=$((n + $(git -C "$d" log --oneline --since="$since" 2>/dev/null | wc -l))); done
