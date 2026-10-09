@@ -318,6 +318,15 @@ files because those don't exist upstream.
   path the server can't open; the Claude app and claude.ai/code take
   attachments directly through Remote Control. Files older than 7 days
   are removed on the next send.
+- **`hq env <venture> [NAME...]`** — puts secrets into a venture's
+  `.env` on whichever machine it lives on: asks for each value without
+  showing it and adds it, replacing the name if present. With no names
+  it lists the names (never values); `--copy NAME` puts one value on the
+  laptop's clipboard, say to save a recovery key in a password manager.
+  `<venture>` is its directory name or a unique start of it. Values
+  travel over ssh's input, never as arguments or in shell history, and
+  the file stays readable only by you. Provider keys only: agents
+  generate their own secrets (rule 15).
 - **`hq tidy`** — the mechanical hygiene check: banned words, memory
   indexes out of step with their files, links to missing memories,
   auto-memory switched back on, `TEAM.md` tails holding entries from

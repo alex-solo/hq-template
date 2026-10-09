@@ -9,7 +9,7 @@ BIN="$HOME/code/business/hq/bin"
 # A team moved here with `hq move` runs here; `team all`, `team stop all`
 # and the listing cover both machines.
 REMOTE="$HOME/code/business/hq/.hq-remote"
-if [ -s "$REMOTE" ] && [ -z "${HQ_LOCAL:-}" ] && [ "${1:-}" != move ] && [ "${1:-}" != send ]; then
+if [ -s "$REMOTE" ] && [ -z "${HQ_LOCAL:-}" ] && [ "${1:-}" != move ] && [ "${1:-}" != send ] && [ "${1:-}" != env ]; then
   here_groups() {
     for f in "$HOME/code/business/hq/.team-state"/home-*; do
       [ -s "$f" ] && [ "$(cat "$f")" = "$(hostname -s)" ] && basename "$f" | sed 's/^home-//'
@@ -60,6 +60,9 @@ hq — founder command center
                               or Finder-copied files) or the named files
                               go to the server; their path is on your
                               clipboard to paste into the agent
+  hq env <venture> [NAME...]  put secrets into a venture's .env, typed
+                              hidden (no names: list them; --copy NAME:
+                              value to the clipboard) — wherever it lives
   hq new [name]               start a new venture: short interview, then
                               scaffolding tailored to the venture's shape
   hq new --bare <name> ["thesis"]
@@ -102,5 +105,6 @@ EOF
   publish) shift; exec "$BIN/publish" "$@" ;;
   tidy) exec "$BIN/tidy" ;;
   send) shift; exec "$BIN/send" "$@" ;;
+  env) shift; exec "$BIN/dotenv" "$@" ;;
   *) echo "hq: unknown command '$1' — run 'hq help'" >&2; exit 1 ;;
 esac

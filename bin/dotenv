@@ -1,0 +1,76 @@
+#!/bin/bash
+# dotenv — put a secret into a venture's .env without it ever showing:
+# not on screen, not in shell history, not in chat.
+#
+#   hq env <venture> NAME [NAME...]   asks for each value (hidden) and
+#                                     adds it, replacing NAME if present
+#   hq env <venture>                  lists the names in .env, never values
+#   hq env <venture> --copy NAME      puts NAME's value on the clipboard
+#
+# <venture> is its directory name or a unique start of it. The file is
+# the one on the machine the venture lives on: from a laptop that drives
+# a server (.hq-remote), the server's, unless the venture was moved here.
+# Values travel over ssh stdin, never as arguments; .env stays mode 600.
+
+set -euo pipefail
+HQ="$HOME/code/business/hq"
+VENTURES="${HQ_VENTURES:-$HOME/code/business/ventures}"
+REMOTE_FILE="$HQ/.hq-remote"
+
+die() { echo "env: $*" >&2; exit 1; }
+usage() { die "usage: hq env <venture> [NAME...] | <venture> --copy NAME"; }
+valid() { [[ "$1" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || die "not a variable name: $1"; }
+
+# Internal operations, run on the machine that holds the file:
+#   _set DIR NAME (value on stdin) · _get DIR NAME · _list DIR
+case "${1:-}" in
+  _set|_get|_list)
+    op=$1; f="$VENTURES/$2/.env"; name=${3:-}; [ -z "$name" ] || valid "$name"
+    case "$op" in
+      _list) [ -e "$f" ] || die "$2 has no .env"; grep -oE '^[A-Za-z_][A-Za-z0-9_]*=' "$f" | tr -d = ;;
+      _get) [ -e "$f" ] || die "$2 has no .env"
+            grep -q "^$name=" "$f" || die "$name is not in $2/.env"
+            v=$(grep "^$name=" "$f" | tail -1); printf '%s' "${v#*=}" ;;
+      _set) IFS= read -r val || true
+            [ -n "$val" ] || die "empty value for $name — nothing written"
+            [ -e "$f" ] || { (umask 077; : > "$f"); }
+            rest=$(grep -v "^$name=" "$f" || true)
+            { [ -n "$rest" ] && printf '%s\n' "$rest"; printf '%s=%s\n' "$name" "$val"; } > "$f"
+            chmod 600 "$f"
+            echo "  set $name in $2/.env" ;;
+    esac
+    exit 0 ;;
+esac
+
+[ $# -ge 1 ] || usage
+q=$1; shift
+matches=$(cd "$VENTURES" && for d in */; do d=${d%/}; [ -f "$d/CLAUDE.md" ] && echo "$d"; done | grep -E "^$q" || true)
+[ "$(printf '%s' "$matches" | grep -c .)" = 1 ] || die "no single venture matches '$q' (ventures: $(cd "$VENTURES" && ls -d */ | tr -d / | tr '\n' ' '))"
+V=$matches
+
+# Where the venture lives: here, unless this laptop drives a server and
+# the venture hasn't been moved to this machine.
+HOST=
+if [ -s "$REMOTE_FILE" ]; then
+  home=$(cat "$HQ/.team-state/home-$V" 2>/dev/null || true)
+  [ "$home" = "$(hostname -s)" ] || HOST=$(cat "$REMOTE_FILE")
+fi
+op() { if [ -n "$HOST" ]; then ssh "$HOST" "\$HOME/code/business/hq/bin/dotenv $(printf '%q ' "$@")"; else "$0" "$@"; fi; }
+
+if [ $# -eq 0 ]; then op _list "$V"; exit 0; fi
+
+if [ "$1" = --copy ]; then
+  [ $# -eq 2 ] || usage; valid "$2"
+  command -v pbcopy >/dev/null || die "--copy needs a clipboard: run it on the laptop"
+  v=$(op _get "$V" "$2") || exit 1
+  printf '%s' "$v" | pbcopy; unset v
+  echo "  $2 is on the clipboard — paste it, then copy something else"
+  exit 0
+fi
+
+for n in "$@"; do valid "$n"; done
+for n in "$@"; do
+  printf '%s: ' "$n"; IFS= read -rs val; echo
+  printf '%s\n' "$val" | op _set "$V" "$n"
+done
+unset val
