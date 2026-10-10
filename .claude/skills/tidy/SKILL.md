@@ -1,7 +1,6 @@
 ---
 name: tidy
 description: The plumber's judgment sweep of every agent's steering files and memory — duplicates, contradictions, stale state, restated rules. Run when bin/tidy says a sweep is due and the founder agrees.
-disable-model-invocation: true
 ---
 
 The mechanical half is `bin/tidy`; this is the half that needs judgment.
