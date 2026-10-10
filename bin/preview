@@ -1,0 +1,74 @@
+#!/bin/bash
+# preview — a link the founder can open in his browser (laptop or phone)
+# for a file the agents made: an HTML prototype, a gallery, a report.
+#
+#   hq preview <path>   prints http://<this machine>:8700/<path under ventures/>
+#   hq preview stop     stops the preview server
+#
+# Starts the preview server when it isn't running (after a reboot the
+# next call starts it again), then prints the URL. The server serves
+# ~/code/business/ventures read-only, on this machine's tailnet address
+# only, and refuses every path with a part starting with "." (.env, .git,
+# .claude, .drop) and node_modules. On a machine without Tailscale it
+# listens on localhost (the founder is at that machine).
+
+set -euo pipefail
+
+ROOT="$HOME/code/business/ventures"
+PORT="${HQ_PREVIEW_PORT:-8700}"
+
+if command -v tailscale >/dev/null 2>&1 \
+   && TS=$(tailscale status --json 2>/dev/null | python3 -c 'import json,sys
+d=json.load(sys.stdin)["Self"]; print(d["TailscaleIPs"][0], d["DNSName"].rstrip("."))' 2>/dev/null); then
+  BIND=${TS% *}; HOST=${TS#* }
+else
+  BIND=127.0.0.1; HOST=localhost
+fi
+
+running() { python3 - "$BIND" "$PORT" <<'PY'
+import socket, sys
+s = socket.socket(); s.settimeout(1)
+sys.exit(0 if s.connect_ex((sys.argv[1], int(sys.argv[2]))) == 0 else 1)
+PY
+}
+
+if [ "${1:-}" = stop ]; then
+  pkill -f "hq-preview-server $PORT" && echo "preview: stopped" || echo "preview: not running"
+  exit 0
+fi
+
+[ $# -eq 1 ] || { echo "usage: hq preview <path under $ROOT> | stop" >&2; exit 2; }
+
+ABS=$(realpath -e -- "$1" 2>/dev/null) || { echo "preview: no such file: $1" >&2; exit 1; }
+case "$ABS" in
+  "$ROOT"/*) REL=${ABS#"$ROOT"/} ;;
+  *) echo "preview: only files under $ROOT are served" >&2; exit 1 ;;
+esac
+case "/$REL/" in
+  */.*|*/node_modules/*) echo "preview: dotfiles and node_modules are never served" >&2; exit 1 ;;
+esac
+
+if ! running; then
+  nohup setsid python3 -c '
+import http.server, os, sys, urllib.parse
+root, bind, port = os.path.realpath(sys.argv[1]), sys.argv[2], int(sys.argv[3])
+class H(http.server.SimpleHTTPRequestHandler):
+    def __init__(s, *a, **k): super().__init__(*a, directory=root, **k)
+    def send_head(s):
+        parts = urllib.parse.unquote(urllib.parse.urlsplit(s.path).path).split("/")
+        if any(p.startswith(".") or p == "node_modules" for p in parts if p):
+            s.send_error(404); return None
+        real = os.path.realpath(s.translate_path(s.path))
+        if real != root and not real.startswith(root + os.sep):
+            s.send_error(404); return None
+        return super().send_head()
+    def log_message(s, *a): pass
+http.server.ThreadingHTTPServer((bind, port), H).serve_forever()
+' "$ROOT" "$BIND" "$PORT" hq-preview-server "$PORT" >/dev/null 2>&1 < /dev/null &
+  for _ in 1 2 3 4 5 6 7 8 9 10; do running && break; sleep 0.2; done
+  running || { echo "preview: server did not start on $BIND:$PORT" >&2; exit 1; }
+fi
+
+ENC=$(python3 -c 'import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$REL")
+[ -d "$ABS" ] && ENC="$ENC/"
+echo "http://$HOST:$PORT/$ENC"

@@ -63,6 +63,9 @@ hq — founder command center
   hq env <venture> [NAME...]  put secrets into a venture's .env, typed
                               hidden (no names: list them; --copy NAME:
                               value to the clipboard) — wherever it lives
+  hq preview <file>           a link to a venture file (prototype, report)
+                              the founder opens from laptop or phone over
+                              the tailnet; dotfiles are never served
   hq new [name]               start a new venture: short interview, then
                               scaffolding tailored to the venture's shape
   hq new --bare <name> ["thesis"]
@@ -106,5 +109,6 @@ EOF
   tidy) exec "$BIN/tidy" ;;
   send) shift; exec "$BIN/send" "$@" ;;
   env) shift; exec "$BIN/dotenv" "$@" ;;
+  preview) shift; exec "$BIN/preview" "$@" ;;
   *) echo "hq: unknown command '$1' — run 'hq help'" >&2; exit 1 ;;
 esac

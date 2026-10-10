@@ -327,6 +327,14 @@ files because those don't exist upstream.
   travel over ssh's input, never as arguments or in shell history, and
   the file stays readable only by you. Provider keys only: agents
   generate their own secrets (rule 15).
+- **`hq preview <file>`** — prints a link to a file under `ventures/`
+  (an HTML prototype, a design gallery, a report) that opens in the
+  founder's browser on any device on the tailnet; agents hand him that
+  link instead of a path. It starts a small read-only server on this
+  machine's tailnet address (port 8700) when one isn't running, so a
+  reboot only costs the next call a second; `hq preview stop` ends it.
+  Dotfiles and dot-folders (`.env`, `.git`, `.claude`) and
+  `node_modules` are never served, nor anything outside `ventures/`.
 - **`hq tidy`** — the mechanical hygiene check: banned words, memory
   indexes out of step with their files, links to missing memories,
   auto-memory switched back on, `TEAM.md` tails holding entries from
