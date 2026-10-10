@@ -259,6 +259,10 @@ this is how you apply them here.
   checkout say: do not fork or spawn helpers; stop every background
   process you start before reporting; never \`git stash\`, \`reset\`,
   \`checkout --\` or \`restore\` — another agent works in this tree.
+  You and every note: wait on and stop processes only by the task ID
+  or PID you started, never by name (\`pgrep -f\` matches its own loop;
+  \`pkill\` hits every session's processes); screenshots through
+  headless Playwright scripts, never browser-MCP tools.
 - **Escalation** (\`model: opus\`, always a fresh context) for exactly two
   things: (1) a surprise — reality diverges from the plan, a lasting
   architecture or schema decision, a bug unexplained after two real
