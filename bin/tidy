@@ -21,7 +21,7 @@ ventures=$(grep -v '^\s*#' "$HQ/team.conf" | awk -F'|' 'NF>1{print $2}' \
 # Steering files: loaded or consulted by agents.
 steering=("$HQ/CLAUDE.md" "$HQ/rules.md" "$HQ/.claude/agents/"*.md \
   "$HQ/designer/agents/"*.md "$V/CLAUDE.md" "$HQ/skills/"*/SKILL.md)
-memdirs=("$HQ/.claude/agent-memory/"* "$V/.claude/agent-memory/"*)
+memdirs=("$HQ/.claude/agent-memory/"*)
 for d in $ventures; do
   steering+=("$d/CLAUDE.md" "$d/.claude/agents/"*.md)
   memdirs+=("$d/.claude/agent-memory/"*)
@@ -82,12 +82,11 @@ for d in $ventures; do for l in "$d/.claude/skills/"*; do
 done; done
 
 # 6. No venture named where it doesn't belong: general files (loaded by
-#    every session or mirrored publicly) and the designer's shared memory
-#    name no venture; a venture's steering files name no other venture.
+#    every session or mirrored publicly) name no venture; a venture's steering files name no other venture.
 names=$(for d in $ventures; do b=${d##*/}; echo "$b"; echo "${b%%-*}"; done | sort -u)
 general=("$HQ/rules.md" "$HQ/CLAUDE.md" "$HQ/README.md" "$V/CLAUDE.md" "$HQ/.claude/agents/"*.md \
   "$HQ/designer/agents/"*.md "$HQ/skills/"*/*.md "$HQ/.claude/skills/"*/SKILL.md "$HQ/templates/"* \
-  "$HQ/example/"*)  # the designer serves every venture: its memory may name them
+  "$HQ/example/"*)
 for n in $names; do
   for f in $(grep -l -i -w -F "$n" "${general[@]}" 2>/dev/null); do say "venture '$n' named in a general file: ${f#$HOME/}"; done
 done

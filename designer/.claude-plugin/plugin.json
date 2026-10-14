@@ -1,5 +1,5 @@
 {
   "name": "designer",
-  "description": "Portfolio designer agent: charter, design skills, browser tooling. Loaded only by `hq designer`.",
+  "description": "Venture designer agent shared by every venture: charter, design skills, browser tooling. Loaded by each <venture>-designer session.",
   "version": "0.1.0"
 }

@@ -3,8 +3,8 @@
 A small team of named, persistent [Claude Code](https://code.claude.com)
 sessions that run a portfolio of side businesses with you: a **mentor**
 that holds the whole picture, a **plumber** that keeps the machinery
-working, an **analyst + builder** pair per venture, and a **designer**
-shared across ventures. Files are the team's memory,
+working, and an **analyst, builder and designer** per venture, the
+designers sharing one charter. Files are the team's memory,
 git is its history, and every session resumes exactly where it left off.
 
 ```
@@ -52,7 +52,7 @@ rather than things you remember to manage.
 │   ├── rules.md                   portfolio-wide founder rules   (private)
 │   ├── hq, bin/                   the commands
 │   ├── skills/                    shared skills (linked per project)
-│   ├── designer/                  the designer's bundle
+│   ├── designer/                  the designers' shared bundle
 │   └── example/, templates/       what the private files look like
 └── ventures/
     ├── CLAUDE.md                  imports rules.md; shared team protocol
@@ -60,8 +60,8 @@ rather than things you remember to manage.
     │   ├── CLAUDE.md                this venture's rules and files
     │   ├── BACKLOG.md               the one ordered queue of what's next
     │   ├── TEAM.md                  the venture's shared journal
-    │   ├── design-constitution.md   binds the designer here
-    │   └── .claude/                 agents/ (analyst, builder), skill links
+    │   ├── design-constitution.md   binds its designer
+    │   └── .claude/                 agents/ (analyst, builder), skill links, memory
     └── <venture-b>/ …
 ```
 
@@ -73,7 +73,7 @@ rather than things you remember to manage.
 | **`plumber`** | `hq/` | Keeps the machinery working: scripts, charters, skills, templates, permission rules, the public template mirror. Propagates a rule or charter change into every venture's `.claude/` and `CLAUDE.md`, and keeps charters and memory free of repeats (`hq tidy`, and a `/tidy` sweep when a week of work calls for one). A bare `claude` in `hq/` runs as the plumber. | Write the mentor's books (`founder.md`, `ventures.md`, `ideas.md`, `journal.md`, `accounts.md`). Touch a venture's code, specs, docs, or secrets (permission-enforced). |
 | **`<venture>-analyst`** | that venture | Product thinking: discussion → decision → spec edit with a version bump → brief to the builder. | Touch code. Its shell is doc-scoped. |
 | **`<venture>-builder`** | that venture | Implements the cited spec section, tests, commits, pushes. Pushes back through the analyst when a spec is wrong. | Silently deviate from the spec. |
-| **`designer`** | `ventures/` | One designer for all ventures — one accumulated taste. Design systems, screen specs, prototypes; opens built UI in a browser and reviews it before presenting. | Write production code (that's the builder's). Read anything outside `ventures/`. |
+| **`<venture>-designer`** | that venture | Design system, screen specs, prototypes; opens built UI in a browser and reviews it before presenting. One charter shared by every venture's designer (`hq/designer/`), holding your taste; the venture's look lives in its design constitution. | Write production code (that's the builder's). Edit hq or another venture. |
 
 Every role is a Claude Code session with a fixed identity: a charter
 file (`.claude/agents/<role>.md`), a session name other
@@ -89,9 +89,9 @@ as a journal, and
 message each other by name (`<venture>-analyst` → `<venture>-builder`).
 Everything they know about the product lives in that repo's specs.
 
-**Portfolio level** — the mentor, the plumber, and the designer, launched
-alone with `hq mentor` / `hq plumber` / `hq designer`, never bundled into
-a venture launch. They read every venture but belong to none. The venture `CLAUDE.md` files
+**Portfolio level** — the mentor and the plumber, launched alone with
+`hq mentor` / `hq plumber`, never bundled into a venture launch. They
+read every venture but belong to none. The venture `CLAUDE.md` files
 deliberately don't know the portfolio's goals: analysts reason about
 the product, the mentor reasons about allocation.
 
@@ -110,8 +110,8 @@ the product, the mentor reasons about allocation.
   on a clock.
 - **Separation is enforced, not requested.** The mentor's read-only
   access to ventures is a permission rule, not a sentence in a prompt.
-  The analyst's shell is scoped to documents. The designer physically
-  can't see anything outside `ventures/`. The plumber's writes into a
+  The analyst's shell is scoped to documents. A designer works
+  only in its own venture. The plumber's writes into a
   venture stop at `.claude/` and `CLAUDE.md`. A role can't drift into
   another's job by being asked nicely.
 - **Discussion → decision → record.** Every role challenges before it
@@ -163,7 +163,7 @@ A typical week:
 3. **The builder takes the top ready item**, reads the cited section (not the
    summary), implements, tests, commits. If the spec proves wrong in
    practice it messages the analyst rather than deviating.
-4. **UI work starts → `hq designer`.** It reads the venture's
+4. **UI work starts → the venture's designer.** It reads the venture's
    design constitution, establishes tokens before screens (new colours
    reach you as a heads-up with a picture, never a wait), produces specs and prototypes in the venture repo, and
    after the builder implements, screenshots the result at phone and
@@ -202,7 +202,7 @@ The clone must live at `~/code/business/hq` — every script assumes it.
 1. **`bin/setup`** (mechanical, idempotent, re-run any time): checks
    prerequisites, creates `~/code/business/ventures`, creates the private
    files from `templates/` (empty — the mentor fills them in as it
-   learns), writes `team.conf` with the mentor, plumber and designer,
+   learns), writes `team.conf` with the mentor and plumber,
    creates `ventures/CLAUDE.md`, adds the `hq` and `team` aliases
    to your shell rc, and, with nvm installed, installs each venture's
    `.nvmrc` Node version and a shell hook that switches to it in that
@@ -247,18 +247,6 @@ files because those don't exist upstream.
   `hq/` is the same role without a name (`agent: plumber` in
   `.claude/settings.json`); `hq plumber` is the named, resumable one
   other sessions can message. Charter: `.claude/agents/plumber.md`.
-- **`hq designer`** — the portfolio designer, launched alone. HQ-level
-  like the mentor (one session, one taste-memory across ventures), so
-  never bundled into a venture's team launch. Runs with `ventures/` as
-  its working directory — write access to every venture, none to hq or
-  anything else — and loads its bundle from `hq/designer/` via
-  `--plugin-dir`: the charter (`agents/designer.md`), its skills
-  (`skills/`, vendored — Anthropic's `frontend-design`, Vercel's
-  `web-design-guidelines`), and its browser tooling (`.mcp.json` —
-  Playwright MCP, version-pinned, isolated profile). Nothing in the
-  bundle loads in any other session. Memory:
-  `ventures/.claude/agent-memory/designer-designer/` (not in git). Other
-  sessions message it as `designer`.
 - **`hq team <venture>`** — one command after any reboot: launches or
   resumes that venture's working team (analyst, builder, any extra
   roles), each exactly where it left off. `hq team all` launches every
@@ -284,8 +272,7 @@ files because those don't exist upstream.
     on, Ctrl-b then a window number to switch, Ctrl-b d to detach).
   - **Without tmux:** one iTerm window with a tab per agent; closing a
     tab ends that agent.
-- **`hq team stop <venture>`** (or `mentor`, `plumber`, `designer`,
-  `all`) — ends the agents running under tmux. Every session is saved
+- **`hq team stop <venture>`** (or `mentor`, `plumber`, `all`) — ends the agents running under tmux. Every session is saved
   as it goes, so the next `hq team` resumes it. A restart of the Mac
   ends them too, with the same result.
 - **`hq move <team> here|server`** — move a team between the laptop
@@ -363,17 +350,15 @@ are windows onto it.
   the server's agents as iTerm tabs — so agents never start on the
   laptop by accident. `HQ_LOCAL=1 hq …` runs one command locally.
 - **`hq move <team> here|server`** — a team (a venture, or `mentor`,
-  `plumber`, `designer`) lives on one machine at a time, so no agent's
+  `plumber`) lives on one machine at a time, so no agent's
   conversation ever forks. A move stops the team where it runs, carries
   the venture's working tree (uncommitted work and `.env` included,
-  `node_modules` reinstalled when the lockfile changed), the designer's
-  memory, and each agent's conversation and session id; mentor and
+  `node_modules` reinstalled when the lockfile changed) and each agent's conversation and session id; mentor and
   plumber need hq committed and move through git. It records the new
   home on both machines (`.team-state/home-<team>`) and opens the team
   there. `hq team <team>` then runs wherever the team lives, even with
   the server unreachable, and refuses to start it anywhere else.
-  `--dry-run` prints the steps. Move before going offline; keep the
-  designer where the ventures it is working on live.
+  `--dry-run` prints the steps. Move before going offline.
 - **Moving sessions to a server by hand:** stop the agents, then copy
   `~/.claude/projects/<dir>/` for hq, `ventures` and each venture (the
   directory names encode the path, so rename them for the server's
@@ -415,7 +400,7 @@ are windows onto it.
   every mentor session at start.
 - `team.conf` — session roster (`name|dir|first-launch flags|every-launch
   flags`), hand-editable. The optional 4th field is repeated on resume —
-  every session's `--model opus` lives there, and the designer's
+  every session's `--model opus` lives there, and each designer's
   `--plugin-dir`, since a bare `claude --resume` keeps the transcript's
   model.
 - `tmux.conf` — loaded only by `hq team`'s own tmux server: full colour,
@@ -430,7 +415,7 @@ are windows onto it.
   history never loads into a session. Private.
 - `rules.md` — the founder's standing rules, dated, one file for the
   whole portfolio: `ventures/CLAUDE.md` imports it for every venture
-  and the designer, so a rule
+  session, so a rule
   stated in one venture binds all of them. Only the plumber writes it
   (other sessions are denied by permission and send it the founder's
   intent), so rules stay general. Venture files
@@ -440,17 +425,21 @@ are windows onto it.
 - `example/` — fictional, filled-in `founder.md`, `ventures.md`,
   `ideas.md`, `journal.md`, `accounts.md`, `rules.md`: reference for
   the shape, never copied into place. Fiction on purpose — never a scrubbed copy of real files.
-- `designer/` — the designer's bundle (a Claude Code plugin directory):
-  charter, vendored skills, MCP config. To add a skill: copy its folder
+- `designer/` — the bundle every venture's designer loads with
+  `--plugin-dir` (a Claude Code plugin directory): the shared charter
+  (`agents/designer.md`, which only the plumber writes), vendored skills
+  (Anthropic's `frontend-design`, Vercel's `web-design-guidelines`), and
+  the browser tooling (`.mcp.json`: Playwright MCP, version-pinned,
+  isolated profile). Nothing in it loads in any other session. Each
+  designer's memory lives in its venture's repo. To add a skill: copy its folder
   into `designer/skills/` after reading it, commit. A skill that fetches
   its instructions from a URL at run time gets that content vendored and
   pinned instead (see `web-design-guidelines/SKILL.md` for the pattern).
   To update `frontend-design`: re-copy from github.com/anthropics/skills.
 - `bin/` — the scripts behind `hq` subcommands.
 - `skills/` — the shared skills, one copy each, linked (relative
-  symlinks) into the projects that use them: `hq/.claude/skills/`,
-  `ventures/.claude/skills/` for the designer, and each venture's
-  `.claude/skills/`. They load only in team sessions, never machine-wide.
+  symlinks) into the projects that use them: `hq/.claude/skills/` and
+  each venture's `.claude/skills/`. They load only in team sessions, never machine-wide.
   Roster: `/handoff` (team protocol; prunes absorbed entries);
   `/kickoff` (a new venture's first analyst session); `/xref`
   (identity changes, hq only); `/grilling` (design-tree

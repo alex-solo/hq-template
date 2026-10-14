@@ -1,12 +1,13 @@
 #!/bin/bash
 # newventure <dir-name> ["one-line thesis"] — scaffold a new venture with
-# its own analyst + builder team, wired into `team` and the mentor's books.
+# its own analyst + builder + designer team, wired into `team` and the mentor's books.
 #
 # Creates ~/code/business/ventures/<name> with: CLAUDE.md skeleton (incl. team protocol),
-# TEAM.md journal, BACKLOG.md queue, design-constitution.md stub (binds the portfolio
-# designer), analyst + builder agent definitions, .gitignore,
-# SessionStart hook; git-inits and commits it; registers <name>-analyst
-# and <name>-builder in ~/code/business/hq/team.conf; stubs the venture in ventures.md.
+# TEAM.md journal, BACKLOG.md queue, design-constitution.md stub (binds the venture's
+# designer), analyst + builder agent definitions (the designer's charter
+# is shared, in hq/designer/), .gitignore,
+# SessionStart hook; git-inits and commits it; registers <name>-analyst,
+# <name>-builder and <name>-designer in ~/code/business/hq/team.conf; stubs the venture in ventures.md.
 #
 # Session names are prefixed (<name>-analyst) so they never collide with
 # other projects' sessions in cross-session messaging.
@@ -53,8 +54,8 @@ the founder's intake material is in \`docs/samples/\`.
 
 ## Team (shared protocol: \`../CLAUDE.md\`)
 
-Sessions: \`$NAME-analyst\`, \`$NAME-builder\`; the designer's
-constitution is \`design-constitution.md\`.
+Sessions: \`$NAME-analyst\`, \`$NAME-builder\`, \`$NAME-designer\`;
+the designer's constitution is \`design-constitution.md\`.
 
 ## Conventions
 
@@ -66,8 +67,7 @@ cat > "$DIR/TEAM.md" <<EOF
 # TEAM.md — session journal
 
 Shared journal for the named sessions working this repo
-(**$NAME-analyst**, **$NAME-builder**, and the portfolio
-**designer** while it works here). Every session reads this on start (tail auto-injected via hook)
+(**$NAME-analyst**, **$NAME-builder**, **$NAME-designer**). Every session reads this on start (tail auto-injected via hook)
 and appends an entry before ending a work block (\`/handoff\`).
 
 Entry format — newest at the bottom:
@@ -140,9 +140,9 @@ EOF
 cat > "$DIR/design-constitution.md" <<EOF
 # Design constitution — $NAME
 
-**Status:** STUB v0.0 — nothing here is decided yet. The portfolio
-\`designer\` session (\`hq designer\`) reads this file first when working
-in this repo and treats it as binding; while it is a stub, the designer's
+**Status:** STUB v0.0 — nothing here is decided yet. The venture's
+designer (\`$NAME-designer\`) reads this file first and treats it as
+binding; while it is a stub, the designer's
 first job is to fill it in with the founder, not to draw screens.
 Living-document rules apply: every change set = version bump + changelog
 entry.
@@ -365,6 +365,7 @@ grep -qxF "$NAME" "$HQ/.publish-deny" 2>/dev/null || echo "$NAME" >> "$HQ/.publi
 cat >> "$HQ/team.conf" <<EOF
 $NAME-analyst|~/code/business/ventures/$NAME|--agent analyst|--model opus
 $NAME-builder|~/code/business/ventures/$NAME|--agent builder|--model opus
+$NAME-designer|~/code/business/ventures/$NAME|--agent designer:designer|--plugin-dir ~/code/business/hq/designer --model opus
 EOF
 
 cat >> "$HQ/ventures.md" <<EOF
@@ -381,7 +382,7 @@ cat >> "$HQ/ventures.md" <<EOF
 EOF
 
 echo "Scaffolded $DIR"
-echo "Registered sessions: $NAME-analyst, $NAME-builder (in team.conf)"
+echo "Registered sessions: $NAME-analyst, $NAME-builder, $NAME-designer (in team.conf)"
 echo "Next: drop intake material into $DIR/docs/samples/, then run 'team'."
 echo "First launch asks to approve an external import of hq/rules.md: approve it."
 echo "Declining disables the portfolio rules in this venture, and the dialog never returns."

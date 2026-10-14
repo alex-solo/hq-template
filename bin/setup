@@ -8,7 +8,7 @@
 #   3. creates the private files (founder.md, ventures.md, ideas.md,
 #      accounts.md, rules.md,
 #      journal.md) from templates/ if they don't exist yet
-#   4. writes team.conf (mentor + plumber + designer) if it doesn't exist yet
+#   4. writes team.conf (mentor + plumber) if it doesn't exist yet
 #   5. removes any machine-wide skill links (skills load per project)
 #   6. adds the `hq` and `team` aliases to your shell rc
 #   7. Node per venture: installs each venture's .nvmrc version via nvm
@@ -38,7 +38,7 @@ warn() { printf '  WARN  %s\n' "$*"; }
 echo "prerequisites"
 command -v claude >/dev/null 2>&1 && ok "claude $(claude --version 2>/dev/null | head -1)" \
   || warn "claude not found — install Claude Code first: https://code.claude.com"
-command -v npx >/dev/null 2>&1 && ok "npx (designer's Playwright MCP needs it)" \
+command -v npx >/dev/null 2>&1 && ok "npx (the designers' Playwright MCP needs it)" \
   || warn "npx not found — the designer's browser tooling needs Node"
 if command -v tmux >/dev/null 2>&1; then ok "tmux"
 elif [ -d "/Applications/iTerm.app" ]; then ok "iTerm (tmux not installed — tabs won't survive closing the terminal)"
@@ -46,15 +46,9 @@ else warn "neither tmux nor iTerm found — 'hq team' can't open sessions; insta
 
 echo "directories"
 if [ -d "$VENTURES" ]; then ok "$VENTURES"; else mkdir -p "$VENTURES"; made "$VENTURES"; fi
-# Shared by every venture session and the designer: the rules import,
-# auto-memory off, and the designer's skill links (one copy, in hq).
+# Shared by every venture session: the rules import and team protocol.
 if [ -e "$VENTURES/CLAUDE.md" ]; then ok "ventures/CLAUDE.md"
 else cp "$HQ/templates/ventures-CLAUDE.md" "$VENTURES/CLAUDE.md"; made "ventures/CLAUDE.md"; fi
-mkdir -p "$VENTURES/.claude/skills"
-[ -e "$VENTURES/.claude/settings.json" ] || { echo '{ "autoMemoryEnabled": false, "permissions": { "allow": ["Bash(~/code/business/hq/hq preview:*)"], "deny": ["Edit(~/code/business/hq/**)", "Write(~/code/business/hq/**)"] } }' > "$VENTURES/.claude/settings.json"; made "ventures/.claude/settings.json"; }
-for s in handoff diagnosing-bugs grilling wizard retro wait-what; do
-  [ -e "$VENTURES/.claude/skills/$s" ] || ln -s "../../../hq/skills/$s" "$VENTURES/.claude/skills/$s"
-done
 
 echo "private files (created from templates/ when missing)"
 for f in founder.md ventures.md ideas.md journal.md accounts.md rules.md; do
@@ -71,12 +65,11 @@ else
 # unless --model is passed again)
 # Lines starting with # are ignored. \`hq new\` appends entries here.
 # Session names are <venture-dir>-<role> so \`team <venture>\` can filter
-# and cross-venture messaging never collides. mentor, plumber and designer (HQ-level) are the exceptions.
+# and cross-venture messaging never collides. mentor and plumber (HQ-level) are the exceptions.
 mentor|~/code/business/hq||--agent mentor --settings ~/code/business/hq/.claude/settings-mentor.json --model opus
 plumber|~/code/business/hq||--agent plumber --model opus
-designer|~/code/business/ventures|--agent designer:designer|--plugin-dir ~/code/business/hq/designer --model opus
 EOF
-  made "team.conf (mentor + plumber + designer; hq new adds ventures)"
+  made "team.conf (mentor + plumber; hq new adds each venture's team)"
 fi
 
 echo "skills"

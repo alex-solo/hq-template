@@ -17,7 +17,7 @@ if [ -s "$REMOTE" ] && [ -z "${HQ_LOCAL:-}" ] && [ "${1:-}" != move ] && [ "${1:
   }
   g=
   case "${1:-}" in
-    mentor|plumber|designer) g=$1 ;;
+    mentor|plumber) g=$1 ;;
     team) case "${2:-}" in stop) g=${3:-} ;; *) g=${2:-} ;; esac ;;
   esac
   local_run=
@@ -47,14 +47,13 @@ hq — founder command center
   hq plumber                  the tooling session — scripts, charters,
                               skills, propagation into ventures; a bare
                               `claude` here is the same role, unnamed
-  hq designer                 portfolio designer — serves every venture,
-                              launched alone
-  hq team <venture>           launch/resume that venture's working team
+  hq team <venture>           launch/resume that venture's team (analyst,
+                              builder, designer)
   hq team all                 every venture's team at once (explicit on purpose)
   hq team                     list ventures and which teams are running
   hq team stop <venture|all>  end a team's agents (they resume next launch)
-  hq move <team> here|server  give a team (venture, mentor, plumber,
-                              designer) a new home: stop it, carry its
+  hq move <team> here|server  give a team (venture, mentor, plumber)
+                              a new home: stop it, carry its
                               work and conversations across, start it there
   hq send [file...]           laptop → agents: the clipboard (a screenshot
                               or Finder-copied files) or the named files
@@ -90,7 +89,6 @@ EOF
     ;;
   mentor) exec "$BIN/team" mentor ;;
   plumber) exec "$BIN/team" plumber ;;
-  designer) exec "$BIN/team" designer ;;
   team) shift; exec "$BIN/team" "$@" ;;
   move) shift; exec "$BIN/move" "$@" ;;
   new|newventure)

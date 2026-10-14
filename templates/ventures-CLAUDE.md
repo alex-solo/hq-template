@@ -5,13 +5,13 @@
 ## Team protocol (every venture)
 
 - Each venture is worked by `<venture>-analyst` (product and specs;
-  never code, doc-scoped shell) and `<venture>-builder` (code, tests,
-  deploys, the pre-deploy audit). Charters: the venture's
-  `.claude/agents/`.
-- **mentor** (`hq mentor`) and **designer** (`hq designer`) serve every
-  venture and belong to none. The designer is bound by the venture's
-  design constitution; briefs come from the analyst; production code
-  stays with the builder.
+  never code, doc-scoped shell), `<venture>-builder` (code, tests,
+  deploys, the pre-deploy audit) and `<venture>-designer` (design
+  system, prototypes, design QA; bound by the venture's design
+  constitution, briefed by the analyst; production code stays with the
+  builder). Charters: the venture's `.claude/agents/`; the designer's
+  is shared, in `hq/designer/`.
+- **mentor** (`hq mentor`) serves every venture and belongs to none.
 - Specs are the source of truth. `BACKLOG.md` is the one queue of
   what's next (rule 28). `TEAM.md` is the journal — recent work and
   cross-role state only; its tail loads at session start. Run

@@ -25,15 +25,15 @@ lightweight intake, not a spec session.
 
 ## 2. Propose the shape
 
-- Default is **analyst + builder** — recommend it unless the interview
+- Default is **analyst + builder + designer** — recommend it unless the interview
   surfaced a genuinely distinct recurring context. The rule (same one the
   whole system is built on): a separate agent earns its existence only
   when its conversation would pollute or be polluted by another one, AND
   it recurs. Cosmetic roles are bloat.
-- Design is already covered: the portfolio `designer` (HQ-level,
-  `hq designer`) serves every venture, bound by the
-  `design-constitution.md` stub the scaffold creates. A venture-level
-  design role is a duplicate, whatever the interview surfaces.
+- The designer (`<venture>-designer`, charter shared from
+  `hq/designer/`) is bound by the `design-constitution.md` stub the
+  scaffold creates. A venture with no screens he will use (a backend
+  API) drops its designer line from `team.conf`.
 - If a third role is warranted, propose it with a one-line charter and
   say honestly what it does that analyst/builder can't. Ask the founder
   to confirm the shape (one question, 2–3 options max).

@@ -1,7 +1,8 @@
 #!/bin/bash
 # move <team> here|server [--dry-run] — give a team a new home.
 #
-#   <team>    a venture (its directory name), or mentor, plumber, designer
+#   <team>    a venture (its directory name: analyst, builder, designer),
+#             or mentor, plumber
 #   here      this machine (the laptop that drives a server via .hq-remote)
 #   server    the machine named in .hq-remote
 #
@@ -11,7 +12,6 @@
 #   - a venture's working tree, uncommitted work and .env included
 #     (node_modules excepted; reinstalled at the destination when the
 #     lockfile changed or it is missing)
-#   - the designer's memory (ventures/.claude/agent-memory, not in git)
 #   - each agent's conversation (~/.claude/projects/<dir>/<uuid>.jsonl
 #     and its folder) and session id (.team-state/<agent>)
 # mentor and plumber work in hq itself: hq must be committed at the
@@ -27,7 +27,7 @@ CONF="$HQ/team.conf"
 REMOTE_FILE="$HQ/.hq-remote"
 
 die() { echo "move: $*" >&2; exit 1; }
-usage() { die "usage: hq move <venture|mentor|plumber|designer> here|server [--dry-run]"; }
+usage() { die "usage: hq move <venture|mentor|plumber> here|server [--dry-run]"; }
 
 G="${1:-}"; TO="${2:-}"; DRY="${3:-}"
 [ -n "$G" ] && [ -n "$TO" ] || usage
@@ -53,8 +53,8 @@ agents=""
 while IFS='|' read -r name dir _; do
   case "$name" in ''|\#*) continue ;; esac
   case "$G" in
-    mentor|plumber|designer) [ "$name" = "$G" ] || continue ;;
-    *) case "$name" in mentor|plumber|designer) continue ;; esac
+    mentor|plumber) [ "$name" = "$G" ] || continue ;;
+    *) case "$name" in mentor|plumber) continue ;; esac
        [ "$(basename "$dir")" = "$G" ] || continue ;;
   esac
   agents="$agents$name|$dir"$'\n'
@@ -104,11 +104,6 @@ case "$G" in
   mentor|plumber)
     run at_src 'git -C ~/code/business/hq push -q 2>/dev/null || true'
     run at_dst 'git -C ~/code/business/hq pull -q --rebase'
-    ;;
-  designer)
-    m=code/business/ventures/.claude/agent-memory/
-    run at_dst "mkdir -p ~/$m"
-    run rsync -a --delete "$(S "$HOME/$m" "$m")" "$(D "$HOME/$m" "$m")"
     ;;
   *)
     v=code/business/ventures/$G/
