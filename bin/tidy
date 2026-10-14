@@ -16,7 +16,7 @@ say() { out+=("$1"); }
 
 # Ventures = team.conf entries, never worktrees or deploy checkouts.
 ventures=$(grep -v '^\s*#' "$HQ/team.conf" | awk -F'|' 'NF>1{print $2}' \
-  | grep "^$V/" | sort -u)
+  | sed "s|^~/|$HOME/|" | grep "^$V/" | sort -u)
 
 # Steering files: loaded or consulted by agents.
 steering=("$HQ/CLAUDE.md" "$HQ/rules.md" "$HQ/.claude/agents/"*.md \
@@ -87,7 +87,7 @@ done; done
 names=$(for d in $ventures; do b=${d##*/}; echo "$b"; echo "${b%%-*}"; done | sort -u)
 general=("$HQ/rules.md" "$HQ/CLAUDE.md" "$HQ/README.md" "$V/CLAUDE.md" "$HQ/.claude/agents/"*.md \
   "$HQ/designer/agents/"*.md "$HQ/skills/"*/*.md "$HQ/.claude/skills/"*/SKILL.md "$HQ/templates/"* \
-  "$HQ/example/"* "$V/.claude/agent-memory/"*/*.md)
+  "$HQ/example/"*)  # the designer serves every venture: its memory may name them
 for n in $names; do
   for f in $(grep -l -i -w -F "$n" "${general[@]}" 2>/dev/null); do say "venture '$n' named in a general file: ${f#$HOME/}"; done
 done
@@ -104,6 +104,25 @@ done
 # 7. Every venture keeps its one queue (rule 28).
 for d in $ventures; do
   [ -f "$d/BACKLOG.md" ] || say "no BACKLOG.md (rule 28) in ${d##*/}: its analyst moves the queue in"
+done
+
+# 9. Restorable from git: everything an agent works by is tracked.
+USR="$HQ/machine/claude-user-settings.json"
+if [ -e "$USR" ] && ! python3 - "$USR" "$HOME/.claude/settings.json" "$HOME" <<'PY'
+import json, sys
+src, live, home = sys.argv[1:]
+a = json.load(open(src))
+b = json.loads(open(live).read().replace(home, "{{HOME}}")); b.pop("env", None)
+sys.exit(0 if a == b else 1)
+PY
+then say "user-level ~/.claude/settings.json differs from machine/claude-user-settings.json: copy the change in (\$HOME as {{HOME}}, no env)"; fi
+for d in $ventures; do
+  l="$d/.claude/settings.local.json"
+  [ -e "$l" ] && grep -q '"Bash(' "$l" && say "${d##*/}: team permission rules in untracked .claude/settings.local.json: move them to .claude/settings.json"
+  if [ -e "$d/.env" ] && [ -e "$d/.env.example" ]; then
+    m=$(comm -23 <(grep -oE '^[A-Za-z_][A-Za-z0-9_]*=' "$d/.env" | tr -d = | sort -u) <(grep -oE '^#? ?[A-Za-z_][A-Za-z0-9_]*=' "$d/.env.example" | sed 's/^# \{0,1\}//' | tr -d = | sort -u) | tr '\n' ' ')
+    [ -n "$m" ] && say "${d##*/}: .env names missing from .env.example (restore list, its builder adds them): $m"
+  fi
 done
 
 # 8. Judgment sweep due: a week since the last one AND work since then.

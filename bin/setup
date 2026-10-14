@@ -13,6 +13,9 @@
 #   6. adds the `hq` and `team` aliases to your shell rc
 #   7. Node per venture: installs each venture's .nvmrc version via nvm
 #      and adds a shell hook that switches to it in that folder
+#   8. user-level Claude settings: merges the tracked copy
+#      (machine/claude-user-settings.json, when this hq has one) into
+#      ~/.claude/settings.json — adds what's missing, never overwrites
 #
 # The clone must live at ~/code/business/hq — every script assumes it.
 
@@ -140,6 +143,35 @@ EOF
   fi
 else
   warn "nvm not found — install it (github.com/nvm-sh/nvm) so each venture runs its .nvmrc Node version; re-run setup"
+fi
+
+echo "user-level Claude settings"
+USR="$HQ/machine/claude-user-settings.json"
+if [ -e "$USR" ]; then
+  r=$(python3 - "$USR" "$HOME/.claude/settings.json" "$HOME" <<'PY'
+import json, os, sys
+src, dst, home = sys.argv[1:]
+want = json.loads(open(src).read().replace("{{HOME}}", home))
+have = json.load(open(dst)) if os.path.exists(dst) else {}
+added = 0
+def merge(w, h):
+    global added
+    for k, v in w.items():
+        if k not in h: h[k] = v; added += 1
+        elif isinstance(v, dict) and isinstance(h[k], dict): merge(v, h[k])
+        elif isinstance(v, list) and isinstance(h[k], list):
+            for x in v:
+                if x not in h[k]: h[k].append(x); added += 1
+merge(want, have)
+if added:
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    open(dst, "w").write(json.dumps(have, indent=2, ensure_ascii=False) + "\n")
+print(added)
+PY
+)
+  [ "$r" = 0 ] && ok "~/.claude/settings.json has everything in the tracked copy" || made "~/.claude/settings.json: $r settings restored from machine/claude-user-settings.json"
+else
+  ok "no tracked user settings in this hq (machine/claude-user-settings.json)"
 fi
 
 cat <<EOF

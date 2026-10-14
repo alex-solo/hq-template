@@ -378,6 +378,23 @@ are windows onto it.
   `~/.claude/projects/<dir>/` for hq, `ventures` and each venture (the
   directory names encode the path, so rename them for the server's
   home) and `hq/.team-state/`; each agent resumes its own conversation.
+- **Restoring on a new machine or provider** (nothing to copy from the
+  old one): everything the agents work by is in git, so a rebuild is:
+  1. clone hq to `~/code/business/hq`, and each venture repo into
+     `~/code/business/ventures/<venture>`;
+  2. log in: `claude`, `gh auth login`, and each hosting CLI;
+  3. `hq setup` — it also merges the tracked user-level Claude settings
+     (`machine/claude-user-settings.json`, private, never mirrored)
+     into `~/.claude/settings.json`;
+  4. restore each venture's `.env`: its `.env.example` lists every
+     name; values come from the hosting variables or your password
+     manager (`hq env <venture> NAME...`).
+
+  Conversations are not in git: agents start fresh and pick up from
+  specs, `TEAM.md` and memory. `hq tidy` reports anything that would
+  not survive a rebuild — user settings changed but not tracked, team
+  permission rules in an untracked `settings.local.json`, `.env` names
+  missing from `.env.example`.
 
 ## Files
 
