@@ -92,16 +92,15 @@ $dirty"
   ;;
 esac
 
-# 2. Stop the team where it runs, and wait until its agents have exited.
+# 2. Point the source's state at each agent's newest conversation (a
+#    /clear moves an agent to a new one), stop the team where it runs,
+#    and wait until its agents have exited.
+at_src "~/code/business/hq/bin/team sync $G"
 run at_src "~/code/business/hq/bin/team stop $G >/dev/null"
 if [ "$DRY" != --dry-run ]; then
   for _ in $(seq 1 30); do
     busy=0
-    while IFS='|' read -r -u 3 name _; do
-      [ -n "$name" ] || continue
-      u=$(cat "$STATE/$name" 2>/dev/null || true)
-      [ -n "$u" ] && at_src "pgrep -f '[c]laude.*$u' >/dev/null" && busy=1
-    done 3<<<"$agents"
+    at_src "~/code/business/hq/bin/team running $G" && busy=1
     [ "$busy" = 0 ] && break
     sleep 1
   done
@@ -136,7 +135,7 @@ esac
 # 4. Each agent's conversation and session id.
 while IFS='|' read -r -u 3 name dir; do
   [ -n "$name" ] || continue
-  u=$(cat "$STATE/$name" 2>/dev/null || true)
+  u=$(at_src "cat ~/code/business/hq/.team-state/$name 2>/dev/null; true")
   [ -n "$u" ] || { echo "move: $name has no session yet — nothing to carry"; continue; }
   lp="$HOME/.claude/projects/$(munge "$(lpath "$dir")")"
   rp="$RHOME/.claude/projects/$(munge "$(rpath "$dir")")"

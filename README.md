@@ -77,8 +77,9 @@ rather than things you remember to manage.
 
 Every role is a Claude Code session with a fixed identity: a charter
 file (`.claude/agents/<role>.md`), a session name other
-sessions can message, a memory directory, and a fixed session UUID so
-`hq team <venture>` resumes it rather than starting over.
+sessions can message, a memory directory, and a saved conversation that
+`hq team <venture>` resumes rather than starting over (after a `/clear`,
+the newest conversation under that session name).
 
 ### Two levels
 
@@ -517,7 +518,8 @@ are windows onto it.
 
 ## How continuity works (the short version)
 
-Sessions persist on disk and resume by a fixed UUID — closing a terminal
+Sessions persist on disk and resume by name, newest conversation first
+(a `/clear` starts a new one under the same name) — closing a terminal
 loses nothing. Durable knowledge lives in files (specs, `TEAM.md`
 journals, this repo), which every session reads on start; live
 coordination happens by named cross-session messages. When a session's
