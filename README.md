@@ -351,7 +351,8 @@ are windows onto it.
   laptop by accident. `HQ_LOCAL=1 hq …` runs one command locally.
 - **`hq move <team> here|server`** — a team (a venture, or `mentor`,
   `plumber`) lives on one machine at a time, so no agent's
-  conversation ever forks. A move stops the team where it runs, carries
+  conversation ever forks. A move first brings hq up to date on both
+  machines, so the roster it reads is current, then stops the team where it runs, carries
   the venture's working tree (uncommitted work and `.env` included,
   `node_modules` reinstalled when the lockfile changed) and each agent's conversation and session id; mentor and
   plumber need hq committed and move through git. It records the new

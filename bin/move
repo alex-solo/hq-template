@@ -18,6 +18,9 @@
 # source, and the destination pulls. Then it records the new home on
 # both machines (.team-state/home-<team>) and opens the team there.
 # `hq team` refuses to start a team on a machine it doesn't live on.
+# Before anything else, hq is fast-forwarded on both machines, so the
+# roster it reads is current (a laptop left behind can't miss a renamed
+# or added team); a dry run does this too.
 
 set -euo pipefail
 
@@ -43,6 +46,12 @@ rsh() { ssh -n "$R" "$@"; }
 ME=$(hostname -s)
 RHOST=$(rsh 'hostname -s') || die "can't reach $R — a move needs both machines online."
 RHOME=$(rsh 'echo $HOME')
+
+# hq up to date on both machines before the roster is read. A pull that
+# can't fast-forward (diverged, or local edits in its way) is reported
+# and the move goes on with the roster as it is.
+git -C "$HQ" pull -q --ff-only 2>/dev/null || echo "move: hq here couldn't fast-forward — using its roster as is" >&2
+rsh 'git -C ~/code/business/hq pull -q --ff-only 2>/dev/null' || echo "move: hq on $RHOST couldn't fast-forward — using its roster as is" >&2
 
 cur=remote
 [ "$(cat "$STATE/home-$G" 2>/dev/null)" = "$ME" ] && cur=local
