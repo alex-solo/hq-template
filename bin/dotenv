@@ -21,11 +21,15 @@ die() { echo "env: $*" >&2; exit 1; }
 usage() { die "usage: hq env <venture> [NAME...] | <venture> --copy NAME"; }
 valid() { [[ "$1" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || die "not a variable name: $1"; }
 
+here_ventures() { cd "$VENTURES" 2>/dev/null && for d in */; do d=${d%/}; [ -f "$d/CLAUDE.md" ] && echo "$d"; done; }
+
 # Internal operations, run on the machine that holds the file:
-#   _set DIR NAME (value on stdin) · _get DIR NAME · _list DIR
+#   _set DIR NAME (value on stdin) · _get DIR NAME · _list DIR · _ventures
 case "${1:-}" in
+  _ventures) here_ventures; exit 0 ;;
   _set|_get|_list)
     op=$1; f="$VENTURES/$2/.env"; name=${3:-}; [ -z "$name" ] || valid "$name"
+    [ -d "$VENTURES/$2" ] || die "no venture $2 on $(hostname -s)"
     case "$op" in
       _list) [ -e "$f" ] || die "$2 has no .env"; grep -oE '^[A-Za-z_][A-Za-z0-9_]*=' "$f" | tr -d = ;;
       _get) [ -e "$f" ] || die "$2 has no .env"
@@ -44,8 +48,10 @@ esac
 
 [ $# -ge 1 ] || usage
 q=$1; shift
-matches=$(cd "$VENTURES" && for d in */; do d=${d%/}; [ -f "$d/CLAUDE.md" ] && echo "$d"; done | grep -E "^$q" || true)
-[ "$(printf '%s' "$matches" | grep -c .)" = 1 ] || die "no single venture matches '$q' (ventures: $(cd "$VENTURES" && ls -d */ | tr -d / | tr '\n' ' '))"
+# Known ventures: this machine's, plus the server's when this laptop drives one.
+known=$( { here_ventures || true; [ ! -s "$REMOTE_FILE" ] || ssh "$(cat "$REMOTE_FILE")" '$HOME/code/business/hq/bin/dotenv _ventures' 2>/dev/null || true; } | sort -u)
+matches=$(printf '%s\n' "$known" | grep -E "^$q" || true)
+[ "$(printf '%s' "$matches" | grep -c .)" = 1 ] || die "no single venture matches '$q' (ventures: $(printf '%s ' $known))"
 V=$matches
 
 # Where the venture lives: here, unless this laptop drives a server and
