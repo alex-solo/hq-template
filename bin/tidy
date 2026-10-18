@@ -69,7 +69,7 @@ done
 
 # 4. TEAM.md tails hold the venture's own roles only.
 for d in $ventures; do
-  tail -n 40 "$d/TEAM.md" 2>/dev/null | grep '^## ' | grep -v -E '— (analyst|builder|designer)' \
+  tail -n 40 "$d/TEAM.md" 2>/dev/null | grep -E '^## [0-9]{4}-' | grep -v -E '— (analyst|builder|designer)' \
     | sed "s|^|TEAM.md tail entry from outside the team (${d##*/}): |" | while read -r l; do echo "$l"; done
 done
 
