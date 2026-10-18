@@ -1,8 +1,14 @@
 #!/bin/bash
-# newventure <dir-name> ["one-line thesis"] — scaffold a new venture with
-# its own analyst + builder + designer team, wired into `team` and the mentor's books.
+# newventure <dir-name> ["one-line thesis"] [--brief <file>] — scaffold a new
+# venture with its own analyst + builder + designer team, wired into `team`
+# and the mentor's books.
 #
-# Creates ~/code/business/ventures/<name> with: CLAUDE.md skeleton (incl. team protocol),
+# --brief copies <file> (the idea's ideas.md entry, written out by the
+# /new-venture intake) into the repo as founding-brief.md, the analyst's
+# kickoff input. Without it the brief is a stub that says intake was skipped.
+#
+# Creates ~/code/business/ventures/<name> with: founding-brief.md,
+# CLAUDE.md skeleton (incl. team protocol),
 # TEAM.md journal, BACKLOG.md queue, design-constitution.md stub (binds the venture's
 # designer), analyst + builder agent definitions (the designer's charter
 # is shared, in hq/designer/), .gitignore,
@@ -14,8 +20,17 @@
 
 set -euo pipefail
 
-NAME="${1:?usage: newventure <dir-name> [\"one-line thesis\"]}"
-DESC="${2:-<one-line thesis — fill in>}"
+USAGE='usage: newventure <dir-name> ["one-line thesis"] [--brief <file>]'
+BRIEF=; POS=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --brief) BRIEF="${2:?$USAGE}"; shift 2 ;;
+    *) POS+=("$1"); shift ;;
+  esac
+done
+NAME="${POS[0]:?$USAGE}"
+DESC="${POS[1]:-<one-line thesis — fill in>}"
+[ -z "$BRIEF" ] || [ -s "$BRIEF" ] || { echo "error: brief $BRIEF is missing or empty" >&2; exit 1; }
 DIR="$HOME/code/business/ventures/$NAME"
 HQ="$HOME/code/business/hq"
 
@@ -32,6 +47,18 @@ are unreadable to agents, so transcripts are pasted and artifacts
 downloaded. The analyst reads everything here at kickoff.
 EOF
 
+{
+  echo "# $NAME — founding brief"
+  echo
+  echo "The record of what was agreed before the venture started ($(date +%F)):"
+  echo "the idea's intake entry from hq's ideas.md, as it stood. The spec"
+  echo "supersedes it on the product; ventures.md holds the live kill criteria."
+  echo
+  if [ -n "$BRIEF" ]; then cat "$BRIEF"; else
+    echo "Business intake skipped: no ideas.md entry. Thesis: $DESC"
+  fi
+} > "$DIR/founding-brief.md"
+
 cat > "$DIR/CLAUDE.md" <<EOF
 # CLAUDE.md
 
@@ -45,6 +72,7 @@ $NAME: $DESC
      they come to exist. Living-document rules: every change set = version
      bump + changelog entry; decisions integrate into the document body. -->
 
+\`founding-brief.md\` records what was agreed before the venture started.
 Research memos live in \`docs/\` (\`docs/research-stack.md\` first);
 the founder's intake material is in \`docs/samples/\`.
 
@@ -244,10 +272,11 @@ this is how you apply them here.
   cited spec section is the requirement — read it, not the summary. If
   a spec decision proves wrong in practice, tell the analyst; never
   deviate silently. The analyst commits its own doc edits.
-- **On a fresh venture** the foundation starts the moment
-  \`docs/research-stack.md\` lands (the analyst's \`/kickoff\`): scaffold,
-  prove the build and deploy path, wire auth and the platform shell.
-  Features wait for the spec.
+- **On a fresh venture** the analyst's \`/kickoff\` asks you to review
+  \`docs/research-stack.md\` before the founder sees it: you build on it,
+  so say where you disagree. The foundation starts the moment he
+  approves it: scaffold, prove the build and deploy path, wire auth and
+  the platform shell. Features wait for the spec.
 - **Sub-agents** (rules 20, 24). For a real feature, write a task note
   per piece — goal, spec sections, files owned, out of scope, how it is
   verified, what to return — and run each on a fresh sub-agent:
@@ -377,8 +406,9 @@ cat >> "$HQ/ventures.md" <<EOF
 
 - **Thesis:** $DESC
 - **Stage ($(date +%F)):** scaffolded, pre-spec.
-- **Kill criteria:** not yet set — mentor sets them with the founder
-  before the first feature ships (the foundation may go up meanwhile).
+- **Kill criteria:** in the venture's \`founding-brief.md\` until the
+  mentor moves them here; none there means the mentor sets them with
+  the founder before the first feature ships.
 - **Mentor's current read:** not yet assessed — challenge the thesis
   in the first review (assumptions, validation cost, fit with the
   portfolio goal).
@@ -389,6 +419,6 @@ echo "Registered sessions: $NAME-analyst, $NAME-builder, $NAME-designer (in team
 echo "Next: drop intake material into $DIR/docs/samples/, then run 'team'."
 echo "First launch asks to approve an external import of hq/rules.md: approve it."
 echo "Declining disables the portfolio rules in this venture, and the dialog never returns."
-echo "The analyst runs its kickoff unprompted (stack → memos → spec v1 draft);"
-echo "the builder starts on the stack the moment research-stack.md lands."
-echo "Your job: react to the spec draft as a whole; the mentor sets kill criteria with you in parallel."
+echo "The analyst runs its kickoff unprompted: product questions, then the technical"
+echo "design for your approval; the builder starts on the stack once you approve it."
+echo "Then memos and the spec v1 draft, which you review as a whole."

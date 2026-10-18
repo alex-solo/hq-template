@@ -143,14 +143,24 @@ the product, the mentor reasons about allocation.
 
 ## Working with it
 
-A new venture: `hq new` runs a short intake (what you want to build,
-team shape, and your source material — exported chats and files into
-`docs/samples/`, since share links are unreadable to agents). Then
-`team` brings the pair up and the analyst runs its kickoff unprompted:
-a stack chosen for this venture (prior stacks are candidates, never
-defaults), research memos, a full spec v1 draft, and a builder brief.
-The builder starts on the stack the moment it lands. Your first job is
-reacting to the spec draft as a whole.
+A new venture starts in two stages, each an interview one question at
+a time, with suggested answers and a recommendation; long dictated
+answers are fine. First the mentor's business grilling (`/idea-intake`):
+which shape the venture is (for a market, for one known person, for
+yourself), then the questions that shape needs — evidence, the case
+against, price and reach, kill criteria, cost cap — ending in a
+complete `ideas.md` entry. Then `hq new` reads that entry, asks only
+the setup questions it leaves open (team shape, your source material —
+exported chats and files into `docs/samples/`, since share links are
+unreadable to agents), and scaffolds the venture with the entry as its
+`founding-brief.md`. `team` brings the sessions up and the analyst runs
+its kickoff unprompted: the product questions the brief leaves open,
+then a technical design before any code — the stack researched choice
+by choice (mainstream unless the product needs otherwise), reviewed by
+the builder, and shown to you as a link with a diagram of the pieces
+and every service with its monthly cost. The builder starts on it once
+you approve; research memos, the customer map and a full spec v1 draft
+follow, and you react to the spec as a whole.
 
 A typical week:
 
@@ -216,12 +226,11 @@ The clone must live at `~/code/business/hq` — every script assumes it.
 
 Then, in a new shell:
 
-- **`hq new <name>`** — a short interview ("What do you want to build?",
-  answer with a rough description), a proposed team shape (analyst +
-  builder unless the venture genuinely needs a third role), and a
-  scaffolded repo under `ventures/<name>` registered in `team.conf` and
-  `ventures.md`. Let the mentor challenge the thesis before serious
-  building starts.
+- **`hq new <name>`** — after the mentor's business grilling has
+  written the idea's `ideas.md` entry: a few setup questions (team
+  shape, source material), then a scaffolded repo under
+  `ventures/<name>` with the entry as its founding brief, registered in
+  `team.conf` and `ventures.md`.
 - **`hq team <name>`** — the venture's sessions. On the first launch,
   Claude Code asks to approve an *external import*: `ventures/CLAUDE.md`
   imports `hq/rules.md`, which sits outside the venture's directory. Approve it. Declining disables the portfolio rules in that
@@ -278,18 +287,21 @@ files because those don't exist upstream.
   ends them too, with the same result.
 - **`hq move <team> here|server`** — move a team between the laptop
   and the server (see Running on a server).
-- **`hq new [name]`** — start a new venture the intelligent way: opens a
-  short Claude interview, proposes the agent-team shape (default:
-  analyst + builder; a third role only if the venture genuinely needs
-  one), then scaffolds `~/code/business/ventures/<name>` tailored to it
-  — repo, CLAUDE.md seeded from your description, journal,
-  design-constitution stub, agents, hooks — and registers everything in
-  `team.conf` and `ventures.md`, and marks the new folder trusted, so
+- **`hq new [name]`** — stage 2 of a new venture: reads the idea's
+  `ideas.md` entry from the mentor's business grilling (and stops to
+  send you there when there is none, unless you say to skip it), asks
+  only the setup questions it leaves open — team shape (default:
+  analyst + builder + designer; a third role only if the venture
+  genuinely needs one) and source material — then scaffolds
+  `~/code/business/ventures/<name>`: repo, the entry as
+  `founding-brief.md`, CLAUDE.md seeded from it, journal, backlog,
+  design-constitution stub, agents, hooks. It registers everything in
+  `team.conf` and `ventures.md` and marks the new folder trusted, so
   the agents' first launch doesn't stop at Claude Code's trust
-  question. The interview protocol lives in
-  `.claude/skills/new-venture/`.
-- **`hq new --bare <name> ["thesis"]`** — skip the interview; scaffold
-  the default analyst + builder shape mechanically (`bin/newventure`).
+  question. The protocol lives in `.claude/skills/new-venture/`.
+- **`hq new --bare <name> ["thesis"]`** — skip both interviews;
+  scaffold the default shape mechanically (`bin/newventure`), with a
+  founding brief that says intake was skipped.
 - **`hq onboard`** — first run on a fresh clone: `setup`, then your
   first mentor session (see Getting started).
 - **`hq setup`** — the mechanical half alone; idempotent, re-run after
@@ -443,9 +455,12 @@ are windows onto it.
   symlinks) into the projects that use them: `hq/.claude/skills/` and
   each venture's `.claude/skills/`. They load only in team sessions, never machine-wide.
   Roster: `/handoff` (team protocol; prunes absorbed entries);
-  `/kickoff` (a new venture's first analyst session); `/xref`
+  `/kickoff` (a new venture's first analyst session: product
+  questions, the technical design for your approval, then research and
+  spec v1); `/xref`
   (identity changes, hq only); `/grilling` (design-tree
-  interview, rounds with recommended answers); `/wizard` (bash walkthrough
+  interview, one question at a time with suggested answers and a
+  recommendation); `/wizard` (bash walkthrough
   for founder-gated setup steps); `/diagnosing-bugs` (tight-loop
   discipline); `/retro` (agent-environment retrospective, user-invoked);
   `/wait-what` (re-pitch in plain language, user-invoked);
@@ -455,8 +470,9 @@ are windows onto it.
   fresh Opus sub-agents);
   `writing-for-agents` (style guide for steering files and skills).
   Several adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT).
-- `.claude/skills/new-venture/` — the `hq new` intake interview
-  (hq-only, so it stays project-level).
+- `.claude/skills/idea-intake/` and `.claude/skills/new-venture/` — the
+  two stages of a new venture: the mentor's business grilling, then the
+  `hq new` setup (hq-only, so they stay project-level).
 - `.claude/settings.json` — permission rules shared by every hq
   session: read `~/code/business/ventures`; never write a venture's
   code, specs, docs, design files, secrets, or another agent's memory.

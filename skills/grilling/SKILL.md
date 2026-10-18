@@ -1,37 +1,51 @@
 ---
 name: grilling
-description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, asks to be grilled, or opens a genuinely new area (a new venture, a new subsystem) where the specs are silent.
+description: Grill the user relentlessly about a plan, decision, or idea, one question at a time. Use when the user wants to stress-test their thinking, asks to be grilled, or opens a genuinely new area (a new venture, a new subsystem) where the specs are silent.
 ---
 
 > Adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (MIT).
-> House note: this skill is the sanctioned exception to the "one concrete
-> question at a time" working style — invoking it IS the founder opting into
-> rounds. The rule's intent still binds: every question carries your
-> recommended answer, so the founder decides fast instead of researching.
-> Once the grilling ends, decisions go where they live: venture decisions
-> into the venture's spec (with changelog entry), portfolio decisions into
-> hq's journal — never left only in the conversation.
+> House note: once the grilling ends, decisions go where they live:
+> venture decisions into the venture's spec (with changelog entry),
+> portfolio decisions into hq's journal, an idea into `ideas.md` —
+> never left only in the conversation.
 
-Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
+Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it. Keep the tree to yourself; the user sees one question at a time.
 
-Work the tree in **rounds**. The **frontier** is every decision whose prerequisites are already settled: the questions you can ask _now_ without guessing at answers you haven't heard yet. Ask the whole frontier in one round: number each question and give your recommended answer. Then wait for the user's answers before the next round.
+## One question per message
 
-Format a round like so:
+The **frontier** is every decision whose prerequisites are already settled. From it, ask the one question whose answer unblocks the most of the tree. Format:
 
 ```
-❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
+**Q3 of about 8 — <short title>**
 
-➡️ <your recommended answer>
+<the question, with the context needed to answer it in a sentence or two>
 
----
+a) <suggested answer>
+b) <suggested answer>
+c) <suggested answer>
 
-❓ **Q2** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
-
-➡️ <your recommended answer>
+➡️ <letter> — <your recommendation, with a one-line why>
 ```
 
-Each round the user answers reshapes the tree: settled decisions push the frontier outward and unblock questions that depended on them. Recompute the frontier and ask the next round. A question whose answer depends on another question still open in this round belongs to a _later_ round, not this one.
+- Two to four suggested answers, lettered, so a reply can be "b", "b, but…", or free text.
+- The count is an estimate; revise it as the tree grows or shrinks.
+- Never two questions in one message, and never a question whose answer depends on one still open.
 
-Finding _facts_ is your job, never the user's. When a frontier question needs a fact from the environment (filesystem, tools, repos, live APIs), dispatch a sub-agent to find it; don't ask the user for anything you could look up yourself. Don't block on it: a running exploration is an unsettled prerequisite, so only the questions downstream of it wait for the sub-agent to report; ask the rest of the frontier now. The _decisions_ are the user's: put each to them and wait.
+## Long answers
 
-The session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Do not act on it until the user confirms you have reached a shared understanding.
+The user often dictates: a long answer that wanders, settles several branches at once, and answers questions you haven't asked yet. Before the next question, reply with:
+
+```
+What I took from that:
+- <each decision it settled, in one line — including ones for later questions>
+```
+
+Mark every branch it settled as answered and never ask it. Flag only a real contradiction with an earlier answer, or a gap the answer opened, as the next question. If the answer was short and clear, skip the recap and ask the next question.
+
+## Facts are yours
+
+Finding _facts_ is your job, never the user's. When a question needs a fact from the environment (files, repos, tools, the web), dispatch a sub-agent to find it, and ask a question that doesn't depend on it while it runs. The _decisions_ are the user's: put each to them and wait.
+
+## Done
+
+The grilling is done when the frontier is empty: every branch visited, nothing silently assumed. Then show one summary of every decision, grouped by branch, and ask the user to confirm it. Do not act on it, or write it down as settled, until they do.

@@ -65,11 +65,12 @@ hq — founder command center
   hq preview <file>           a link to a venture file (prototype, report)
                               the founder opens from laptop or phone over
                               the tailnet; dotfiles are never served
-  hq new [name]               start a new venture: short interview, then
-                              scaffolding tailored to the venture's shape
+  hq new [name]               start a new venture from its ideas.md entry
+                              (the mentor's grilling): setup questions,
+                              then scaffolding with the entry as its brief
   hq new --bare <name> ["thesis"]
-                              skip the interview; scaffold the default
-                              analyst+builder shape mechanically
+                              skip both interviews; scaffold the default
+                              shape mechanically
   hq onboard                  first run on a fresh clone: setup, then
                               your first mentor session
   hq setup                    the mechanical half of onboard alone

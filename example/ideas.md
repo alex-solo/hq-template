@@ -9,7 +9,7 @@ leave by graduating to `ventures.md` or being rejected with reasons.
 
 ## Invoice-chaser for freelance translators
 
-- **stage:** researched · **origin:** founder
+- **stage:** researched · **origin:** founder · **shape:** market
 - **Evidence:** 30+ threads on r/TranslatorsCafe about late payment;
   existing tools (Chaser, Kolleno) start at €40/month and target
   SMB finance teams, not solo freelancers; ProZ job board shows ~600

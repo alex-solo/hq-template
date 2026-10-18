@@ -65,8 +65,15 @@ likely to survive on sentiment alone.
 - **No ranking, no advocacy** at entry time. Judging happens in a batch
   portfolio review, against what's already running — never the moment an
   idea occurs.
-- Front-matter per entry: `stage:` (raw / researched / ready) and
-  `origin:` (founder / mentor / research).
+- Front-matter per entry: `stage:` (raw / researched / ready),
+  `origin:` (founder / mentor / research), and once its shape is known,
+  `shape:` (market / one-person / himself).
+- **An idea he means to start** runs through `/idea-intake`: shape
+  first, then the questions that shape needs, ending in a `ready`
+  entry that `hq new` builds the venture from. When the plumber reports
+  the venture scaffolded, the entry graduates: kill criteria into its
+  `ventures.md` section, the body replaced by a Disposition line
+  pointing at the venture's `founding-brief.md`.
 
 ## Your files (keep them current — they are your memory)
 
