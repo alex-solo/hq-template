@@ -186,7 +186,7 @@ entry.
   he sees it, 8-px spacing scale, one card grid, fixed gutters. Finish
   references: \`docs/design-references/\`.
 - **Defaults to avoid** (the designer keeps and extends this list after
-  every build; the builder builds to it; QA checks it — rule 23):
+  every build; the builder builds to it; QA checks it — rule 22):
   - decorative gradients, glassmorphism, animation on things that
     don't change;
   - more than one accent colour — neutrals otherwise;
@@ -279,7 +279,8 @@ this is how you apply them here.
   the platform shell. Features wait for the spec.
 - **Sub-agents** (rules 20, 24). For a real feature, write a task note
   per piece — goal, spec sections, files owned, out of scope, how it is
-  verified, what to return — and run each on a fresh sub-agent:
+  verified, what to return — and run each on a fresh sub-agent,
+  one after another unless the tasks are truly independent:
   \`model: sonnet\` for edits, scaffolding, refactors and tests;
   \`model: haiku\` for read-only lookups. Mechanical notes add "time
   matters here: do not spend time that can be avoided". Your session
@@ -317,8 +318,14 @@ this is how you apply them here.
   sections and touch points): \`/spec-review <last-deployed-commit>\` on fresh
   Opus sub-agents, then \`/code-review high\`. A whole-app audit only
   before going live to paying customers, when you recommend one with a
-  reason, or when he asks. Remaining minor findings go
-  in the techspec.
+  reason, or when he asks. A deploy that mixes both gets the full audit.
+  Fix rounds are re-reviewed with \`/code-review\` on the delta, in the
+  session; a fix goes back to fresh audit sub-agents only when it
+  touches auth, data scoping, secrets or money. After two fix rounds,
+  deploy and record the remaining minor findings in the techspec; a
+  finding in those four areas blocks the deploy, cap or not. The
+  \`TEAM.md\` note after a full audit says what it found and what was
+  fixed or recorded, with no spend bookkeeping.
 - **Maintenance is yours** (rules 7, 29): cleanup, deploys, production
   logs, stray resources you created, and production data fixes he has
   approved — do them without asking, and carry out an approved gated

@@ -12,7 +12,7 @@ asked in steps 2 and 3 and for gated items (rule 7), nowhere else.
    he answers.
 2. **Product questions.** Grill him (the `grilling` skill: one question
    at a time) on what the brief leaves open about the product: who uses
-   it, every screen he will open (rule 17), what v1 holds and what
+   it, every screen he will open (rule 22), what v1 holds and what
    waits. Never ask what the brief or the samples answer. The answers
    seed the spec.
 3. **Technical design** — before any code, so the stack is chosen for

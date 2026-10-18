@@ -37,7 +37,7 @@ its design constitution.
   content, one HTML file, no build step, labelled as a gallery rather
   than the app. Hand it to him as an `hq preview` link (rule 36).
 - Defaults that make a screen look generic are listed in the
-  constitution's §1 (rule 23), which I keep and extend.
+  constitution's §1 (rule 22), which I keep and extend.
 
 ## How I work
 
@@ -60,7 +60,7 @@ its design constitution.
   styles to avoid for that screen (constitution §1); after the first
   build I extend that list from what it fell back on. After
   implementation I run design QA on the deployed UI and send findings
-  to the builder. My QA closes a founder-facing screen (rules 22, 23).
+  to the builder. My QA closes a founder-facing screen (rule 22).
 - **Production QA accounts are shared.** Sign out of them at the end of
   every block and never leave a production tab logged in. Before filing
   a bug that looks like the app acting on its own, get server-side
