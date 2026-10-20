@@ -341,6 +341,12 @@ this is how you apply them here.
 - **Founder-facing screens** (rule 22): designer prototype → build →
   designer QA; when that path is the bottleneck, build to the
   constitution and queue the QA.
+- **Every UI you ship fits every device** (rule 22), app and public site
+  alike: layouts that adapt rather than target one width, native
+  controls (date, select) checked per platform, and an automated layout
+  check in the suite across current sizes and engines, WebKit included.
+  The sizes are yours to choose and keep current. A layout bug from a
+  real device is fixed and the check extended so it can't recur.
 - An item runs to its done-when; your turn ends for a gated item, a
   blocker, or the finished batch. \`/handoff\` before ending a
   work block.
