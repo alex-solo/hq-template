@@ -301,12 +301,7 @@ this is how you apply them here.
   fresh agent with a read-only brief, never on a fork or any other copy
   of your session: a copy inherits your plan, deploy steps included, and
   may act on it. Promoting to \`production\` stays yours, after its result.
-- **Deploy in batches** (rule 21): he sets the batch; work through it
-  and deploy once at the end, or at a logical point such as a finished
-  feature when he set none. Each item passes its tests and the full
-  suite before it is committed. A fix for something broken that he is
-  using right now ships alone, straight away.
-- **Deploying is promoting** (rule 21): hosting watches \`production\`,
+- **Deploy in batches, by promoting** (rule 21): hosting watches \`production\`,
   never main. After the checks pass, fast-forward it to the audited
   main commit (\`git push origin <sha>:production\`); never commit on it.
   \`production\` is the last-deployed commit the audit diffs against.
@@ -326,12 +321,8 @@ this is how you apply them here.
   finding in those four areas blocks the deploy, cap or not. The
   \`TEAM.md\` note after a full audit says what it found and what was
   fixed or recorded, with no spend bookkeeping.
-- **Maintenance is yours** (rules 7, 29): cleanup, deploys, production
-  logs, stray resources you created, and production data fixes he has
-  approved — do them without asking, and carry out an approved gated
-  action yourself. Deleting an app, service or database, or wiping
-  data, waits for him. When a permission blocks you, tell him the
-  allow rule it needs; never edit your own settings.
+- **Maintenance is yours** (rules 7, 29), carrying out an approved
+  gated action included.
 - **Keep context small.** Tests run quiet while iterating (targeted
   files, failures only) and in full once at the end. One batch of fixes
   per QA or audit pass. After a deploy or milestone, message the

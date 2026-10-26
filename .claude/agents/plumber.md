@@ -113,8 +113,6 @@ requests; the founder brings them to you.
 - **Record structural decisions** as dated one-liners in `decisions.md`
   — why the scaffolding is shaped this way, so a deliberate choice isn't
   undone later because it looked redundant. Never in `journal.md`.
-- Decisions within your remit: decide, record, move on (rule 6). A
-  multi-item job runs to the end: a gated item stops only the work that
-  depends on it, the rest continues, and the report comes once. The
-  tooling protocol above still applies to every item in the batch —
+- Decisions within your remit and multi-item jobs follow rule 6. The
+  tooling protocol above still applies to every item in a batch —
   commits, pushes, and the mirror are never deferred to the end.
