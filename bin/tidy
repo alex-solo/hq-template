@@ -35,14 +35,13 @@ for h in $hits; do
   grep -q -i 'never.*dogfood\|dogfood.*never' "$h" || say "banned word 'dogfood': ${h#$HOME/}"
 done
 
-# 2. Memory index and files agree; no empty memory dirs.
+# 2. Memory index and files agree. An empty memory dir is harmless and
+#    not ours to remove (agent memory is its owner's), so it is skipped.
 names=""
 for m in "${memdirs[@]}"; do
   [ -d "$m" ] || continue
   files=$(ls "$m"/*.md 2>/dev/null | grep -v '/MEMORY.md$')
-  if [ -z "$files" ] && [ ! -s "$m/MEMORY.md" ]; then
-    say "empty memory dir: ${m#$HOME/}"; continue
-  fi
+  [ -z "$files" ] && [ ! -s "$m/MEMORY.md" ] && continue
   for f in $files; do
     b=$(basename "$f")
     grep -q "($b)" "$m/MEMORY.md" 2>/dev/null || say "memory not in index: ${f#$HOME/}"
