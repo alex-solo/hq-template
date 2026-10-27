@@ -220,8 +220,13 @@ cat > "$DIR/.claude/agents/analyst.md" <<EOF
 ---
 name: analyst
 description: Product analyst for $NAME — feature discussions, spec decisions, research passes. Thinks and writes specs; never touches code.
-tools: Read, Grep, Glob, WebSearch, WebFetch, Edit, Write, Bash, SendMessage, ListAgents
+tools: Read, Grep, Glob, WebSearch, WebFetch, Edit, Write, Bash, SendMessage, ListAgents, mcp__playwright__*
 memory: project
+mcpServers:
+  - playwright:
+      type: stdio
+      command: npx
+      args: ["-y", "@playwright/mcp@0.0.81", "--isolated", "--headless", "--output-dir", "/tmp/playwright-mcp"]
 ---
 
 You are the product analyst for $NAME. The founder is your partner: help
@@ -355,7 +360,7 @@ cat > "$DIR/.claude/settings.json" <<'EOF'
 {
   "autoMemoryEnabled": false,
   "permissions": {
-    "allow": ["Read(~/code/business/ventures/.drop/**)", "Bash(~/code/business/hq/hq preview:*)", "Bash(bash scripts/*)"],
+    "allow": ["Read(~/code/business/ventures/.drop/**)", "Bash(~/code/business/hq/hq preview:*)", "Bash(bash scripts/*)", "mcp__playwright__*"],
     "deny": [
       "Edit(~/code/business/hq/**)", "Write(~/code/business/hq/**)",
       "Edit(.claude/agents/**)", "Write(.claude/agents/**)"

@@ -38,8 +38,8 @@ warn() { printf '  WARN  %s\n' "$*"; }
 echo "prerequisites"
 command -v claude >/dev/null 2>&1 && ok "claude $(claude --version 2>/dev/null | head -1)" \
   || warn "claude not found — install Claude Code first: https://code.claude.com"
-command -v npx >/dev/null 2>&1 && ok "npx (the designers' Playwright MCP needs it)" \
-  || warn "npx not found — the designer's browser tooling needs Node"
+command -v npx >/dev/null 2>&1 && ok "npx (the designer's and analyst's Playwright MCP needs it)" \
+  || warn "npx not found — the designer's and analyst's browser tooling needs Node"
 if command -v tmux >/dev/null 2>&1; then ok "tmux"
 elif [ -d "/Applications/iTerm.app" ]; then ok "iTerm (tmux not installed — tabs won't survive closing the terminal)"
 else warn "neither tmux nor iTerm found — 'hq team' can't open sessions; install tmux (brew or apt)"; fi

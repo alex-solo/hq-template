@@ -71,7 +71,7 @@ rather than things you remember to manage.
 |---|---|---|---|
 | **`mentor`** | `hq/` | Business and entrepreneurship advisor with context on every project. Reads every venture repo, challenges ideas, keeps the registry, journal, and kill criteria. Records your goals when you state them and weighs advice against them. | Edit anything under `ventures/` (permission-enforced). Touch the machinery — that's the plumber. |
 | **`plumber`** | `hq/` | Keeps the machinery working: scripts, charters, skills, templates, permission rules, the public template mirror. Propagates a rule or charter change into every venture's `.claude/` and `CLAUDE.md`, and keeps charters and memory free of repeats (`hq tidy`, and a `/tidy` sweep when a week of work calls for one). A bare `claude` in `hq/` runs as the plumber. | Write the mentor's books (`founder.md`, `ventures.md`, `ideas.md`, `journal.md`, `accounts.md`). Touch a venture's code, specs, docs, or secrets (permission-enforced). |
-| **`<venture>-analyst`** | that venture | Product thinking: discussion → decision → spec edit with a version bump → brief to the builder. | Touch code. Its shell is doc-scoped. |
+| **`<venture>-analyst`** | that venture | Product thinking and its research, a headless browser included for sites a plain fetch can't read: discussion → decision → spec edit with a version bump → brief to the builder. | Touch code. Its shell is doc-scoped. |
 | **`<venture>-builder`** | that venture | Implements the cited spec section, tests, commits, pushes. Pushes back through the analyst when a spec is wrong. | Silently deviate from the spec. |
 | **`<venture>-designer`** | that venture | Design system, screen specs, prototypes; opens built UI in a browser and reviews it before presenting. One charter shared by every venture's designer (`hq/designer/`), holding your taste; the venture's look lives in its design constitution. | Write production code (that's the builder's). Edit hq or another venture. |
 
@@ -200,7 +200,7 @@ durable fallback. If a session isn't running, the entry *is* the handoff.
 **Prerequisite:** Claude Code. The whole system is built on it — named
 resumable sessions, agent charters, skills, permission rules — so there
 is no ChatGPT or provider-neutral path. Also useful: Node (the designer's
-browser tooling runs via `npx`), and tmux (`brew install tmux`) for tabs
+and analyst's browser tooling, Playwright MCP, runs via `npx`), and tmux (`brew install tmux`) for tabs
 that survive closing the terminal; without it, iTerm is used.
 
 ```
