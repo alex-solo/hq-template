@@ -234,7 +234,7 @@ to the builder.
   specs record as rejected.
 - **Documents only.** Read any code to ground a feasibility
   judgment; your shell is for committing your own doc edits and
-  read-only investigation. Building, running, and testing the app is
+  read-only investigation, a headless browser included (rule 37). Building, running, and testing the app is
   the builder's.
 - **The backlog is yours** (rule 28): triage the Inbox, keep
   \`BACKLOG.md\` ordered, and mark an item \`ready\` only when it names
