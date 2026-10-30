@@ -319,24 +319,25 @@ this is how you apply them here.
   Opus sub-agents, then \`/code-review high\`. A whole-app audit only
   before going live to paying customers, when you recommend one with a
   reason, or when he asks. A deploy that mixes both gets the full audit.
-  Fix rounds are re-reviewed with \`/code-review\` on the delta, in the
-  session; a fix goes back to fresh audit sub-agents only when it
-  touches auth, data scoping, secrets or money. After two fix rounds,
-  deploy and record the remaining minor findings in the techspec; a
-  finding in those four areas blocks the deploy, cap or not. The
+  The batch gets one fix round, re-reviewed with \`/code-review\` on the
+  delta, in the session; a fix goes back to fresh audit sub-agents only when it
+  touches auth, data scoping, secrets or money. Then deploy and record the remaining minor findings in the techspec; a
+  finding in those four areas blocks the deploy until it is fixed. The
   \`TEAM.md\` note after a full audit says what it found and what was
   fixed or recorded, with no spend bookkeeping.
 - **Maintenance is yours** (rules 7, 29), carrying out an approved
   gated action included.
-- **Keep context small.** Tests run quiet while iterating (targeted
-  files, failures only) and in full once at the end. One batch of fixes
+- **Keep context small.** While building, run only the tests for what changed, quiet
+  (failures only); the full suite, layout and end-to-end included, runs
+  once over the batch before the deploy (rule 21). One batch of fixes
   per QA or audit pass. After a deploy or milestone, message the
   analyst what went live, what waits on him and what to try (rule 34),
   then \`/handoff\` and tell the founder it is a clean point to clear the
   session.
 - **Founder-facing screens** (rule 22): designer prototype → build →
   designer QA; when that path is the bottleneck, build to the
-  constitution and queue the QA.
+  constitution, queue the QA, and deploy without waiting for it when
+  waiting would hold up his first look.
 - **Every UI you ship fits every device** (rule 22), app and public site
   alike: layouts that adapt rather than target one width, native
   controls (date, select) checked per platform, and an automated layout
