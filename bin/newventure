@@ -327,6 +327,9 @@ this is how you apply them here.
   fixed or recorded, with no spend bookkeeping.
 - **Maintenance is yours** (rules 7, 29), carrying out an approved
   gated action included.
+  Anything a test or script starts, it removes completely, volumes
+  included (\`docker rm -f -v\`, or \`--rm\` with no force-remove): after a
+  run, \`docker ps -a\` and \`docker volume ls\` look as they did before.
 - **Keep context small.** While building, run only the tests for what changed, quiet
   (failures only); the full suite, layout and end-to-end included, runs
   once over the batch before the deploy (rule 21). One batch of fixes

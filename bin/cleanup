@@ -1,0 +1,65 @@
+#!/bin/bash
+# cleanup — weekly safe cleanup of what agent work leaves behind on this
+# machine. Removes only what is certainly junk, so it can run unattended:
+#
+#   - Docker volumes that are anonymous (unnamed), attached to no
+#     container, and more than a day old. A test run in progress holds
+#     its volume through its container, so it is never touched; named
+#     volumes, which someone chose to keep, never are either.
+#   - Dangling Docker images (untagged layers left by rebuilds).
+#   - Docker build cache unused for a week.
+#
+#   cleanup            run it (the weekly cron job that `hq setup` installs)
+#   cleanup --dry-run  list what would go, remove nothing
+#
+# Each run appends one line to .team-state/cleanup.log:
+#   <date> freed=<MB> volumes=<n>
+# bin/tidy reads the last line: a run that removed many volumes or freed
+# a lot means something is leaking, and the source gets fixed rather
+# than left for this script to hide. No Docker here: logs that and exits.
+
+set -u
+export PATH="$PATH:/usr/local/bin:/opt/homebrew/bin"
+HQ="$HOME/code/business/hq"
+LOG="$HQ/.team-state/cleanup.log"
+DRY=; [ "${1:-}" = --dry-run ] && DRY=1
+mkdir -p "$HQ/.team-state"
+now() { date +%Y-%m-%dT%H:%M; }
+
+# Cron starts without the login environment: find a rootless Docker.
+sock="/run/user/$(id -u)/docker.sock"
+[ -z "${DOCKER_HOST:-}" ] && [ -S "$sock" ] && export DOCKER_HOST="unix://$sock"
+if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
+  [ -n "$DRY" ] && echo "cleanup: no Docker reachable here — nothing to do" \
+    || echo "$(now) no-docker" >> "$LOG"
+  exit 0
+fi
+
+used_mb() { df -Pm "$HOME" | awk 'NR==2{print $3}'; }
+before=$(used_mb)
+cutoff=$(( $(date +%s) - 86400 ))
+
+vols=0
+for v in $(docker volume ls -q -f dangling=true); do
+  [[ "$v" =~ ^[0-9a-f]{64}$ ]] || continue                 # anonymous only
+  created=$(docker volume inspect -f '{{.CreatedAt}}' "$v" 2>/dev/null) || continue
+  t=$(python3 -c 'import sys,datetime as d;print(int(d.datetime.fromisoformat(sys.argv[1].replace("Z","+00:00")).timestamp()))' "$created" 2>/dev/null) || continue
+  [ "$t" -lt "$cutoff" ] || continue                        # a day old at least
+  if [ -n "$DRY" ]; then echo "volume $v (created $created)"
+  else docker volume rm "$v" >/dev/null 2>&1 || continue; fi
+  vols=$((vols + 1))
+done
+
+if [ -n "$DRY" ]; then
+  echo "dangling images:"; docker images -f dangling=true --format '  {{.ID}} {{.Size}}'
+  echo "build cache unused for a week:"; docker system df | awk '/Build Cache/'
+  echo "cleanup: would remove $vols volume(s), the dangling images and week-old build cache"
+  exit 0
+fi
+
+docker image prune -f >/dev/null 2>&1
+docker builder prune -f --filter until=168h >/dev/null 2>&1
+
+freed=$(( before - $(used_mb) )); [ "$freed" -lt 0 ] && freed=0
+echo "$(now) freed=${freed} volumes=${vols}" >> "$LOG"
+echo "cleanup: freed ${freed} MB, removed ${vols} volume(s)"

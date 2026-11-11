@@ -88,6 +88,16 @@ HOOK="$HQ/.git/hooks/post-commit"
 if [ -L "$HOOK" ] || [ -e "$HOOK" ]; then ok "post-commit hook"
 else ln -s ../../bin/post-commit "$HOOK"; made "post-commit hook (tidy after every commit)"; fi
 
+echo "weekly cleanup"
+# Agent work leaves Docker leftovers (test volumes, old layers, build
+# cache); bin/cleanup removes only what is certainly junk, Sundays 04:17.
+if ! command -v crontab >/dev/null 2>&1; then warn "no crontab here — run 'hq cleanup' by hand now and then"
+elif crontab -l 2>/dev/null | grep -q 'hq/bin/cleanup'; then ok "cron job (bin/cleanup, weekly)"
+else
+  { crontab -l 2>/dev/null; echo '17 4 * * 0 $HOME/code/business/hq/bin/cleanup >/dev/null 2>&1'; } | crontab - \
+    && made "cron job: bin/cleanup every Sunday 04:17" || warn "could not install the cleanup cron job"
+fi
+
 echo "shell aliases"
 case "${SHELL:-}" in */zsh) RC="$HOME/.zshrc" ;; */bash) RC="$HOME/.bashrc" ;; *) RC="$HOME/.profile" ;; esac
 if grep -qs 'alias hq=' "$RC"; then ok "hq/team aliases in $RC"

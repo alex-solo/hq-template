@@ -306,7 +306,7 @@ files because those don't exist upstream.
   first mentor session (see Getting started).
 - **`hq setup`** — the mechanical half alone; idempotent, re-run after
   pulling template updates that add skills, and on every machine a
-  team moves to.
+  team moves to. It also installs the weekly `hq cleanup` cron job.
 - **`hq publish`** — mirror the shareable files of this hq into a
   public template checkout for others to clone (`bin/publish` documents
   the allowlist and the leak check; `--check` runs the leak test only).
@@ -340,8 +340,18 @@ files because those don't exist upstream.
   auto-memory switched back on, `TEAM.md` tails holding entries from
   outside the team, broken skill links, a venture named in a general file
   or inside another venture — and whether a `/tidy` sweep is
-  due (a week since the last *and* work since). Prints only problems;
-  runs after every hq commit and at the start of each plumber session.
+  due (a week since the last *and* work since), and the disk: over 70%
+  full, the weekly cleanup missing from cron or not run in 8 days, or a
+  cleanup that had a lot to remove (over 2 GB or 20 volumes), which
+  means something leaks. Prints only problems; runs after every hq
+  commit and at the start of each plumber session.
+- **`hq cleanup [--dry-run]`** — removes what agent work leaves behind
+  and is certainly junk: anonymous Docker volumes no container uses that
+  are over a day old, dangling images, and build cache unused for a
+  week. Named volumes and images in use are never touched. `hq setup`
+  schedules it weekly in cron (Sundays 04:17); each run logs what it
+  freed to `.team-state/cleanup.log` for `hq tidy`. `--dry-run` lists
+  what would go.
 
 `team` is a shell alias for `hq team` — so `team <venture>` works too.
 

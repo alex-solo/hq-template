@@ -134,6 +134,24 @@ if [ "$age" -ge 7 ]; then
   [ "$n" -gt 0 ] && say "sweep due: last /tidy $since, $n commits since — suggest it to the founder"
 fi
 
+# 10. The disk stays clean (bin/cleanup runs weekly from cron). A full
+#     disk, or a cleanup that had a lot to remove, means a leak: find
+#     its source rather than let the weekly run hide it.
+pct=$(df -P "$HOME" | awk 'NR==2{sub("%","",$5); print $5}')
+[ "${pct:-0}" -gt 70 ] && say "disk ${pct}% full: 'hq cleanup --dry-run' shows the safe part; find what grows (du, docker system df)"
+if command -v crontab >/dev/null 2>&1 && ! crontab -l 2>/dev/null | grep -q 'hq/bin/cleanup'; then
+  say "weekly cleanup not scheduled on this machine: run 'hq setup'"
+fi
+clog="$HQ/.team-state/cleanup.log"
+if [ -s "$clog" ]; then
+  read -r cwhen cfreed cvols < <(tail -1 "$clog")
+  cfreed=${cfreed#freed=}; cvols=${cvols#volumes=}
+  { [ "${cfreed:-0}" -gt 2048 ] 2>/dev/null || [ "${cvols:-0}" -gt 20 ] 2>/dev/null; } \
+    && say "weekly cleanup on ${cwhen%T*} freed ${cfreed} MB and ${cvols} volume(s): something leaks — find the source"
+  cage=$(( ( $(date +%s) - $(date -d "${cwhen%T*}" +%s 2>/dev/null || date -j -f %F "${cwhen%T*}" +%s 2>/dev/null || date +%s) ) / 86400 ))
+  [ "$cage" -gt 8 ] && say "weekly cleanup last ran ${cwhen%T*}: check the cron job ('crontab -l')"
+fi
+
 # subshell-printed lines (while loops) already went to stdout
 for o in "${out[@]}"; do
   [ "${1:-}" = "--quiet" ] && echo "tidy: $o" || echo "$o"
