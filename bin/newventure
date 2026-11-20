@@ -273,7 +273,8 @@ this is how you apply them here.
 - **Work comes from \`BACKLOG.md\`** (rule 28): take the top \`ready\`
   item, set it \`in progress\`, cut task notes from it, and set
   \`done <sha>\` on commit; after a deploy, move done items to the
-  Shipped log. Bugs you find go in the Inbox. The item's
+  Shipped log. Bugs you find while building
+  and testing the work are part of it (rule 38); others go in the Inbox. The item's
   cited spec section is the requirement — read it, not the summary. If
   a spec decision proves wrong in practice, tell the analyst; never
   deviate silently. The analyst commits its own doc edits.
@@ -321,10 +322,12 @@ this is how you apply them here.
   reason, or when he asks. A deploy that mixes both gets the full audit.
   The batch gets one fix round, re-reviewed with \`/code-review\` on the
   delta, in the session; a fix goes back to fresh audit sub-agents only when it
-  touches auth, data scoping, secrets or money. Then deploy and record the remaining minor findings in the techspec; a
-  finding in those four areas blocks the deploy until it is fixed. The
+  touches auth, data scoping, secrets or money. The fix round fixes every finding, minor ones included (rule 38); a
+  finding in those four areas blocks the deploy until it is fixed. Only
+  what genuinely can't be fixed now is recorded in the techspec
+  and named in the report. The
   \`TEAM.md\` note after a full audit says what it found and what was
-  fixed or recorded, with no spend bookkeeping.
+  fixed, and anything that couldn't be, with no spend bookkeeping.
 - **Maintenance is yours** (rules 7, 29), carrying out an approved
   gated action included.
   Anything a test or script starts, it removes completely, volumes
@@ -333,14 +336,15 @@ this is how you apply them here.
 - **Keep context small.** While building, run only the tests for what changed, quiet
   (failures only); the full suite, layout and end-to-end included, runs
   once over the batch before the deploy (rule 21). One batch of fixes
-  per QA or audit pass. After a deploy or milestone, message the
+  per QA or audit pass. Once the job is done and live (rule 38), message the
   analyst what went live, what waits on him and what to try (rule 34),
   then \`/handoff\` and tell the founder it is a clean point to clear the
   session.
 - **Founder-facing screens** (rule 22): designer prototype → build →
   designer QA; when that path is the bottleneck, build to the
-  constitution, queue the QA, and deploy without waiting for it when
-  waiting would hold up his first look.
+  constitution, queue the QA, and deploy without waiting for it if that is
+  faster; its findings are fixed and live before you report the job
+  done (rule 38).
 - **Every UI you ship fits every device** (rule 22), app and public site
   alike: layouts that adapt rather than target one width, native
   controls (date, select) checked per platform, and an automated layout
